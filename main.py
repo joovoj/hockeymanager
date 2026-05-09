@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, send_from_directory
 from flask_cors import CORS
 from supabase import create_client, Client
 from functools import wraps
@@ -61,6 +61,15 @@ def require_auth(f):
         return f(*args, **kwargs)
     return decorated
 
+# STATIC FILES
+@app.route("/")
+def index():
+    return send_from_directory(".", "etusivu.html")
+
+@app.route("/<path:filename>")
+def serve_file(filename):
+    return send_from_directory(".", filename)
+
 # AUTH
 @app.route("/api/auth/register", methods=["POST"])
 def register():
@@ -71,7 +80,7 @@ def register():
     if not email or not password or not username:
         return jsonify({"error": "Tayta kaikki kentat"}), 400
     if len(password) < 6:
-        return jsonify({"error": "Salasana on liian lyhyt (min 6 merkki)"}), 400
+        return jsonify({"error": "Salasana on liian lyhyt (min 6 merkkia)"}), 400
     try:
         res = get_supabase().auth.sign_up({"email": email, "password": password})
         uid = res.user.id
