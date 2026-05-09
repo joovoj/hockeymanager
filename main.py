@@ -2,16 +2,25 @@ from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from supabase import create_client, Client
 from functools import wraps
+from dotenv import load_dotenv
 import os
 from datetime import datetime
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
 CORS(app, supports_credentials=True, origins=["*"])
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+_supabase = None
+
+def get_supabase():
+    global _supabase
+    if _supabase is None:
+        url = os.environ.get("SUPABASE_URL", "")
+        key = os.environ.get("SUPABASE_KEY", "")
+        _supabase = create_client(url, key)
+    return _supabase
 
 BUDGET = 1000
 ROSTER_LIMITS = {"H": 3, "P": 2, "MV": 1}
@@ -45,7 +54,7 @@ def require_auth(f):
         if not token:
             return jsonify({"error": "Ei kirjautunut"}), 401
         try:
-            user = supabase.auth.get_user(token)
+            user = get_supabase().auth.get_user(token)
             request.user = user.user
         except Exception:
             return jsonify({"error": "Virheellinen token"}), 401
@@ -64,9 +73,9 @@ def register():
     if len(password) < 6:
         return jsonify({"error": "Salasana on liian lyhyt (min 6 merkki)"}), 400
     try:
-        res = supabase.auth.sign_up({"email": email, "password": password})
+        res = get_supabase().auth.sign_up({"email": email, "password": password})
         uid = res.user.id
-        supabase.table("profiles").insert({
+        get_supabase().table("profiles").insert({
             "id": uid, "username": username, "email": email,
             "transfers_left": 17, "total_points": 0,
             "created_at": datetime.utcnow().isoformat()
@@ -83,8 +92,8 @@ def login():
     if not email or not password:
         return jsonify({"error": "Tayta kaikki kentat"}), 400
     try:
-        res = supabase.auth.sign_in_with_password({"email": email, "password": password})
-        profile = supabase.table("profiles").select("*").eq("id", res.user.id).single().execute()
+        res = get_supabase().auth.sign_in_with_password({"email": email, "password": password})
+        profile = get_supabase().table("profiles").select("*").eq("id", res.user.id).single().execute()
         return jsonify({
             "access_token": res.session.access_token,
             "user": {
@@ -101,7 +110,7 @@ def login():
 @require_auth
 def logout():
     try:
-        supabase.auth.sign_out()
+        get_supabase().auth.sign_out()
         return jsonify({"message": "Kirjauduttu ulos"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -110,7 +119,7 @@ def logout():
 @require_auth
 def me():
     try:
-        profile = supabase.table("profiles").select("*").eq("id", request.user.id).single().execute()
+        profile = get_supabase().table("profiles").select("*").eq("id", request.user.id).single().execute()
         return jsonify(profile.data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -145,7 +154,7 @@ def get_player(player_id):
 @require_auth
 def get_team():
     try:
-        res = supabase.table("teams").select("*").eq("user_id", request.user.id).execute()
+        res = get_supabase().table("teams").select("*").eq("user_id", request.user.id).execute()
         player_ids = [row["player_id"] for row in res.data]
         team_players = [p for p in PLAYERS if p["id"] in player_ids]
         total_price = sum(p["price"] for p in team_players)
@@ -168,7 +177,7 @@ def add_player():
     if not player:
         return jsonify({"error": "Pelaajaa ei loydy"}), 404
     try:
-        existing = supabase.table("teams").select("*").eq("user_id", request.user.id).execute()
+        existing = get_supabase().table("teams").select("*").eq("user_id", request.user.id).execute()
         current_ids = [row["player_id"] for row in existing.data]
         if player_id in current_ids:
             return jsonify({"error": "Pelaaja on jo joukkueessasi"}), 400
@@ -181,15 +190,15 @@ def add_player():
         current_cost = sum(p["price"] for p in current_players)
         if current_cost + player["price"] > BUDGET:
             return jsonify({"error": "Budjetti ylittyy"}), 400
-        profile = supabase.table("profiles").select("transfers_left").eq("id", request.user.id).single().execute()
+        profile = get_supabase().table("profiles").select("transfers_left").eq("id", request.user.id).single().execute()
         if len(current_ids) > 0 and profile.data["transfers_left"] <= 0:
             return jsonify({"error": "Ei vaihtoja jaljella"}), 400
-        supabase.table("teams").insert({
+        get_supabase().table("teams").insert({
             "user_id": request.user.id, "player_id": player_id,
             "added_at": datetime.utcnow().isoformat()
         }).execute()
         if len(current_ids) > 0:
-            supabase.table("profiles").update({
+            get_supabase().table("profiles").update({
                 "transfers_left": profile.data["transfers_left"] - 1
             }).eq("id", request.user.id).execute()
         return jsonify({"message": f"{player['name']} lisatty joukkueeseen"}), 200
@@ -202,7 +211,7 @@ def remove_player():
     data = request.get_json()
     player_id = data.get("player_id")
     try:
-        supabase.table("teams").delete().eq("user_id", request.user.id).eq("player_id", player_id).execute()
+        get_supabase().table("teams").delete().eq("user_id", request.user.id).eq("player_id", player_id).execute()
         return jsonify({"message": "Pelaaja poistettu joukkueesta"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -211,7 +220,7 @@ def remove_player():
 @require_auth
 def confirm_team():
     try:
-        res = supabase.table("teams").select("*").eq("user_id", request.user.id).execute()
+        res = get_supabase().table("teams").select("*").eq("user_id", request.user.id).execute()
         player_ids = [row["player_id"] for row in res.data]
         players = [p for p in PLAYERS if p["id"] in player_ids]
         if len(players) != 6:
@@ -220,7 +229,7 @@ def confirm_team():
             count = sum(1 for p in players if p["pos"] == pos)
             if count != limit:
                 return jsonify({"error": f"Vaara maara {pos}-pelaajia"}), 400
-        supabase.table("profiles").update({
+        get_supabase().table("profiles").update({
             "team_confirmed": True,
             "confirmed_at": datetime.utcnow().isoformat()
         }).eq("id", request.user.id).execute()
@@ -234,7 +243,7 @@ def get_leagues():
     type_filter = request.args.get("type", "")
     q = request.args.get("q", "").lower()
     try:
-        query = supabase.table("leagues").select("*")
+        query = get_supabase().table("leagues").select("*")
         if type_filter in ("public", "private"):
             query = query.eq("type", type_filter)
         res = query.execute()
@@ -242,7 +251,7 @@ def get_leagues():
         if q:
             leagues = [l for l in leagues if q in l["name"].lower()]
         for league in leagues:
-            members = supabase.table("league_members").select("id").eq("league_id", league["id"]).execute()
+            members = get_supabase().table("league_members").select("id").eq("league_id", league["id"]).execute()
             league["member_count"] = len(members.data)
         return jsonify(leagues), 200
     except Exception as e:
@@ -262,12 +271,12 @@ def create_league():
     if max_members < 2 or max_members > 500:
         return jsonify({"error": "Max jassenmaara taytyy olla 2-500"}), 400
     try:
-        res = supabase.table("leagues").insert({
+        res = get_supabase().table("leagues").insert({
             "name": name, "type": league_type, "max_members": max_members,
             "created_by": request.user.id, "created_at": datetime.utcnow().isoformat()
         }).execute()
         league_id = res.data[0]["id"]
-        supabase.table("league_members").insert({
+        get_supabase().table("league_members").insert({
             "league_id": league_id, "user_id": request.user.id,
             "joined_at": datetime.utcnow().isoformat()
         }).execute()
@@ -279,16 +288,16 @@ def create_league():
 @require_auth
 def join_league(league_id):
     try:
-        league = supabase.table("leagues").select("*").eq("id", league_id).single().execute()
+        league = get_supabase().table("leagues").select("*").eq("id", league_id).single().execute()
         if not league.data:
             return jsonify({"error": "Liigaa ei loydy"}), 404
-        members = supabase.table("league_members").select("*").eq("league_id", league_id).execute()
+        members = get_supabase().table("league_members").select("*").eq("league_id", league_id).execute()
         if len(members.data) >= league.data["max_members"]:
             return jsonify({"error": "Liiga on taynna"}), 400
-        already = supabase.table("league_members").select("*").eq("league_id", league_id).eq("user_id", request.user.id).execute()
+        already = get_supabase().table("league_members").select("*").eq("league_id", league_id).eq("user_id", request.user.id).execute()
         if already.data:
             return jsonify({"error": "Olet jo tassa liigassa"}), 400
-        supabase.table("league_members").insert({
+        get_supabase().table("league_members").insert({
             "league_id": league_id, "user_id": request.user.id,
             "joined_at": datetime.utcnow().isoformat()
         }).execute()
@@ -300,7 +309,7 @@ def join_league(league_id):
 @require_auth
 def leave_league(league_id):
     try:
-        supabase.table("league_members").delete().eq("league_id", league_id).eq("user_id", request.user.id).execute()
+        get_supabase().table("league_members").delete().eq("league_id", league_id).eq("user_id", request.user.id).execute()
         return jsonify({"message": "Poistuttu liigasta"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -308,11 +317,11 @@ def leave_league(league_id):
 @app.route("/api/leagues/<league_id>/standings", methods=["GET"])
 def league_standings(league_id):
     try:
-        members = supabase.table("league_members").select("user_id").eq("league_id", league_id).execute()
+        members = get_supabase().table("league_members").select("user_id").eq("league_id", league_id).execute()
         user_ids = [m["user_id"] for m in members.data]
         standings = []
         for uid in user_ids:
-            profile = supabase.table("profiles").select("username, total_points").eq("id", uid).single().execute()
+            profile = get_supabase().table("profiles").select("username, total_points").eq("id", uid).single().execute()
             if profile.data:
                 standings.append({
                     "user_id": uid,
@@ -330,13 +339,13 @@ def league_standings(league_id):
 @require_auth
 def my_leagues():
     try:
-        memberships = supabase.table("league_members").select("league_id").eq("user_id", request.user.id).execute()
+        memberships = get_supabase().table("league_members").select("league_id").eq("user_id", request.user.id).execute()
         league_ids = [m["league_id"] for m in memberships.data]
         leagues = []
         for lid in league_ids:
-            league = supabase.table("leagues").select("*").eq("id", lid).single().execute()
+            league = get_supabase().table("leagues").select("*").eq("id", lid).single().execute()
             if league.data:
-                members = supabase.table("league_members").select("id").eq("league_id", lid).execute()
+                members = get_supabase().table("league_members").select("id").eq("league_id", lid).execute()
                 league.data["member_count"] = len(members.data)
                 leagues.append(league.data)
         return jsonify(leagues), 200
@@ -386,13 +395,13 @@ def update_points():
                 pts += saves_points(event.get("saves", 0))
                 pts += rules["minor_penalty"] * event.get("minor_penalties", 0)
                 pts += rules["game_misconduct"] * event.get("game_misconducts", 0)
-            supabase.table("player_points").insert({
+            get_supabase().table("player_points").insert({
                 "player_id": pid, "points": pts,
                 "game_date": event.get("game_date", datetime.utcnow().date().isoformat()),
                 "created_at": datetime.utcnow().isoformat()
             }).execute()
             player["points"] = player.get("points", 0) + pts
-        all_users = supabase.table("teams").select("user_id, player_id").execute()
+        all_users = get_supabase().table("teams").select("user_id, player_id").execute()
         user_map = {}
         for row in all_users.data:
             user_map.setdefault(row["user_id"], []).append(row["player_id"])
@@ -404,9 +413,9 @@ def update_points():
                 for p in affected
             )
             if gained:
-                profile = supabase.table("profiles").select("total_points").eq("id", uid).single().execute()
+                profile = get_supabase().table("profiles").select("total_points").eq("id", uid).single().execute()
                 new_total = (profile.data["total_points"] or 0) + gained
-                supabase.table("profiles").update({"total_points": new_total}).eq("id", uid).execute()
+                get_supabase().table("profiles").update({"total_points": new_total}).eq("id", uid).execute()
         return jsonify({"message": "Pisteet paivitetty"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -414,7 +423,7 @@ def update_points():
 @app.route("/api/points/leaderboard", methods=["GET"])
 def leaderboard():
     try:
-        profiles = supabase.table("profiles").select("username, total_points").order("total_points", desc=True).limit(50).execute()
+        profiles = get_supabase().table("profiles").select("username, total_points").order("total_points", desc=True).limit(50).execute()
         result = [{"rank": i+1, "username": p["username"], "points": p["total_points"]} for i, p in enumerate(profiles.data)]
         return jsonify(result), 200
     except Exception as e:
