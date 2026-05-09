@@ -1,781 +1,383 @@
 <!DOCTYPE html>
-<html lang="fi" data-page="etusivu">
+<html lang="fi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hockeymanager – Etusivu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --primary: #005f6e;
-      --primary-dark: #004a57;
-      --gold: #a05f29;
-      --gold-light: #c8812e;
-      --bg: #f7fafb;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #181c1d;
-      --text-muted: #3e484b;
-      --text-faint: #6e797c;
-      --navy: #0d2233;
-      --error: #ba1a1a;
-      --font-head: 'Montserrat', sans-serif;
-      --font-body: 'Inter', sans-serif;
-      --radius: 4px;
-      --radius-lg: 8px;
-      --transition: 150ms ease;
+      --primary: #005f6e; --primary-dark: #004a57; --gold: #a05f29;
+      --bg: #f7fafb; --surface: #ffffff; --border: #e2e8f0;
+      --text: #181c1d; --muted: #5b666a; --navy: #0d2233;
     }
+    html, body { height: 100%; }
+    body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; color: inherit; }
 
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-body);
-      font-size: 16px;
-      color: var(--text);
-      background: var(--bg);
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    button { cursor: pointer; font-family: var(--font-body); border: none; background: none; }
-    img { display: block; max-width: 100%; }
-
+    /* NAV */
     .nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      height: 56px;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-    }
-
-    .nav-brand {
-      font-family: var(--font-head);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--primary);
-      white-space: nowrap;
-    }
-
-    .nav-auth {
-      display: flex;
-      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
       gap: 8px;
-      margin-left: 20px;
     }
+    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 18px; color: var(--primary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+    .nav-links a { font-size: 13px; color: var(--muted); font-weight: 500; padding: 4px 0; white-space: nowrap; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); }
+    .nav-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .badge { background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
+    .lang { font-size: 12px; color: var(--muted); display: flex; gap: 3px; }
+    .lang span.active { color: var(--text); font-weight: 700; }
+    .nav-auth-btn { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: none; font-family: Inter, sans-serif; white-space: nowrap; }
+    .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-register { background: var(--primary); color: #fff; }
+    .btn-logout { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .nav-user { font-size: 12px; font-weight: 600; color: var(--primary); white-space: nowrap; }
 
-    .btn-login {
-      padding: 7px 16px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 600;
-      transition: background var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-login:hover { background: var(--primary-dark); }
-
-    .btn-register {
-      padding: 7px 16px;
-      background: transparent;
-      color: var(--text);
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      transition: border-color var(--transition), color var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-register:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-left: 16px;
-      list-style: none;
-      flex: 1;
-    }
-
-    .nav-links a {
-      padding: 8px 12px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-muted);
-      border-radius: var(--radius);
-      transition: color var(--transition), background var(--transition);
-      white-space: nowrap;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-      background: var(--bg);
-    }
-
-    .nav-links a.active {
-      color: var(--primary);
-      font-weight: 600;
-      border-bottom: 2px solid var(--primary);
-      border-radius: 0;
-      padding-bottom: 6px;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-left: auto;
-    }
-
-    .lock-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      background: var(--gold);
-      color: #fff;
-      border-radius: var(--radius);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .03em;
-      white-space: nowrap;
-    }
-
-    .lang-toggle {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .lang-toggle button {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-faint);
-      padding: 2px 4px;
-      border-radius: 2px;
-      transition: color var(--transition);
-    }
-
-    .lang-toggle button.active {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .lang-toggle button:hover { color: var(--text); }
-    .lang-sep { color: var(--border); font-size: 13px; }
-
+    /* HERO */
     .hero {
-      position: relative;
-      margin: 20px 24px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      height: 340px;
-      background: var(--navy);
+      background: linear-gradient(135deg, var(--navy) 0%, var(--primary) 100%);
+      color: #fff; text-align: center; padding: 60px 20px 48px;
     }
-
-    .hero-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: .55;
+    .hero h1 { font-family: Montserrat, sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+    .hero p { font-size: 16px; opacity: .85; margin-bottom: 28px; }
+    .hero-btn {
+      display: inline-block; background: var(--gold); color: #fff;
+      font-weight: 700; font-size: 15px; padding: 13px 32px;
+      border-radius: 8px; cursor: pointer; border: none; font-family: Inter, sans-serif;
     }
+    .hero-btn:hover { background: #8a5022; }
 
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(13,34,51,.1) 0%, rgba(13,34,51,.5) 100%);
+    /* MAIN GRID */
+    .main-grid { max-width: 960px; margin: 32px auto; padding: 0 20px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; width: 100%; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; }
+    .card-title { font-family: Montserrat, sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+    .match-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; font-size: 14px; }
+    .match-row:last-child { margin-bottom: 0; }
+    .match-time { color: var(--muted); font-size: 13px; min-width: 40px; }
+    .match-teams { font-weight: 500; }
+    .no-matches { color: var(--muted); font-size: 14px; text-align: center; padding: 20px 0; }
+
+    .standings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .standings-table th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 0 8px 8px; }
+    .standings-table td { padding: 8px; border-top: 1px solid var(--border); }
+    .standings-table tr:hover td { background: var(--bg); }
+    .rank-badge { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+    .rank-1 { background: #ffd700; color: #000; }
+    .rank-2 { background: #c0c0c0; color: #000; }
+    .rank-3 { background: #cd7f32; color: #fff; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      z-index: 200; align-items: center; justify-content: center;
     }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border-radius: 14px; padding: 32px 28px; width: 100%; max-width: 380px; position: relative; }
+    .modal-title { font-family: Montserrat, sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+    .modal-close { position: absolute; top: 16px; right: 18px; font-size: 22px; cursor: pointer; color: var(--muted); background: none; border: none; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--muted); }
+    .form-group input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: Inter, sans-serif; outline: none; }
+    .form-group input:focus { border-color: var(--primary); }
+    .submit-btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: Inter, sans-serif; margin-top: 4px; }
+    .submit-btn:hover { background: var(--primary-dark); }
+    .form-switch { text-align: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
+    .form-switch a { color: var(--primary); font-weight: 600; cursor: pointer; }
+    .form-error { color: #ba1a1a; font-size: 13px; margin-bottom: 10px; display: none; }
+    .form-success { color: #1a7a3c; font-size: 13px; margin-bottom: 10px; display: none; }
 
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-hero {
-      padding: 16px 48px;
-      background: var(--gold);
-      color: #fff;
-      font-family: var(--font-head);
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      border-radius: var(--radius);
-      transition: background var(--transition), transform var(--transition);
-      box-shadow: 0 4px 20px rgba(0,0,0,.3);
-    }
-
-    .btn-hero:hover {
-      background: var(--gold-light);
-      transform: translateY(-1px);
-    }
-
-    .content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 24px 60px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      align-items: start;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-family: var(--font-head);
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .games-card,
-    .standings-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    .game-row {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      align-items: center;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      transition: background var(--transition);
-    }
-
-    .game-row:last-child { border-bottom: none; }
-    .game-row:hover { background: var(--bg); }
-
-    .game-time {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-faint);
-    }
-
-    .game-teams {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      justify-content: center;
-      flex: 1;
-    }
-
-    .game-sep {
-      color: var(--text-faint);
-      font-weight: 400;
-    }
-
-    .game-score {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-left: auto;
-      min-width: 36px;
-      text-align: right;
-    }
-
-    .standings-head-row,
-    .standings-row {
-      display: grid;
-      grid-template-columns: 40px 1fr 80px;
-      align-items: center;
-      padding: 13px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .standings-head-row {
-      padding: 10px 20px;
-      background: var(--navy);
-      color: rgba(255,255,255,.7);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-
-    .standings-row:last-child { border-bottom: none; }
-    .standings-row:hover { background: var(--bg); }
-
-    .rank { font-size: 14px; font-weight: 700; color: var(--text-muted); }
-    .rank-1 { color: #c8812e; }
-    .rank-2 { color: #888; }
-    .rank-3 { color: #a0714f; }
-    .team-name { font-size: 14px; font-weight: 500; color: var(--text); }
-    .team-pts { font-size: 14px; font-weight: 700; color: var(--primary); text-align: right; }
-
-    .state-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      color: var(--text-faint);
-      font-size: 14px;
-      gap: 8px;
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--border);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .state-empty {
-      padding: 32px 20px;
-      text-align: center;
-      color: var(--text-faint);
-      font-size: 14px;
-    }
-
+    /* FOOTER */
     footer {
-      background: #eef1f2;
-      border-top: 1px solid var(--border);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 16px 24px; display: flex; justify-content: space-between;
+      align-items: center; color: var(--muted); font-size: 13px;
+      flex-shrink: 0;
     }
+    .footer-brand { font-family: Montserrat, sans-serif; font-weight: 700; color: var(--text); font-size: 15px; }
 
-    .footer-brand {
-      font-family: var(--font-head);
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .footer-copy {
-      font-size: 13px;
-      color: var(--text-faint);
-    }
-
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(13,34,51,.5);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-backdrop.open { display: flex; }
-
-    .modal {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      width: 100%;
-      max-width: 400px;
-      margin: 16px;
-      box-shadow: 0 8px 40px rgba(13,34,51,.2);
-      position: relative;
-    }
-
-    .modal-title {
-      font-family: var(--font-head);
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      color: var(--text);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      color: var(--text-faint);
-      font-size: 18px;
-      transition: background var(--transition), color var(--transition);
-    }
-
-    .modal-close:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .form-group { margin-bottom: 16px; }
-
-    .form-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      letter-spacing: .02em;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-family: var(--font-body);
-      color: var(--text);
-      background: var(--surface);
-      transition: border-color var(--transition), box-shadow var(--transition);
-      outline: none;
-    }
-
-    .form-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0,95,110,.12);
-    }
-
-    .form-error {
-      font-size: 12px;
-      color: var(--error);
-      margin-top: 5px;
-      min-height: 16px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 12px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-weight: 700;
-      font-family: var(--font-head);
-      margin-top: 8px;
-      transition: background var(--transition);
-    }
-
-    .btn-submit:hover { background: var(--primary-dark); }
-    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
-
-    .modal-switch {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 14px;
-      color: var(--text-faint);
-    }
-
-    .modal-switch span {
-      color: var(--primary);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .modal-switch span:hover { text-decoration: underline; }
-
-    .alert {
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .alert-error {
-      background: #fff0f0;
-      color: var(--error);
-      border: 1px solid #ffcdd2;
-    }
-
-    .alert-success {
-      background: #f0faf4;
-      color: #1a6a35;
-      border: 1px solid #b2dfcc;
-    }
-
-    .nav-user {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-username {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    @media (max-width: 768px) {
-      .nav { padding: 0 16px; }
+    @media (max-width: 700px) {
+      .main-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
-      .hero { margin: 12px 16px; height: 220px; }
-      .btn-hero { padding: 12px 28px; font-size: 13px; }
-      .content { grid-template-columns: 1fr; padding: 20px 16px 40px; gap: 24px; }
-      .lock-badge .lock-label { display: none; }
+      .hero h1 { font-size: 26px; }
     }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <span class="nav-brand">Hockeymanager</span>
-
-  <div class="nav-auth" id="navAuth">
-    <button class="btn-login" onclick="openModal('login')" id="btnSignIn">Kirjaudu sisään</button>
-    <button class="btn-register" onclick="openModal('register')" id="btnRegister">Rekisteröidy</button>
-  </div>
-
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#" class="active" id="navEtusivu">Etusivu</a></li>
-    <li><a href="#" id="navJoukkue">Joukkue</a></li>
-    <li><a href="#" id="navLiigat">Liigat</a></li>
-    <li><a href="#" id="navKalenteri">Pelikalenteri</a></li>
-    <li><a href="#" id="navInfo">Info</a></li>
-  </ul>
-
-  <div class="nav-right">
-    <div class="lock-badge">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-      </svg>
-      <span class="lock-label">VAIHDOT SULKEUTUU </span><strong id="lockTimer">--:--:--</strong>
+  <header class="nav">
+    <div class="brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
+    <nav class="nav-links">
+      <a href="etusivu.html" class="active">Etusivu</a>
+      <a href="joukkue.html">Joukkue</a>
+      <a href="liigat.html">Liigat</a>
+      <a href="pelikalenteri.html">Pelikalenteri</a>
+      <a href="info.html">Info</a>
+    </nav>
+    <div class="nav-right">
+      <div class="badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="lang"><span class="active">FI</span><span style="color:var(--border)">|</span><span>EN</span></div>
+      <div id="navAuthButtons" style="display:flex;gap:4px;">
+        <button class="nav-auth-btn btn-login" onclick="openModal('login')">Kirjaudu</button>
+        <button class="nav-auth-btn btn-register" onclick="openModal('register')">Rekisteröidy</button>
+      </div>
+      <div id="navUserArea" style="display:none; align-items:center; gap:6px;">
+        <span class="nav-user" id="navUsername"></span>
+        <button class="nav-auth-btn btn-logout" onclick="logout()">Ulos</button>
+      </div>
     </div>
-    <div class="lang-toggle">
-      <button onclick="setLang('fi')" id="btnFi" class="active">FI</button>
-      <span class="lang-sep">/</span>
-      <button onclick="setLang('en')" id="btnEn">EN</button>
-    </div>
-  </div>
-</nav>
+  </header>
 
-<section class="hero">
-  <img
-    class="hero-img"
-    src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/2019_IIHF_World_Championship_gold_medal_game_-_Finland_vs._Canada_16_%28cropped%29.jpg/1280px-2019_IIHF_World_Championship_gold_medal_game_-_Finland_vs._Canada_16_%28cropped%29.jpg"
-    alt="Suomen jääkiekkomaajoukkue MM-kisoissa"
-    width="1280"
-    height="720"
-    loading="eager"
-    onerror="this.style.display='none'"
-  />
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <button class="btn-hero" onclick="openModal('register')" id="heroBtn">LUO JOUKKUEESI HETI</button>
-  </div>
-</section>
-
-<main class="content">
-  <section>
-    <div class="section-head">
-      <h2 class="section-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-faint)">
-          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <span id="titleGames">Päivän ottelut</span>
-      </h2>
-    </div>
-    <div class="games-card" id="gamesContainer">
-      <div class="state-loading"><div class="spinner"></div><span>Ladataan...</span></div>
-    </div>
+  <section class="hero">
+    <h1>🏒 Hockeymanager 2026</h1>
+    <p>Rakenna joukkueesi ja kilpaile MM-kisojen parhaan managerin tittelistä!</p>
+    <button class="hero-btn" onclick="location.href='joukkue.html'">LUO JOUKKUEESI HETI</button>
   </section>
 
-  <section>
-    <div class="section-head">
-      <h2 class="section-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#c8812e">
-          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-          <path d="M4 22h16"></path>
-          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-        </svg>
-        <span id="titleStandings">Sarjataulukko</span>
-      </h2>
+  <div class="main-grid">
+    <div class="card">
+      <div class="card-title">📅 Päivän ottelut</div>
+      <div id="todayMatches"><div class="no-matches">Ladataan...</div></div>
     </div>
-    <div class="standings-card">
-      <div class="standings-head-row">
-        <span id="thRank">Sija</span>
-        <span id="thTeam">Joukkue</span>
-        <span style="text-align:right" id="thPts">Pisteet</span>
-      </div>
-      <div id="standingsContainer">
-        <div class="state-loading"><div class="spinner"></div><span>Ladataan...</span></div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <span class="footer-brand">Hockeymanager</span>
-  <span class="footer-copy" id="footerCopy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</span>
-</footer>
-
-<div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('loginModal')" aria-label="Sulje">✕</button>
-    <h2 class="modal-title" id="loginTitle">Kirjaudu sisään</h2>
-    <div id="loginAlert"></div>
-    <form id="loginForm" novalidate>
-      <div class="form-group">
-        <label class="form-label" for="loginEmail" id="lblLoginEmail">Sähköposti</label>
-        <input class="form-input" type="email" id="loginEmail" autocomplete="email" />
-        <div class="form-error" id="loginEmailError"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="loginPassword" id="lblLoginPassword">Salasana</label>
-        <input class="form-input" type="password" id="loginPassword" autocomplete="current-password" />
-        <div class="form-error" id="loginPasswordError"></div>
-      </div>
-      <button class="btn-submit" type="submit" id="btnLoginSubmit">Kirjaudu</button>
-    </form>
-    <div class="modal-switch">
-      <span onclick="switchModal('register')" id="switchToRegister">Ei tiliä? Rekisteröidy</span>
+    <div class="card">
+      <div class="card-title">🏆 Sarjataulukko</div>
+      <table class="standings-table">
+        <thead><tr><th>Sija</th><th>Pelaaja</th><th>Pisteet</th></tr></thead>
+        <tbody id="standingsBody"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Ei pisteitä vielä</td></tbody>
+      </table>
     </div>
   </div>
-</div>
 
-<div class="modal-backdrop" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('registerModal')" aria-label="Sulje">✕</button>
-    <h2 class="modal-title" id="registerTitle">Rekisteröidy</h2>
-    <div id="registerAlert"></div>
-    <form id="registerForm" novalidate>
-      <div class="form-group">
-        <label class="form-label" for="registerName" id="lblRegisterName">Käyttäjänimi</label>
-        <input class="form-input" type="text" id="registerName" autocomplete="username" />
-        <div class="form-error" id="registerNameError"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="registerEmail" id="lblRegisterEmail">Sähköposti</label>
-        <input class="form-input" type="email" id="registerEmail" autocomplete="email" />
-        <div class="form-error" id="registerEmailError"></div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="registerPassword" id="lblRegisterPassword">Salasana</label>
-        <input class="form-input" type="password" id="registerPassword" autocomplete="new-password" />
-        <div class="form-error" id="registerPasswordError"></div>
-      </div>
-      <button class="btn-submit" type="submit" id="btnRegisterSubmit">Luo tili</button>
-    </form>
-    <div class="modal-switch">
-      <span onclick="switchModal('login')" id="switchToLogin">Onko sinulla jo tili? Kirjaudu</span>
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('login')">×</button>
+      <div class="modal-title">Kirjaudu sisään</div>
+      <div class="form-error" id="loginError"></div>
+      <div class="form-success" id="loginSuccess"></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="loginEmail" placeholder="sinä@email.com" /></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="loginPassword" placeholder="••••••••" /></div>
+      <button class="submit-btn" onclick="doLogin()">Kirjaudu</button>
+      <div class="form-switch">Ei tiliä? <a onclick="switchModal('login','register')">Rekisteröidy</a></div>
     </div>
   </div>
-</div>
 
-<script>
-  const API = 'https://YOUR-RAILWAY-APP.railway.app';
+  <!-- REGISTER MODAL -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('register')">×</button>
+      <div class="modal-title">Rekisteröidy</div>
+      <div class="form-error" id="registerError"></div>
+      <div class="form-success" id="registerSuccess"></div>
+      <div class="form-group"><label>Käyttäjänimi</label><input type="text" id="registerUsername" placeholder="Managerin nimi" /></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="registerEmail" placeholder="sinä@email.com" /></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="registerPassword" placeholder="••••••••" /></div>
+      <button class="submit-btn" onclick="doRegister()">Luo tili</button>
+      <div class="form-switch">Onko sinulla jo tili? <a onclick="switchModal('register','login')">Kirjaudu</a></div>
+    </div>
+  </div>
 
-  const texts = {
-    fi: {
-      signIn: 'Kirjaudu sisään',
-      register: 'Rekisteröidy',
-      navHome: 'Etusivu',
-      navTeam: 'Joukkue',
-      navLeagues: 'Liigat',
-      navCalendar: 'Pelikalenteri',
-      navInfo: 'Info',
-      heroBtn: 'LUO JOUKKUEESI HETI',
-      games: 'Päivän ottelut',
-      standings: 'Sarjataulukko',
-      rank: 'Sija',
-      team: 'Joukkue',
-      pts: 'Pisteet',
-      loading: 'Ladataan...',
-      noGames: 'Otteluita ei löytynyt.',
-      noStandings: 'Sarjataulukkoa ei löytynyt.',
-      footer: '© 2026 Hockeymanager – Kaikki oikeudet pidätetään.',
-      lockPrefix: 'VAIHDOT SULKEUTUU ',
-      loginTitle: 'Kirjaudu sisään',
-      loginEmail: 'Sähköposti',
-      loginPassword: 'Salasana',
-      loginSubmit: 'Kirjaudu',
-      registerTitle: 'Rekisteröidy',
-      registerName: 'Käyttäjänimi',
-      registerEmail: 'Sähköposti',
-      registerPassword: 'Salasana',
-      registerSubmit: 'Luo tili',
-      switchToRegister: 'Ei tiliä? Rekisteröidy',
-      switchToLogin: 'Onko sinulla jo tili? Kirjaudu',
-      errEmail: 'Anna kelvollinen sähköposti.',
-      errPassword: 'Salasanassa on oltava vähintään 6 merkkiä.',
-      errName: 'Käyttäjänimen on oltava vähintään 3 merkkiä.',
-      loginError: 'Kirjautuminen epäonnistui.',
-      registerError: 'Rekisteröityminen epäonnistui.',
-      registerSuccess: 'Tili luotu. Voit kirjautua sisään.',
-      logout: 'Kirjaudu ulos'
-    },
-    en: {
-      signIn: 'Log in',
-      register: 'Register',
-      navHome: 'Home',
-      navTeam: 'Team',
-      navLeagues: 'Leagues',
-      navCalendar: 'Game Calendar',
-      navInfo: 'Info',
-      heroBtn: 'CREATE YOUR TEAM NOW',
-      games: "Today's games",
-      standings: 'Standings',
-      rank: 'Rank',
-      team: 'Team',
-      pts: 'Points',
-      loading: 'Loading...',
-      noGames: 'No games found.',
-      noStandings: 'No standings found.',
-      footer: '© 2026 Hockeymanager – All rights reserved.',
-      lockPrefix: 'TRANSFERS LOCK IN ',
-      loginTitle: 'Log in',
-      loginEmail: 'Email',
-      loginPassword: 'Password',
-      loginSubmit: 'Log in',
-      registerTitle: 'Register',
-      registerName: 'Username',
-      registerEmail: 'Email',
-      registerPassword: 'Password',
-      registerSubmit: 'Create account',
-      switchToRegister: "Don't have an account? Register",
-      switchToLogin: 'Already have an account? Log in',
-      errEmail: 'Enter a valid email.',
-      errPassword: 'Password must be at least 6 characters.',
-      errName: 'Username must be at least 3 characters.',
-      loginError: 'Login failed.',
-      registerError: 'Registration failed.',
-      registerSuccess: 'Account created. You can now log in.',
-      logout: 'Log out'
+  <footer>
+    <div class="footer-brand">Hockeymanager</div>
+    <div>© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
+  </footer>
+
+  <script>
+    const API = "";
+
+    const SCHEDULE = {
+      "2026-05-15": [
+        {time:"17:20",teams:"Suomi - Saksa"},{time:"17:20",teams:"Kanada - Ruotsi"},
+        {time:"21:20",teams:"USA - Sveitsi"},{time:"21:20",teams:"Tsekki - Tanska"}
+      ],
+      "2026-05-16": [
+        {time:"13:20",teams:"Iso-Britannia - Itävalta"},{time:"13:20",teams:"Slovakia - Norja"},
+        {time:"17:20",teams:"Unkari - Suomi"},{time:"17:20",teams:"Italia - Kanada"},
+        {time:"21:20",teams:"Sveitsi - Latvia"},{time:"21:20",teams:"Slovenia - Tsekki"}
+      ],
+      "2026-05-17": [
+        {time:"13:20",teams:"Iso-Britannia - USA"},{time:"13:20",teams:"Italia - Slovakia"},
+        {time:"17:20",teams:"Itävalta - Unkari"},{time:"17:20",teams:"Tanska - Ruotsi"},
+        {time:"21:20",teams:"Saksa - Latvia"},{time:"21:20",teams:"Norja - Slovenia"}
+      ],
+      "2026-05-18": [
+        {time:"17:20",teams:"Suomi - USA"},{time:"17:20",teams:"Kanada - Tanska"},
+        {time:"21:20",teams:"Saksa - Sveitsi"},{time:"21:20",teams:"Ruotsi - Tsekki"}
+      ],
+      "2026-05-19": [
+        {time:"17:20",teams:"Latvia - Itävalta"},{time:"17:20",teams:"Italia - Norja"},
+        {time:"21:20",teams:"Unkari - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Slovakia"}
+      ],
+      "2026-05-20": [
+        {time:"17:20",teams:"Itävalta - Sveitsi"},{time:"17:20",teams:"Tsekki - Italia"},
+        {time:"21:20",teams:"USA - Saksa"},{time:"21:20",teams:"Ruotsi - Slovenia"}
+      ],
+      "2026-05-21": [
+        {time:"17:20",teams:"Latvia - Suomi"},{time:"17:20",teams:"Kanada - Norja"},
+        {time:"21:20",teams:"Sveitsi - Iso-Britannia"},{time:"21:20",teams:"Tanska - Slovakia"}
+      ],
+      "2026-05-22": [
+        {time:"17:20",teams:"Saksa - Unkari"},{time:"17:20",teams:"Kanada - Slovenia"},
+        {time:"21:20",teams:"Suomi - Iso-Britannia"},{time:"21:20",teams:"Ruotsi - Italia"}
+      ],
+      "2026-05-23": [
+        {time:"13:20",teams:"Latvia - USA"},{time:"13:20",teams:"Tanska - Slovenia"},
+        {time:"17:20",teams:"Sveitsi - Unkari"},{time:"17:20",teams:"Slovakia - Tsekki"},
+        {time:"21:20",teams:"Itävalta - Saksa"},{time:"21:20",teams:"Norja - Ruotsi"}
+      ],
+      "2026-05-24": [
+        {time:"17:20",teams:"Iso-Britannia - Latvia"},{time:"17:20",teams:"Tanska - Italia"},
+        {time:"21:20",teams:"Suomi - Itävalta"},{time:"21:20",teams:"Slovakia - Kanada"}
+      ],
+      "2026-05-25": [
+        {time:"17:20",teams:"USA - Unkari"},{time:"17:20",teams:"Tsekki - Norja"},
+        {time:"21:20",teams:"Saksa - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Italia"}
+      ],
+      "2026-05-26": [
+        {time:"13:20",teams:"Unkari - Latvia"},{time:"13:20",teams:"Norja - Tanska"},
+        {time:"17:20",teams:"USA - Itävalta"},{time:"17:20",teams:"Ruotsi - Slovakia"},
+        {time:"21:20",teams:"Sveitsi - Suomi"},{time:"21:20",teams:"Tsekki - Kanada"}
+      ],
+      "2026-05-28": [
+        {time:"17:20",teams:"TBA - TBA"},{time:"17:20",teams:"TBA - TBA"},
+        {time:"21:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}
+      ],
+      "2026-05-30": [{time:"16:20",teams:"TBA - TBA"},{time:"21:00",teams:"TBA - TBA"}],
+      "2026-05-31": [{time:"16:30",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}]
+    };
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
     }
-  };
 
-  let lang = 
+    function renderTodayMatches() {
+      const matches = SCHEDULE[getTodayKey()];
+      const el = document.getElementById("todayMatches");
+      if (!matches || !matches.length) {
+        el.innerHTML = '<div class="no-matches">Tänään ei ole otteluita 🏒</div>'; return;
+      }
+      el.innerHTML = matches.map(m =>
+        `<div class="match-row"><span class="match-time">${m.time}</span><span class="match-teams">${m.teams}</span></div>`
+      ).join("");
+    }
+
+    function getNextGameTime() {
+      const now = new Date();
+      for (const day of Object.keys(SCHEDULE).sort()) {
+        for (const m of SCHEDULE[day]) {
+          const [h, min] = m.time.split(":").map(Number);
+          const t = new Date(`${day}T${String(h).padStart(2,"0")}:${String(min).padStart(2,"0")}:00`);
+          if (t > now) return t;
+        }
+      }
+      return null;
+    }
+
+    function updateCountdown() {
+      const next = getNextGameTime();
+      const el = document.getElementById("countdown");
+      if (!next) { el.textContent = "00:00:00"; return; }
+      const diff = next - new Date();
+      if (diff <= 0) { el.textContent = "00:00:00"; return; }
+      const h = Math.floor(diff/3600000);
+      const m = Math.floor((diff%3600000)/60000);
+      const s = Math.floor((diff%60000)/1000);
+      el.textContent = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    }
+
+    async function loadStandings() {
+      try {
+        const res = await fetch(`${API}/api/points/leaderboard`);
+        const data = await res.json();
+        const tbody = document.getElementById("standingsBody");
+        if (!data.length) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Ei pisteitä vielä</td></tr>'; return; }
+        tbody.innerHTML = data.map(p => {
+          const rc = p.rank <= 3 ? `rank-${p.rank}` : "";
+          return `<tr><td><span class="rank-badge ${rc}">${p.rank}</span></td><td>${p.username}</td><td><strong>${p.points}</strong></td></tr>`;
+        }).join("");
+      } catch(e) {
+        document.getElementById("standingsBody").innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Ei pisteitä vielä</td></tr>';
+      }
+    }
+
+    function openModal(t) { document.getElementById(t+"Modal").classList.add("open"); }
+    function closeModal(t) { document.getElementById(t+"Modal").classList.remove("open"); }
+    function switchModal(f,t) { closeModal(f); openModal(t); }
+
+    async function doLogin() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const errEl = document.getElementById("loginError");
+      const sucEl = document.getElementById("loginSuccess");
+      errEl.style.display = "none"; sucEl.style.display = "none";
+      if (!email || !password) { errEl.textContent = "Täytä kaikki kentät"; errEl.style.display = "block"; return; }
+      try {
+        const res = await fetch(`${API}/api/auth/login`, {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({email, password})
+        });
+        const data = await res.json();
+        if (!res.ok) { errEl.textContent = data.error || "Kirjautuminen epäonnistui"; errEl.style.display = "block"; return; }
+        localStorage.setItem("hm_token", data.access_token);
+        localStorage.setItem("hm_user", JSON.stringify(data.user));
+        sucEl.textContent = "Kirjautuminen onnistui!"; sucEl.style.display = "block";
+        setTimeout(() => { closeModal("login"); updateNavAuth(); }, 800);
+      } catch(e) { errEl.textContent = "Verkkovirhe, yritä uudelleen"; errEl.style.display = "block"; }
+    }
+
+    async function doRegister() {
+      const username = document.getElementById("registerUsername").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      const errEl = document.getElementById("registerError");
+      const sucEl = document.getElementById("registerSuccess");
+      errEl.style.display = "none"; sucEl.style.display = "none";
+      if (!username||!email||!password) { errEl.textContent = "Täytä kaikki kentät"; errEl.style.display = "block"; return; }
+      if (password.length < 6) { errEl.textContent = "Salasana liian lyhyt (min 6 merkkiä)"; errEl.style.display = "block"; return; }
+      try {
+        const res = await fetch(`${API}/api/auth/register`, {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({username, email, password})
+        });
+        const data = await res.json();
+        if (!res.ok) { errEl.textContent = data.error || "Rekisteröityminen epäonnistui"; errEl.style.display = "block"; return; }
+        sucEl.textContent = "Tili luotu! Voit nyt kirjautua sisään."; sucEl.style.display = "block";
+        setTimeout(() => switchModal("register","login"), 1500);
+      } catch(e) { errEl.textContent = "Verkkovirhe, yritä uudelleen"; errEl.style.display = "block"; }
+    }
+
+    async function logout() {
+      const token = localStorage.getItem("hm_token");
+      if (token) { try { await fetch(`${API}/api/auth/logout`, {method:"POST",headers:{"Authorization":"Bearer "+token}}); } catch(e){} }
+      localStorage.removeItem("hm_token"); localStorage.removeItem("hm_user");
+      updateNavAuth();
+    }
+
+    function updateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user")||"null");
+      document.getElementById("navAuthButtons").style.display = user ? "none" : "flex";
+      document.getElementById("navUserArea").style.display = user ? "flex" : "none";
+      if (user) document.getElementById("navUsername").textContent = "👤 " + user.username;
+    }
+
+    document.querySelectorAll(".modal-overlay").forEach(el => {
+      el.addEventListener("click", e => { if (e.target === el) el.classList.remove("open"); });
+    });
+
+    renderTodayMatches();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    loadStandings();
+    updateNavAuth();
+  </script>
+</body>
+</html>
