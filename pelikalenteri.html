@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hockeymanager – Pelikalenteri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #005f6e;
+      --primary-dark: #004a57;
+      --gold: #a05f29;
+      --bg: #f7fafb;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #181c1d;
+      --muted: #5b666a;
+      --navy: #0d2233;
+    }
+    body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: Inter, sans-serif; cursor: pointer; border: none; background: none; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    }
+    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 20px; color: var(--primary); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { font-size: 14px; color: var(--muted); padding: 4px 0; font-weight: 500; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); padding-bottom: 2px; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .badge { background: var(--gold); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 6px; letter-spacing: .02em; }
+    .nav-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-family: Montserrat, sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .lang { font-size: 13px; color: var(--muted); display: flex; gap: 4px; align-items: center; }
+    .lang span.active { color: var(--text); font-weight: 700; }
+    .lang-sep { color: var(--border); }
+
+    .page { max-width: 900px; margin: 0 auto; padding: 36px 20px 60px; }
+    .page-title { font-family: Montserrat, sans-serif; font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .page-sub { color: var(--muted); font-size: 14px; text-align: center; margin-bottom: 32px; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .day-label {
+      font-family: Montserrat, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+    }
+    .match-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .match-row:last-child { margin-bottom: 0; }
+    .match-time { color: var(--muted); font-size: 13px; min-width: 38px; flex-shrink: 0; }
+    .match-teams { color: var(--text); font-weight: 500; }
+    .match-teams.tba { color: var(--muted); }
+
+    .footer-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; color: var(--text); }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 700px) {
+      .cal-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .nav { padding: 0 14px; }
+    }
+    @media (max-width: 960px) and (min-width: 701px) {
+      .cal-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="brand">Hockeymanager</div>
+    <nav class="nav-links">
+      <a href="etusivu.html">Etusivu</a>
+      <a href="joukkue.html">Joukkue</a>
+      <a href="liigat.html">Liigat</a>
+      <a href="pelikalenteri.html" class="active">Pelikalenteri</a>
+      <a href="info.html">Info</a>
+    </nav>
+    <div class="nav-right">
+      <div class="badge">VAIHDOT SULKEUTUU 02:14:59</div>
+      <div class="lang"><span class="active">FI</span><span class="lang-sep">|</span><span>EN</span></div>
+      <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted);">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 0 0-5-5.917V4a1 1 0 0 0-2 0v1.083A6 6 0 0 0 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 0 1-6 0v-1m6 0H9"/></svg>
+      </div>
+      <div class="nav-icon">MM</div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-title">Pelikalenteri</div>
+    <div class="page-sub">Otteluohjelma</div>
+
+    <div class="cal-grid">
+
+      <!-- Pe 15.05 -->
+      <div class="day-card">
+        <div class="day-label">Pe 15.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Suomi - Saksa</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Ruotsi</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">USA - Sveitsi</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tsekki - Tanska</span></div>
+      </div>
+
+      <!-- La 16.05 -->
+      <div class="day-card">
+        <div class="day-label">La 16.05.</div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Iso-Britannia - Itävalta</span></div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Slovakia - Norja</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Unkari - Suomi</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Italia - Kanada</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Latvia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Tsekki</span></div>
+      </div>
+
+      <!-- Su 17.05 -->
+      <div class="day-card">
+        <div class="day-label">Su 17.05.</div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Iso-Britannia - USA</span></div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Italia - Slovakia</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Itävalta - Unkari</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tanska - Ruotsi</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Latvia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Norja - Slovenia</span></div>
+      </div>
+
+      <!-- Ma 18.05 -->
+      <div class="day-card">
+        <div class="day-label">Ma 18.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Suomi - USA</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Tanska</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Sveitsi</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Tsekki</span></div>
+      </div>
+
+      <!-- Ti 19.05 -->
+      <div class="day-card">
+        <div class="day-label">Ti 19.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Latvia - Itävalta</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Italia - Norja</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Unkari - Iso-Britannia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Slovakia</span></div>
+      </div>
+
+      <!-- Ke 20.05 -->
+      <div class="day-card">
+        <div class="day-label">Ke 20.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Itävalta - Sveitsi</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tsekki - Italia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">USA - Saksa</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Slovenia</span></div>
+      </div>
+
+      <!-- To 21.05 -->
+      <div class="day-card">
+        <div class="day-label">To 21.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Latvia - Suomi</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Norja</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Iso-Britannia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tanska - Slovakia</span></div>
+      </div>
+
+      <!-- Pe 22.05 -->
+      <div class="day-card">
+        <div class="day-label">Pe 22.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Saksa - Unkari</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Slovenia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Suomi - Iso-Britannia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Italia</span></div>
+      </div>
+
+      <!-- La 23.05 -->
+      <div class="day-card">
+        <div class="day-label">La 23.05.</div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Latvia - USA</span></div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Tanska - Slovenia</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Sveitsi - Unkari</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Slovakia - Tsekki</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Itävalta - Saksa</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Norja - Ruotsi</span></div>
+      </div>
+
+      <!-- Su 24.05 -->
+      <div class="day-card">
+        <div class="day-label">Su 24.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Iso-Britannia - Latvia</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tanska - Italia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Suomi - Itävalta</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovakia - Kanada</span></div>
+      </div>
+
+      <!-- Ma 25.05 -->
+      <div class="day-card">
+        <div class="day-label">Ma 25.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">USA - Unkari</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tsekki - Norja</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Iso-Britannia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Italia</span></div>
+      </div>
+
+      <!-- Ti 26.05 -->
+      <div class="day-card">
+        <div class="day-label">Ti 26.05.</div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Unkari - Latvia</span></div>
+        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Norja - Tanska</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">USA - Itävalta</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Ruotsi - Slovakia</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Suomi</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tsekki - Kanada</span></div>
+      </div>
+
+      <!-- To 28.05 -->
+      <div class="day-card">
+        <div class="day-label">To 28.05.</div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams tba">TBA - TBA</span></div>
+        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams tba">TBA - TBA</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
+      </div>
+
+      <!-- La 30.05 -->
+      <div class="day-card">
+        <div class="day-label">La 30.05.</div>
+        <div class="match-row"><span class="match-time">16:20</span><span class="match-teams tba">TBA - TBA</span></div>
+        <div class="match-row"><span class="match-time">21:00</span><span class="match-teams tba">TBA - TBA</span></div>
+      </div>
+
+      <!-- Su 31.05 -->
+      <div class="day-card">
+        <div class="day-label">Su 31.05.</div>
+        <div class="match-row"><span class="match-time">16:30</span><span class="match-teams tba">TBA - TBA</span></div>
+        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer-bar">
+    <div class="footer-brand">Hockeymanager</div>
+    <div class="footer-copy">© 2026 Hockeymanager - Kaikki oikeudet pidätetään.</div>
+  </footer>
+
+</body>
+</html>

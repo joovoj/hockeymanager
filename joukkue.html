@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fi" data-page="joukkue">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hockeymanager – Joukkue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #005f6e;
+      --primary-dark: #004a57;
+      --gold: #a05f29;
+      --gold-light: #c8812e;
+      --bg: #f7fafb;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #181c1d;
+      --text-muted: #3e484b;
+      --text-faint: #6e797c;
+      --navy: #0d2233;
+      --ice-line: #dfe6ee;
+      --ice-blue: #2d7cf6;
+      --ice-red: #e24b4b;
+      --success: #1a6a35;
+      --font-head: 'Montserrat', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --radius: 4px;
+      --radius-lg: 8px;
+      --transition: 150ms ease;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; background: none; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 28px;
+      list-style: none;
+      flex: 1;
+    }
+
+    .nav-links a {
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-radius: var(--radius);
+      transition: color var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .nav-links a.active {
+      color: var(--primary);
+      font-weight: 600;
+      border-bottom: 2px solid var(--primary);
+      border-radius: 0;
+      padding-bottom: 6px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .lock-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lang-toggle button {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-faint);
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+
+    .lang-toggle button.active {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .lang-sep { color: var(--border); font-size: 13px; }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .page {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 34px 24px 56px;
+    }
+
+    .page-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+
+    .page-title {
+      font-family: var(--font-head);
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .btn-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 700;
+      transition: background var(--transition);
+    }
+
+    .btn-edit:hover { background: var(--primary-dark); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 120px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .stat-big {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-suffix {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .stat-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .trend-up { color: var(--success); font-weight: 600; }
+
+    .rank-card .stat-value {
+      color: var(--gold);
+    }
+
+    .budget-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .budget-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #edf1f4;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .budget-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width .25s ease;
+    }
+
+    .budget-bank {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .budget-bank strong {
+      color: var(--text);
+    }
+
+    .rink-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      min-height: 650px;
+    }
+
+    .rink {
+      position: relative;
+      width: 100%;
+      min-height: 560px;
+      border: 2px solid var(--ice-line);
+      border-radius: 54px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f7fafc 100%);
+      overflow: hidden;
+      box-shadow: inset 0 1px 8px rgba(13,34,51,.04);
+    }
+
+    .rink::before,
+    .rink::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--ice-blue);
+      opacity: .95;
+    }
+
+    .rink::before { left: 24%; }
+    .rink::after { right: 24%; }
+
+    .center-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 6px;
+      background: var(--ice-red);
+      transform: translateX(-50%);
+    }
+
+    .center-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 108px;
+      height: 108px;
+      transform: translate(-50%, -50%);
+      border: 4px solid var(--ice-line);
+      border-radius: 50%;
+      opacity: .7;
+    }
+
+    .player-slot {
+      position: absolute;
+      width: 118px;
+      min-height: 160px;
+      background: #fff;
+      border: 1px solid #cfd9df;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(13,34,51,.08);
+    }
+
+    .slot-head {
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .slot-head.h { background: #5e6d8d; }
+    .slot-head.c { background: var(--primary); }
+    .slot-head.d { background: #b3c3ea; color: #32405f; }
+    .slot-head.g { background: #181c1d; }
+
+    .slot-body {
+      padding: 10px 8px 8px;
+      text-align: center;
+      background: #f8fbfc;
+    }
+
+    .slot-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid #d6e1e6;
+      margin: 0 auto 8px;
+      display: grid;
+      place-items: center;
+      color: #a4b0b7;
+      background: #eef4f7;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .slot-captain {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .slot-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      min-height: 16px;
+    }
+
+    .slot-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .slot-footer {
+      border-top: 1px solid #d9e2e7;
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 8px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .slot-footer strong {
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    .pos-vh { top: 44px; left: 34px; }
+    .pos-kh { top: 44px; left: 50%; transform: translateX(-50%); }
+    .pos-oh { top: 44px; right: 34px; }
+    .pos-vp { top: 238px; left: 28%; transform: translateX(-50%); }
+    .pos-op { top: 238px; right: 28%; transform: translateX(50%); }
+    .pos-mv { bottom: 18px; left: 50%; transform: translateX(-50%); }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      min-height: 560px;
+      color: var(--text-faint);
+      gap: 12px;
+    }
+
+    .empty-state h3 {
+      font-family: var(--font-head);
+      font-size: 24px;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      max-width: 460px;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .loading-wrap {
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      color: var(--text-faint);
+      font-size: 14px;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    footer {
+      background: #eef1f2;
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 36px;
+    }
+
+    .footer-brand {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 980px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .rink-shell { padding: 14px; }
+      .rink { min-height: 760px; }
+      .player-slot { width: 104px; }
+      .pos-vh { left: 18px; }
+      .pos-oh { right: 18px; }
+      .pos-vp { left: 30%; }
+      .pos-op { right: 30%; }
+    }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 16px; }
+      .nav-links { display: none; }
+      .page { padding: 22px 16px 40px; }
+      .page-top { align-items: flex-start; gap: 16px; flex-direction: column; }
+      .rink { min-height: 840px; }
+      .player-slot { width: 112px; }
+      .pos-vh { top: 34px; left: 50%; transform: translateX(-50%); }
+      .pos-kh { top: 220px; }
+      .pos-oh { top: 408px; right: auto; left: 50%; transform: translateX(-50%); }
+      .pos-vp { top: 596px; left: 30%; transform: translateX(-50%); }
+      .pos-op { top: 596px; right: 30%; transform: translateX(50%); }
+      .pos-mv { bottom: 22px; }
+      .rink::before, .rink::after, .center-line, .center-circle { opacity: .45; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <span class="nav-brand">Hockeymanager</span>
+
+    <ul class="nav-links">
+      <li><a href="etusivu.html" id="navEtusivu">Etusivu</a></li>
+      <li><a href="joukkue.html" class="active" id="navJoukkue">Joukkue</a></li>
+      <li><a href="liigat.html" id="navLiigat">Liigat</a></li>
+      <li><a href="pelikalenteri.html" id="navKalenteri">Pelikalenteri</a></li>
+      <li><a href="info.html" id="navInfo">Info</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lock-badge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span id="lockPrefix">VAIHDOT SULKEUTUU </span><strong id="lockTimer">--:--:--</strong>
+      </div>
+
+      <div class="lang-toggle">
+        <button onclick="setLang('fi')" id="btnFi" class="active">FI</button>
+        <span class="lang-sep">/</span>
+        <button onclick="setLang('en')" id="btnEn">EN</button>
+      </div>
+
+      <button class="icon-btn" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path>
+          <path d="M10 21a2 2 0 0 0 4 0"></path>
+        </svg>
+      </button>
+
+      <div class="avatar" id="avatarBadge">HM</div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="page-top">
+      <h1 class="page-title" id="pageTitle">Joukkue</h1>
+      <a class="btn-edit" href="oma-joukkue.html" id="editBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+        </svg>
+        <span>Muokkaa kokoonpanoa</span>
+      </a>
+    </div>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <div class="stat-label" id="statPointsLabel">Kokonaispisteet</div>
+        <div class="stat-big">
+          <div class="stat-value" id="statPoints">1245</div>
+          <div class="stat-suffix" id="statPtsSuffix">pts</div>
+        </div>
+        <div class="stat-sub"><span>↑</span> <span class="trend-up" id="statRoundGain">+42 kierrokselta</span></div>
+      </article>
+
+      <article class="stat-card rank-card">
+        <div class="stat-label" id="statRankLabel">Sijoitus (liiga)</div>
+        <div class="stat-big">
+          <div class="stat-value" id="statRank">4.</div>
+          <div class="stat-suffix" id="statRankSuffix">/ 120</div>
+        </div>
+        <div class="stat-sub" id="statRankSub">Kauden paras sijoitus tähän asti</div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-label" id="statBudgetLabel">Käytetty budjetti</div>
+        <div class="budget-row">
+          <span id="budgetUsed">0 / 1000</span>
+          <span id="transferText">17 vaihtoa</span>
+        </div>
+        <div class="budget-bar">
+          <div class="budget-fill" id="budgetFill"></div>
+        </div>
+        <div class="budget-bank" id="budgetBankText">Pankissa: <strong>1000</strong></div>
+      </article>
+    </section>
+
+    <section class="rink-shell">
+      <div id="teamStage" class="loading-wrap">
+        <div class="spinner"></div>
+        <div id="loadingText">Ladataan joukkuetta...</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-brand">Hockeymanager</span>
+    <span class="footer-copy" id="footerCopy">© 2026 Hockeymanager. Kaikki oikeudet pidätetään.</span>
+  </footer>
+
+  <script>
+    const API = 'https://YOUR-RAILWAY-APP.railway.app';
+
+    const texts = {
+      fi: {
+        pageTitle: 'Joukkue',
+        editBtn: 'Muokkaa kokoonpanoa',
+        statPointsLabel: 'Kokonaispisteet',
+        pts: 'pts',
+        roundGain: '+42 kierrokselta',
+        statRankLabel: 'Sijoitus (liiga)',
+        statRankSub: 'Kauden paras sijoitus tähän asti',
+        statBudgetLabel: 'Käytetty budjetti',
+        transfers: 'vaihtoa',
+        bank: 'Pankissa',
+        loading: 'Ladataan joukkuetta...',
+        emptyTitle: 'Sinulla ei ole vielä joukkuetta',
+        emptyBody: 'Luo ensin oma joukkue, jotta näet kentällisen, kapteenin ja budjetin tällä sivulla.',
+        emptyBtn: 'Siirry rakentamaan joukkuetta',
+        footer: '© 2026 Hockeymanager. Kaikki oikeudet pidätetään.',
+        lockPrefix: 'VAIHDOT SULKEUTUU ',
+        noAuthTitle: 'Kirjaudu sisään nähdäksesi joukkueesi',
+        noAuthBody: 'Tämä näkymä näyttää oman kokoonpanosi vain kirjautuneelle käyttäjälle.',
+        noAuthBtn: 'Takaisin etusivulle',
+        captain: 'Kapteeni',
+        chooseCaptain: 'Valitse kapteeni',
+        rankOutOf: '/ 120',
+        moneyUnit: '',
+        posVH: 'VH',
+        posKH: 'KH',
+        posOH: 'OH',
+        posVP: 'VP',
+        posOP: 'OP',
+        posMV: 'MV'
+      },
+      en: {
+        pageTitle: 'Team',
+        editBtn: 'Edit lineup',
+        statPointsLabel: 'Total points',
+        pts: 'pts',
+        roundGain: '+42 this round',
+        statRankLabel: 'Rank (league)',
+        statRankSub: 'Best season ranking so far',
+        statBudgetLabel: 'Budget used',
+        transfers: 'transfers',
+        bank: 'In bank',
+        loading: 'Loading team...',
+        emptyTitle: 'You do not have a team yet',
+        emptyBody: 'Create your lineup first to see your skaters, captain and budget on this page.',
+        emptyBtn: 'Go build your team',
+        footer: '© 2026 Hockeymanager. All rights reserved.',
+        lockPrefix: 'TRANSFERS LOCK IN ',
+        noAuthTitle: 'Log in to view your team',
+        noAuthBody: 'This view shows your personal lineup only for a signed-in user.',
+        noAuthBtn: 'Back to home',
+        captain: 'Captain',
+        chooseCaptain: 'Choose captain',
+        rankOutOf: '/ 120',
+        moneyUnit: '',
+        posVH: 'LW',
+        posKH: 'C',
+        posOH: 'RW',
+        posVP: 'LD',
+        posOP: 'RD',
+        posMV: 'GK'
+      }
+    };
+
+    let lang = localStorage.getItem('hm_lang') || 'fi';
+    let token = sessionStorage.getItem('hm_token') || '';
+    let user = JSON.parse(sessionStorage.getItem('hm_user') || 'null');
+    let teamData = null;
+
+    function esc(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function setLang(next) {
+      lang = next;
+      localStorage.setItem('hm_lang', next);
+      document.getElementById('btnFi').classList.toggle('active', next === 'fi');
+      document.getElementById('btnEn').classList.toggle('active', next === 'en');
+      applyTexts();
+      renderTeam();
+    }
+
+    function applyTexts() {
+      const t = texts[lang];
+      document.documentElement.lang = lang;
+      document.title = `Hockeymanager – ${t.pageTitle}`;
+      document.getElementById('pageTitle').textContent = t.pageTitle;
+      document.querySelector('#editBtn span').textContent = t.editBtn;
+      document.getElementById('statPointsLabel').textContent = t.statPointsLabel;
+      document.getElementById('statPtsSuffix').textContent = t.pts;
+      document.getElementById('statRoundGain').textContent = t.roundGain;
+      document.getElementById('statRankLabel').textContent = t.statRankLabel;
+      document.getElementById('statRankSub').textContent = t.statRankSub;
+      document.getElementById('statBudgetLabel').textContent = t.statBudgetLabel;
+      document.getElementById('footerCopy').textContent = t.footer;
+      document.getElementById('lockPrefix').textContent = t.lockPrefix;
+      document.getElementById('loadingText').textContent = t.loading;
+      document.getElementById('navEtusivu').textContent = lang === 'fi' ? 'Etusivu' : 'Home';
+      document.getElementById('navJoukkue').textContent = lang === 'fi' ? 'Joukkue' : 'Team';
+      document.getElementById('navLiigat').textContent = lang === 'fi' ? 'Liigat' : 'Leagues';
+      document.getElementById('navKalenteri').textContent = lang === 'fi' ? 'Pelikalenteri' : 'Game Calendar';
+      document.getElementById('navInfo').textContent = 'Info';
+      document.getElementById('avatarBadge').textContent = user?.username
+        ? user.username.slice(0, 2).toUpperCase()
+        : 'HM';
+    }
+
+    function startCountdown() {
+      const el = document.getElementById('lockTimer');
+      function tick() {
+        const now = new Date();
+        const target = new Date();
+        target.setHours(23, 59, 59, 999);
+        const diff = target - now;
+        if (diff <= 0) {
+          el.textContent = '00:00:00';
+          return;
+        }
+        const hrs = String(Math.floor(diff / 3600000)).padStart(2, '0');
+        const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+        const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+        el.textContent = `${hrs}:${mins}:${secs}`;
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    function updateBudget(team, players) {
+      const total = Number(team?.budget_used || players.reduce((sum, p) => sum + Number(p.price || 0), 0));
+      const max = 1000;
+      const left = Math.max(0, max - total);
+      const transfersLeft = team?.transfers_left ?? 17;
+      document.getElementById('budgetUsed').textContent = `${total} / ${max}`;
+      document.getElementById('transferText').textContent = `${transfersLeft} ${texts[lang].transfers}`;
+      document.getElementById('budgetBankText').innerHTML = `${texts[lang].bank}: <strong>${left}</strong>`;
+      document.getElementById('budgetFill').style.width = `${Math.min(100, (total / max) * 100)}%`;
+    }
+
+    function updateStats(team, players) {
+      const points = players.reduce((sum, p) => sum + Number(p.points || 0), 0);
+      document.getElementById('statPoints').textContent = points;
+      document.getElementById('statRank').textContent = team?.rank ? `${team.rank}.` : '4.';
+      document.getElementById('statRankSuffix').textContent = ` ${texts[lang].rankOutOf}`;
+      updateBudget(team, players);
+    }
+
+    function slotClass(code) {
+      if (code === 'VH' || code === 'OH') return 'h';
+      if (code === 'KH') return 'c';
+      if (code === 'VP' || code === 'OP') return 'd';
+      return 'g';
+    }
+
+    function mapPlayers(players) {
+      const forwards = players.filter(p => p.position === 'H');
+      const defenders = players.filter(p => p.position === 'P');
+      const goalies = players.filter(p => p.position === 'MV');
+
+      const captainId = players.find(p => p.is_captain)?.id;
+
+      return {
+        VH: forwards[0] || null,
+        KH: forwards.find(p => p.id === captainId) || forwards[1] || forwards[0] || null,
+        OH: forwards.filter(p => (forwards.find(fp => fp.id === captainId)?.id !== p.id))[1] || forwards[2] || null,
+        VP: defenders[0] || null,
+        OP: defenders[1] || null,
+        MV: goalies[0] || null
+      };
+    }
+
+    function createPlayerCard(code, player) {
+      const t = texts[lang];
+      const headClass = slotClass(code);
+      const isCaptain = !!player?.is_captain;
+      return `
+        <div class="player-slot pos-${code.toLowerCase()}">
+          <div class="slot-head ${headClass}">${esc(t['pos' + code])}</div>
+          <div class="slot-body">
+            <div class="slot-avatar">⛸</div>
+            <div class="slot-captain">${isCaptain ? esc(t.captain) : esc(t.chooseCaptain)}</div>
+            <div class="slot-name">${player ? esc(player.name) : '—'}</div>
+            ${isCaptain ? `<div class="slot-badge">${esc(t.captain)}</div>` : `<div style="height:22px"></div>`}
+          </div>
+          <div class="slot-footer">
+            <span>${player ? esc(player.price) : '0'}</span>
+            <strong>${player ? esc(player.points) : '0'}p</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNoAuth() {
+      const t = texts[lang];
+      document.getElementById('teamStage').innerHTML = `
+        <div class="empty-state">
+          <div>
+            <h3>${esc(t.noAuthTitle)}</h3>
+            <p>${esc(t.noAuthBody)}</p>
+          </div>
+          <a href="etusivu.html" class="btn-primary">${esc(t.noAuthBtn)}</a>
+        </div>
+      `;
+    }
+
+    function renderEmpty() {
+      const t = texts[lang];
+      updateStats({ budget_used: 0, transfers_left: 17 }, []);
+      document.getElementById('teamStage').innerHTML = `
+        <div class="empty-state">
+          <div>
+            <h3>${esc(t.emptyTitle)}</h3>
+            <p>${esc(t.emptyBody)}</p>
+          </div>
+          <a href="oma-joukkue.html" class="btn-primary">${esc(t.emptyBtn)}</a>
+        </div>
+      `;
+    }
+
+    function renderTeam() {
+      if (!user || !token) {
+        renderNoAuth();
+        return;
+      }
+
+      if (!teamData || !teamData.team || !Array.isArray(teamData.players) || !teamData.players.length) {
+        renderEmpty();
+        return;
+      }
+
+      const players = teamData.players;
+      const team = teamData.team;
+      updateStats(team, players);
+
+      const mapped = mapPlayers(players);
+      document.getElementById('teamStage').innerHTML = `
+        <div class="rink">
+          <div class="center-line"></div>
+          <div class="center-circle"></div>
+          ${createPlayerCard('VH', mapped.VH)}
+          ${createPlayerCard('KH', mapped.KH)}
+          ${createPlayerCard('OH', mapped.OH)}
+          ${createPlayerCard('VP', mapped.VP)}
+          ${createPlayerCard('OP', mapped.OP)}
+          ${createPlayerCard('MV', mapped.MV)}
+        </div>
+      `;
+    }
+
+    async function fetchLeagueRank() {
+      try {
+        const res = await fetch(`${API}/api/leagues/my`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) {
+          const first = data[0];
+          if (teamData?.team) {
+            teamData.team.rank = 4;
+            teamData.team.rank_total = first.max_size || 120;
+          }
+        }
+      } catch {
+        if (teamData?.team) {
+          teamData.team.rank = 4;
+          teamData.team.rank_total = 120;
+        }
+      }
+    }
+
+    async function loadTeam() {
+      if (!token || !user) {
+        renderNoAuth();
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API}/api/team`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Failed');
+        teamData = data;
+        await fetchLeagueRank();
+        renderTeam();
+      } catch {
+        teamData = { team: null, players: [] };
+        renderEmpty();
+      }
+    }
+
+    applyTexts();
+    setLang(lang);
+    startCountdown();
+    loadTeam();
+  </script>
+</body>
+</html>
