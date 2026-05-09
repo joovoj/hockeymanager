@@ -1,418 +1,347 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hockeymanager – Liigat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:Inter,sans-serif;cursor:pointer;border:none;background:none;}
     :root {
-      --primary: #005f6e;
-      --primary-dark: #004a57;
-      --gold: #a05f29;
-      --bg: #f7fafb;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #181c1d;
-      --muted: #5b666a;
-      --navy: #0d2233;
-      --error: #ba1a1a;
+      --primary: #005f6e; --primary-dark: #004a57; --gold: #a05f29;
+      --bg: #f7fafb; --surface: #ffffff; --border: #e2e8f0;
+      --text: #181c1d; --muted: #5b666a; --navy: #0d2233;
     }
-    body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    a { text-decoration: none; color: inherit; }
-    button { font-family: Inter, sans-serif; cursor: pointer; border: none; background: none; }
 
-    /* NAV */
+    /* ── NAV ─────────────────────────────────────────────────── */
     .nav {
-      position: sticky; top: 0; z-index: 20;
+      position: sticky; top: 0; z-index: 100;
       height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-    }
-    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 20px; color: var(--primary); }
-    .nav-links { display: flex; gap: 16px; align-items: center; }
-    .nav-links a { font-size: 14px; color: var(--muted); padding: 6px 0; }
-    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); }
-    .badge { background: var(--gold); color: #fff; font-size: 12px; font-weight: 700; padding: 7px 10px; border-radius: 6px; }
-
-    /* PAGE */
-    .page { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
-
-    /* PAGE HEADER */
-    .page-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
-    }
-    .page-title { font-family: Montserrat, sans-serif; font-size: 28px; font-weight: 700; }
-    .btn-primary {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--primary); color: #fff;
-      padding: 10px 18px; border-radius: 8px;
-      font-size: 14px; font-weight: 700;
-    }
-    .btn-primary:hover { background: var(--primary-dark); }
-
-    /* FILTERS */
-    .filters {
-      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .search-wrap { position: relative; flex: 1; min-width: 200px; }
-    .search-wrap input {
-      width: 100%; padding: 10px 12px 10px 36px;
-      border: 1px solid var(--border); border-radius: 8px;
-      font-size: 14px; color: var(--text); background: var(--surface);
-      outline: none;
-    }
-    .search-wrap input:focus { border-color: var(--primary); }
-    .search-icon {
-      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); font-size: 18px; pointer-events: none;
-    }
-    .filter-tabs { display: flex; gap: 8px; }
-    .tab {
-      padding: 9px 16px; border-radius: 8px;
-      border: 1px solid var(--border); font-size: 14px; font-weight: 600;
-      color: var(--muted); background: var(--surface);
-    }
-    .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .tab:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
-
-    /* LEAGUE CARDS */
-    .leagues { display: flex; flex-direction: column; gap: 14px; }
-    .league-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 18px 20px;
       display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-wrap: wrap;
+      padding: 0 16px; gap: 8px;
     }
-    .league-card:hover { border-color: #b0d0d6; box-shadow: 0 2px 8px rgba(0,95,110,.07); }
-    .league-left { display: flex; align-items: center; gap: 14px; }
-    .league-icon {
-      width: 48px; height: 48px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .icon-public { background: #e6f4f7; }
-    .icon-private { background: #fff4e6; }
-    .icon-full { background: #fdecea; }
-    .league-info { }
-    .league-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-    .league-meta {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 13px; color: var(--muted);
-    }
-    .league-type {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 12px; font-weight: 700; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 4px;
-    }
-    .type-public { background: #e6f4f7; color: var(--primary); }
-    .type-private { background: #fff4e6; color: var(--gold); }
-    .type-full { background: #fdecea; color: var(--error); }
-    .league-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .btn-join {
-      background: var(--primary); color: #fff;
-      padding: 9px 20px; border-radius: 8px;
-      font-size: 14px; font-weight: 700;
-    }
-    .btn-join:hover { background: var(--primary-dark); }
-    .btn-view {
-      background: var(--surface); color: var(--primary);
-      border: 1px solid var(--primary);
-      padding: 9px 20px; border-radius: 8px;
-      font-size: 14px; font-weight: 700;
-    }
-    .btn-view:hover { background: #f0fafc; }
-    .btn-full {
-      background: #fdecea; color: var(--error);
-      padding: 9px 20px; border-radius: 8px;
-      font-size: 14px; font-weight: 700; cursor: not-allowed; opacity: .7;
-    }
+    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 18px; color: var(--primary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+    .nav-links a { font-size: 13px; color: var(--muted); font-weight: 500; padding: 4px 0; white-space: nowrap; text-decoration: none; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); }
+    .nav-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .badge { background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
+    .lang { font-size: 12px; color: var(--muted); display: flex; gap: 3px; }
+    .lang span.active { color: var(--text); font-weight: 700; }
+    .nav-auth-btn { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: none; font-family: Inter, sans-serif; white-space: nowrap; }
+    .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-register { background: var(--primary); color: #fff; }
+    .btn-logout { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .nav-user { font-size: 12px; font-weight: 600; color: var(--primary); white-space: nowrap; }
 
-    /* MY LEAGUE SECTION */
-    .section-title {
-      font-family: Montserrat, sans-serif;
-      font-size: 18px; font-weight: 700;
-      margin: 32px 0 14px;
-      display: flex; align-items: center; gap: 8px;
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    .footer-bar {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 16px 24px; display: flex; justify-content: space-between;
+      align-items: center; flex-shrink: 0;
     }
-    .my-league-card {
-      background: var(--primary); color: #fff;
-      border-radius: 12px; padding: 20px 24px;
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .my-league-name { font-family: Montserrat, sans-serif; font-size: 20px; font-weight: 700; }
-    .my-league-meta { font-size: 14px; opacity: .8; margin-top: 4px; }
-    .my-rank { text-align: right; }
-    .rank-num { font-family: Montserrat, sans-serif; font-size: 36px; font-weight: 700; }
-    .rank-label { font-size: 12px; opacity: .75; text-transform: uppercase; letter-spacing: .06em; }
-    .standings { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .standings table { width: 100%; border-collapse: collapse; }
-    .standings thead tr { background: var(--navy); }
-    .standings th { color: #fff; padding: 10px 16px; text-align: left; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
-    .standings td { padding: 13px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
-    .standings tbody tr:last-child td { border-bottom: none; }
-    .standings tbody tr:hover { background: #f8fbfc; }
-    .standings tbody tr.me { background: #edf7f9; font-weight: 700; }
-    .rank-col { font-weight: 700; color: var(--muted); }
-    .pts-col { font-weight: 700; color: var(--primary); }
+    .footer-brand { font-family: Montserrat, sans-serif; font-weight: 700; color: var(--text); font-size: 15px; }
+    .footer-copy { font-size: 13px; color: var(--muted); }
 
-    /* CREATE MODAL */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 50; display: none; align-items: center; justify-content: center; }
-    .overlay.open { display: flex; }
-    .modal {
-      background: var(--surface); border-radius: 14px; padding: 28px;
-      width: 100%; max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,.18);
-    }
-    .modal-title { font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
-    .form-group input, .form-group select {
-      width: 100%; padding: 10px 14px;
-      border: 1px solid var(--border); border-radius: 8px;
-      font-size: 14px; color: var(--text); background: var(--surface); outline: none;
-    }
-    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
-    .modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
-    .btn-cancel { padding: 10px 18px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--muted); }
-    .btn-cancel:hover { background: var(--bg); }
-    .btn-create { padding: 10px 18px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; }
-    .btn-create:hover { background: var(--primary-dark); }
-
-    .footer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; color: var(--muted); font-size: 14px; }
-
-    @media (max-width: 700px) {
-      .nav { height: auto; padding: 12px; flex-wrap: wrap; gap: 8px; }
-      .nav-links { display: none; }
-      .league-card { flex-direction: column; align-items: flex-start; }
-      .my-league-card { flex-direction: column; }
-      .my-rank { text-align: left; }
-    }
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--surface);border-radius:14px;padding:32px 28px;width:100%;max-width:380px;position:relative;}
+    .modal-title{font-family:Montserrat,sans-serif;font-size:20px;font-weight:700;margin-bottom:20px;}
+    .modal-close{position:absolute;top:16px;right:18px;font-size:22px;cursor:pointer;color:var(--muted);background:none;border:none;}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--muted);}
+    .form-group input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Inter,sans-serif;outline:none;}
+    .form-group input:focus{border-color:var(--primary);}
+    .submit-btn{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px;}
+    .submit-btn:hover{background:var(--primary-dark);}
+    .form-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
+    .form-switch a{color:var(--primary);font-weight:600;cursor:pointer;}
+    .form-error{color:#ba1a1a;font-size:13px;margin-bottom:10px;display:none;}
+    .form-success{color:#1a7a3c;font-size:13px;margin-bottom:10px;display:none;}
+    .page{max-width:860px;margin:0 auto;padding:36px 20px 40px;flex:1;width:100%;}
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .page-title{font-family:Montserrat,sans-serif;font-size:26px;font-weight:700;}
+    .create-btn{background:var(--primary);color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
+    .create-btn:hover{background:var(--primary-dark);}
+    .filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+    .search-box{flex:1;min-width:180px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Inter,sans-serif;outline:none;}
+    .search-box:focus{border-color:var(--primary);}
+    .filter-btn{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
+    .filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+    .league-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+    .league-info{flex:1;}
+    .league-name{font-family:Montserrat,sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;}
+    .league-meta{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
+    .league-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;}
+    .badge-public{background:#e6f4f7;color:var(--primary);}
+    .badge-private{background:#fef3e2;color:var(--gold);}
+    .badge-full{background:#fde8e8;color:#ba1a1a;}
+    .join-btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff;border:none;white-space:nowrap;}
+    .join-btn:hover{background:var(--primary-dark);}
+    .join-btn:disabled{background:var(--border);color:var(--muted);cursor:default;}
+    .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+    @media(max-width:700px){.nav-links{display:none;}.league-card{flex-direction:column;align-items:flex-start;}}
   </style>
 </head>
 <body>
-
   <!-- NAV -->
   <header class="nav">
-    <div class="brand">Hockeymanager</div>
+    <div class="brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
     <nav class="nav-links">
-      <a href="etusivu.html">Etusivu</a>
-      <a href="joukkue.html">Joukkue</a>
-      <a href="oma-joukkue.html">Oma Joukkue</a>
-      <a href="liigat.html" class="active">Liigat</a>
-      <a href="pelikalenteri.html">Pelikalenteri</a>
-      <a href="info.html">Info</a>
+      <a href="etusivu.html" id="nav-etusivu">Etusivu</a>
+      <a href="joukkue.html" id="nav-joukkue">Joukkue</a>
+      <a href="liigat.html" id="nav-liigat">Liigat</a>
+      <a href="pelikalenteri.html" id="nav-pelikalenteri">Pelikalenteri</a>
+      <a href="info.html" id="nav-info">Info</a>
     </nav>
-    <div class="badge">Vaihdot sulkeutuu 02:14:59</div>
-  </header>
-
-  <!-- MODAL -->
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <div class="modal-title">Luo uusi liiga</div>
-      <div class="form-group">
-        <label>Liigan nimi</label>
-        <input type="text" id="leagueName" placeholder="Esim. Kavereiden Liiga" />
+    <div class="nav-right">
+      <div class="badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="lang"><span class="active">FI</span><span style="color:var(--border)">|</span><span>EN</span></div>
+      <div id="navAuthButtons" style="display:flex;gap:4px;">
+        <button class="nav-auth-btn btn-login" onclick="openModal('login')">Kirjaudu</button>
+        <button class="nav-auth-btn btn-register" onclick="openModal('register')">Rekisteröidy</button>
       </div>
-      <div class="form-group">
-        <label>Tyyppi</label>
-        <select id="leagueType">
-          <option value="public">Julkinen</option>
-          <option value="private">Yksityinen</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Maksimi pelaajat</label>
-        <input type="number" id="leagueMax" placeholder="Esim. 20" min="2" max="500" value="20" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Peruuta</button>
-        <button class="btn-create" onclick="createLeague()">Luo liiga</button>
+      <div id="navUserArea" style="display:none;align-items:center;gap:6px;">
+        <span class="nav-user" id="navUsername"></span>
+        <button class="nav-auth-btn btn-logout" onclick="logout()">Ulos</button>
       </div>
     </div>
-  </div>
-
+  </header>
   <div class="page">
     <div class="page-header">
       <div class="page-title">Liigat</div>
-      <button class="btn-primary" onclick="openModal()">
-        <span style="font-size:20px;line-height:1">+</span> Luo liiga
-      </button>
+      <button class="create-btn" onclick="showCreateLeague()">+ Luo liiga</button>
     </div>
-
-    <!-- MY LEAGUE -->
-    <div class="section-title">⭐ Oma liigasi</div>
-    <div class="my-league-card">
-      <div>
-        <div class="my-league-name">Tyköpaikan Vetorinki</div>
-        <div class="my-league-meta">Yksityinen · 12/20 pelaajaa · Liitytty 4.1.2026</div>
-      </div>
-      <div class="my-rank">
-        <div class="rank-num">#3</div>
-        <div class="rank-label">Sijoituksesi</div>
-      </div>
+    <div class="filter-bar">
+      <input class="search-box" id="leagueSearch" placeholder="Hae liigaa..." oninput="filterLeagues()"/>
+      <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">Kaikki</button>
+      <button class="filter-btn" id="filter-public" onclick="setFilter('public')">Julkiset</button>
+      <button class="filter-btn" id="filter-private" onclick="setFilter('private')">Yksityiset</button>
     </div>
-
-    <div class="standings">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Joukkue</th>
-            <th>Viikko</th>
-            <th>Pisteet</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="rank-col">1</td>
-            <td>HockeyHero99</td>
-            <td>+42</td>
-            <td class="pts-col">1 204</td>
-          </tr>
-          <tr>
-            <td class="rank-col">2</td>
-            <td>JaakkoJ</td>
-            <td>+38</td>
-            <td class="pts-col">1 189</td>
-          </tr>
-          <tr class="me">
-            <td class="rank-col">3</td>
-            <td>Minun Joukkueeni 🏒</td>
-            <td>+35</td>
-            <td class="pts-col">1 172</td>
-          </tr>
-          <tr>
-            <td class="rank-col">4</td>
-            <td>PekkaP</td>
-            <td>+29</td>
-            <td class="pts-col">1 140</td>
-          </tr>
-          <tr>
-            <td class="rank-col">5</td>
-            <td>TurkuTykki</td>
-            <td>+21</td>
-            <td class="pts-col">1 098</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- BROWSE -->
-    <div class="section-title">🔎 Selaa liigoja</div>
-
-    <div class="filters">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Hae liigaa..." />
-      </div>
-      <div class="filter-tabs">
-        <button class="tab active" onclick="setFilter('all', this)">Kaikki tyypit</button>
-        <button class="tab" onclick="setFilter('public', this)">Julkiset</button>
-        <button class="tab" onclick="setFilter('private', this)">Yksityiset</button>
-      </div>
-    </div>
-
-    <div class="leagues" id="leagueList"></div>
-
-    <footer class="footer">2026 Hockeymanager – Kaikki oikeudet pidätetään.</footer>
+    <div id="leagueList"><div class="empty-state">Ladataan liigoja...</div></div>
   </div>
+  <!-- FOOTER -->
+  <footer class="footer-bar">
+    <div class="footer-brand">Hockeymanager</div>
+    <div class="footer-copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
+  </footer>
 
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('login')">×</button>
+      <div class="modal-title">Kirjaudu sisään</div>
+      <div class="form-error" id="loginError"></div>
+      <div class="form-success" id="loginSuccess"></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="loginEmail" placeholder="sinä@email.com"/></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>
+      <button class="submit-btn" onclick="doLogin()">Kirjaudu</button>
+      <div class="form-switch">Ei tiliä? <a onclick="switchModal('login','register')">Rekisteröidy</a></div>
+    </div>
+  </div>
+  <!-- REGISTER MODAL -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('register')">×</button>
+      <div class="modal-title">Rekisteröidy</div>
+      <div class="form-error" id="registerError"></div>
+      <div class="form-success" id="registerSuccess"></div>
+      <div class="form-group"><label>Käyttäjänimi</label><input type="text" id="registerUsername" placeholder="Managerin nimi"/></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="registerEmail" placeholder="sinä@email.com"/></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="registerPassword" placeholder="••••••••"/></div>
+      <button class="submit-btn" onclick="doRegister()">Luo tili</button>
+      <div class="form-switch">Onko sinulla jo tili? <a onclick="switchModal('register','login')">Kirjaudu</a></div>
+    </div>
+  </div>
   <script>
-    const allLeagues = [
-      { name: "Jääkarhut Hockey League", type: "public",  members: 142, max: 200 },
-      { name: "Tyköpaikan Vetorinki",    type: "private", members: 12,  max: 20  },
-      { name: "Kallion Karjut",          type: "public",  members: 45,  max: 100 },
-      { name: "Kultainen Kypärä 2024",   type: "public",  members: 50,  max: 50  },
-      { name: "Pohjoinen Peto",          type: "public",  members: 88,  max: 200 },
-      { name: "Saunakaverit",            type: "private", members: 7,   max: 10  },
-      { name: "NHL Fanit Finland",       type: "public",  members: 199, max: 200 },
-    ];
 
+    // ── YHTEINEN NAV JS ──────────────────────────────────────────
+    const SCHEDULE = {
+      "2026-05-15":[{time:"17:20",teams:"Suomi - Saksa"},{time:"17:20",teams:"Kanada - Ruotsi"},{time:"21:20",teams:"USA - Sveitsi"},{time:"21:20",teams:"Tsekki - Tanska"}],
+      "2026-05-16":[{time:"13:20",teams:"Iso-Britannia - Itävalta"},{time:"13:20",teams:"Slovakia - Norja"},{time:"17:20",teams:"Unkari - Suomi"},{time:"17:20",teams:"Italia - Kanada"},{time:"21:20",teams:"Sveitsi - Latvia"},{time:"21:20",teams:"Slovenia - Tsekki"}],
+      "2026-05-17":[{time:"13:20",teams:"Iso-Britannia - USA"},{time:"13:20",teams:"Italia - Slovakia"},{time:"17:20",teams:"Itävalta - Unkari"},{time:"17:20",teams:"Tanska - Ruotsi"},{time:"21:20",teams:"Saksa - Latvia"},{time:"21:20",teams:"Norja - Slovenia"}],
+      "2026-05-18":[{time:"17:20",teams:"Suomi - USA"},{time:"17:20",teams:"Kanada - Tanska"},{time:"21:20",teams:"Saksa - Sveitsi"},{time:"21:20",teams:"Ruotsi - Tsekki"}],
+      "2026-05-19":[{time:"17:20",teams:"Latvia - Itävalta"},{time:"17:20",teams:"Italia - Norja"},{time:"21:20",teams:"Unkari - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Slovakia"}],
+      "2026-05-20":[{time:"17:20",teams:"Itävalta - Sveitsi"},{time:"17:20",teams:"Tsekki - Italia"},{time:"21:20",teams:"USA - Saksa"},{time:"21:20",teams:"Ruotsi - Slovenia"}],
+      "2026-05-21":[{time:"17:20",teams:"Latvia - Suomi"},{time:"17:20",teams:"Kanada - Norja"},{time:"21:20",teams:"Sveitsi - Iso-Britannia"},{time:"21:20",teams:"Tanska - Slovakia"}],
+      "2026-05-22":[{time:"17:20",teams:"Saksa - Unkari"},{time:"17:20",teams:"Kanada - Slovenia"},{time:"21:20",teams:"Suomi - Iso-Britannia"},{time:"21:20",teams:"Ruotsi - Italia"}],
+      "2026-05-23":[{time:"13:20",teams:"Latvia - USA"},{time:"13:20",teams:"Tanska - Slovenia"},{time:"17:20",teams:"Sveitsi - Unkari"},{time:"17:20",teams:"Slovakia - Tsekki"},{time:"21:20",teams:"Itävalta - Saksa"},{time:"21:20",teams:"Norja - Ruotsi"}],
+      "2026-05-24":[{time:"17:20",teams:"Iso-Britannia - Latvia"},{time:"17:20",teams:"Tanska - Italia"},{time:"21:20",teams:"Suomi - Itävalta"},{time:"21:20",teams:"Slovakia - Kanada"}],
+      "2026-05-25":[{time:"17:20",teams:"USA - Unkari"},{time:"17:20",teams:"Tsekki - Norja"},{time:"21:20",teams:"Saksa - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Italia"}],
+      "2026-05-26":[{time:"13:20",teams:"Unkari - Latvia"},{time:"13:20",teams:"Norja - Tanska"},{time:"17:20",teams:"USA - Itävalta"},{time:"17:20",teams:"Ruotsi - Slovakia"},{time:"21:20",teams:"Sveitsi - Suomi"},{time:"21:20",teams:"Tsekki - Kanada"}],
+      "2026-05-28":[{time:"17:20",teams:"TBA - TBA"},{time:"17:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}],
+      "2026-05-30":[{time:"16:20",teams:"TBA - TBA"},{time:"21:00",teams:"TBA - TBA"}],
+      "2026-05-31":[{time:"16:30",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}]
+    };
+
+    function getNextGameTime() {
+      const now = new Date();
+      for (const day of Object.keys(SCHEDULE).sort()) {
+        for (const m of SCHEDULE[day]) {
+          const [h,min] = m.time.split(":").map(Number);
+          const t = new Date(day + "T" + String(h).padStart(2,"0") + ":" + String(min).padStart(2,"0") + ":00");
+          if (t > now) return t;
+        }
+      }
+      return null;
+    }
+
+    function updateCountdown() {
+      const next = getNextGameTime();
+      const el = document.getElementById("countdown");
+      if (!next) { el.textContent = "00:00:00"; return; }
+      const diff = next - new Date();
+      if (diff <= 0) { el.textContent = "00:00:00"; return; }
+      const h = Math.floor(diff/3600000);
+      const m = Math.floor((diff%3600000)/60000);
+      const s = Math.floor((diff%60000)/1000);
+      el.textContent = String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    }
+
+    function updateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user")||"null");
+      document.getElementById("navAuthButtons").style.display = user ? "none" : "flex";
+      document.getElementById("navUserArea").style.display = user ? "flex" : "none";
+      if (user) document.getElementById("navUsername").textContent = "👤 " + user.username;
+    }
+
+    function openModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.add("open"); }
+    function closeModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.remove("open"); }
+    function switchModal(f,t) { closeModal(f); openModal(t); }
+
+    async function logout() {
+      const token = localStorage.getItem("hm_token");
+      if (token) { try { await fetch("/api/auth/logout",{method:"POST",headers:{"Authorization":"Bearer "+token}}); } catch(e){} }
+      localStorage.removeItem("hm_token"); localStorage.removeItem("hm_user");
+      updateNavAuth();
+    }
+
+    // Aseta aktiivinen nav-linkki automaattisesti
+    (function(){
+      const page = location.pathname.split("/").pop() || "etusivu.html";
+      const el = document.getElementById("nav-" + page.replace(".html",""));
+      if (el) el.classList.add("active");
+    })();
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    updateNavAuth();
+
+    async function doLogin() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const errEl = document.getElementById("loginError");
+      const sucEl = document.getElementById("loginSuccess");
+      errEl.style.display="none"; sucEl.style.display="none";
+      if (!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
+      try {
+        const res = await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+        const data = await res.json();
+        if (!res.ok){errEl.textContent=data.error||"Kirjautuminen epäonnistui";errEl.style.display="block";return;}
+        localStorage.setItem("hm_token",data.access_token);
+        localStorage.setItem("hm_user",JSON.stringify(data.user));
+        sucEl.textContent="Kirjautuminen onnistui!";sucEl.style.display="block";
+        setTimeout(()=>{closeModal("login");updateNavAuth();},800);
+      } catch(e){errEl.textContent="Verkkovirhe, yritä uudelleen";errEl.style.display="block";}
+    }
+
+    async function doRegister() {
+      const username = document.getElementById("registerUsername").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      const errEl = document.getElementById("registerError");
+      const sucEl = document.getElementById("registerSuccess");
+      errEl.style.display="none"; sucEl.style.display="none";
+      if (!username||!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
+      if (password.length<6){errEl.textContent="Salasana liian lyhyt (min 6 merkkiä)";errEl.style.display="block";return;}
+      try {
+        const res = await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,email,password})});
+        const data = await res.json();
+        if (!res.ok){errEl.textContent=data.error||"Rekisteröityminen epäonnistui";errEl.style.display="block";return;}
+        sucEl.textContent="Tili luotu! Voit nyt kirjautua sisään.";sucEl.style.display="block";
+        setTimeout(()=>switchModal("register","login"),1500);
+      } catch(e){errEl.textContent="Verkkovirhe, yritä uudelleen";errEl.style.display="block";}
+    }
+
+    document.querySelectorAll(".modal-overlay").forEach(el=>{
+      el.addEventListener("click",e=>{if(e.target===el)el.classList.remove("open");});
+    });
+
+    let allLeagues = [];
     let currentFilter = "all";
 
-    function isFull(l) { return l.members >= l.max; }
+    async function loadLeagues() {
+      try {
+        const res = await fetch("/api/leagues");
+        allLeagues = await res.json();
+      } catch(e) {
+        allLeagues = [];
+      }
+      renderLeagues();
+    }
+
+    function setFilter(f) {
+      currentFilter = f;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById("filter-" + f).classList.add("active");
+      renderLeagues();
+    }
+
+    function filterLeagues() { renderLeagues(); }
 
     function renderLeagues() {
-      const q = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = allLeagues.filter(l => {
-        const matchSearch = l.name.toLowerCase().includes(q);
-        const matchFilter = currentFilter === "all" || l.type === currentFilter;
-        return matchSearch && matchFilter;
-      });
-
-      const list = document.getElementById("leagueList");
-      if (!filtered.length) {
-        list.innerHTML = `<div style="color:var(--muted);padding:24px 0;text-align:center">Ei tuloksia.</div>`;
-        return;
-      }
-
-      list.innerHTML = filtered.map(l => {
-        const full = isFull(l);
-        const iconClass = full ? "icon-full" : l.type === "private" ? "icon-private" : "icon-public";
-        const emoji = full ? "🔒" : l.type === "private" ? "🔒" : "🌐";
-        const typeLabel = full ? "Täynnä" : l.type === "private" ? "Yksityinen" : "Julkinen";
-        const typeClass = full ? "type-full" : l.type === "private" ? "type-private" : "type-public";
-
-        let btn = "";
-        if (full) btn = `<button class="btn-full" disabled>Täynnä</button>`;
-        else btn = `<button class="btn-join" onclick="joinLeague('${l.name}')">Liity</button>`;
-
-        if (!full && l.name === "Kallion Karjut") {
-          btn = `<button class="btn-view" onclick="viewLeague('${l.name}')">Katso tiedot</button>`;
-        }
-
-        return `
-          <div class="league-card">
-            <div class="league-left">
-              <div class="league-icon ${iconClass}">${emoji}</div>
-              <div class="league-info">
-                <div class="league-name">${l.name}</div>
-                <div class="league-meta">
-                  <span class="league-type ${typeClass}">${typeLabel}</span>
-                  <span>👥 ${l.members} / ${l.max}</span>
-                </div>
-              </div>
-            </div>
-            <div class="league-right">${btn}</div>
+      const q = document.getElementById("leagueSearch").value.toLowerCase();
+      let list = allLeagues;
+      if (currentFilter !== "all") list = list.filter(l => l.type === currentFilter);
+      if (q) list = list.filter(l => l.name.toLowerCase().includes(q));
+      const el = document.getElementById("leagueList");
+      if (!list.length) { el.innerHTML = '<div class="empty-state">Ei liigoja löytynyt</div>'; return; }
+      el.innerHTML = list.map(l => {
+        const full = l.member_count >= l.max_members;
+        const typeLabel = l.type === "public" ? '<span class="league-badge badge-public">Julkinen</span>' : '<span class="league-badge badge-private">Yksityinen</span>';
+        const btn = full
+          ? '<button class="join-btn" disabled>Täynnä</button>'
+          : `<button class="join-btn" onclick="joinLeague('${l.id}')">Liity</button>`;
+        return `<div class="league-card">
+          <div class="league-info">
+            <div class="league-name">${l.name}</div>
+            <div class="league-meta">${typeLabel}<span>👥 ${l.member_count} / ${l.max_members}</span></div>
           </div>
-        `;
+          ${btn}
+        </div>`;
       }).join("");
     }
 
-    function setFilter(f, btn) {
-      currentFilter = f;
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      btn.classList.add("active");
-      renderLeagues();
+    async function joinLeague(id) {
+      const token = localStorage.getItem("hm_token");
+      if (!token) { openModal("login"); return; }
+      try {
+        const res = await fetch(`/api/leagues/${id}/join`, {method:"POST",headers:{"Authorization":"Bearer "+token}});
+        const data = await res.json();
+        alert(data.message || data.error);
+        loadLeagues();
+      } catch(e) { alert("Verkkovirhe"); }
     }
 
-    function joinLeague(name) { alert(`Liitytty liigaan: ${name}`); }
-    function viewLeague(name) { alert(`Näytetään tiedot: ${name}`); }
-
-    function openModal() { document.getElementById("overlay").classList.add("open"); }
-    function closeModal() { document.getElementById("overlay").classList.remove("open"); }
-
-    function createLeague() {
-      const name = document.getElementById("leagueName").value.trim();
-      if (!name) { alert("Anna liigalle nimi."); return; }
-      const type = document.getElementById("leagueType").value;
-      const max = parseInt(document.getElementById("leagueMax").value) || 20;
-      allLeagues.unshift({ name, type, members: 1, max });
-      closeModal();
-      renderLeagues();
-      document.getElementById("leagueName").value = "";
+    function showCreateLeague() {
+      const token = localStorage.getItem("hm_token");
+      if (!token) { openModal("login"); return; }
+      const name = prompt("Liigan nimi:");
+      if (!name) return;
+      const type = confirm("Julkinen liiga? (OK = Julkinen, Peruuta = Yksityinen)") ? "public" : "private";
+      const max = parseInt(prompt("Maksimijäsenmäärä (2-500):", "20")) || 20;
+      fetch("/api/leagues",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({name,type,max_members:max})})
+        .then(r=>r.json()).then(d=>{alert(d.message||d.error);loadLeagues();});
     }
 
-    document.getElementById("searchInput").addEventListener("input", renderLeagues);
-    document.getElementById("overlay").addEventListener("click", e => {
-      if (e.target === document.getElementById("overlay")) closeModal();
-    });
-
-    renderLeagues();
+    loadLeagues();
   </script>
 </body>
 </html>

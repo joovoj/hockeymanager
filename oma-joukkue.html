@@ -1,520 +1,281 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hockeymanager – Oma Joukkue</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root{
-      --primary:#005f6e;
-      --primary-dark:#004a57;
-      --gold:#a05f29;
-      --bg:#f7fafb;
-      --surface:#ffffff;
-      --border:#e2e8f0;
-      --text:#181c1d;
-      --muted:#5b666a;
-      --navy:#0d2233;
-      --error:#ba1a1a;
-      --ok:#1f7a3d;
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html,body { height:100%; }
+    body { font-family:Inter,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+    a { text-decoration:none; color:inherit; }
+    button { font-family:Inter,sans-serif; cursor:pointer; border:none; background:none; }
+    :root {
+      --primary:#005f6e; --primary-dark:#004a57; --gold:#a05f29;
+      --bg:#f7fafb; --surface:#ffffff; --border:#e2e8f0;
+      --text:#181c1d; --muted:#5b666a; --navy:#0d2233;
     }
-    body{
-      font-family:Inter,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-    }
-    a{text-decoration:none;color:inherit}
-    button{font-family:Inter,sans-serif;cursor:pointer;border:none}
-    .nav{
-      position:sticky;top:0;z-index:20;
-      height:56px;background:var(--surface);border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 20px;
-    }
-    .brand{font-family:Montserrat,sans-serif;font-weight:700;font-size:20px;color:var(--primary)}
-    .nav-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:14px;color:var(--muted);padding:6px 0}
-    .nav-links a.active{color:var(--primary);font-weight:700;border-bottom:2px solid var(--primary)}
-    .nav-right{display:flex;align-items:center;gap:10px}
-    .badge{
-      background:var(--gold);color:#fff;font-size:12px;font-weight:700;
-      padding:7px 10px;border-radius:6px
-    }
-
-    .page{
-      max-width:1200px;
-      margin:0 auto;
-      padding:24px 20px 60px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) 320px;
-      gap:24px;
-      align-items:start;
-    }
-    .card{
-      background:var(--surface);
-      border:1px solid var(--border);
-      border-radius:10px;
-      overflow:hidden;
-    }
-
-    .header-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      padding:20px;
-      border-bottom:1px solid var(--border);
-      flex-wrap:wrap;
-    }
-    .title{
-      font-family:Montserrat,sans-serif;
-      font-size:28px;
-      font-weight:700;
-    }
-    .budget{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .chip{
-      background:var(--bg);
-      border:1px solid var(--border);
-      border-radius:8px;
-      padding:10px 14px;
-      min-width:120px;
-    }
-    .chip small{
-      display:block;
-      color:var(--muted);
-      text-transform:uppercase;
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:.05em;
-      margin-bottom:4px;
-    }
-    .chip strong{
-      font-family:Montserrat,sans-serif;
-      font-size:22px;
-    }
-
-    .filters{
-      display:flex;
-      gap:12px;
-      padding:16px 20px;
-      border-bottom:1px solid var(--border);
-      flex-wrap:wrap;
-    }
-    .filters input,.filters select{
-      height:40px;
-      border:1px solid var(--border);
-      border-radius:8px;
-      padding:0 12px;
-      background:#fff;
-      color:var(--text);
-    }
-    .filters input{flex:1;min-width:220px}
-    .filters select{min-width:150px}
-
-    .table-wrap{overflow:auto}
-    table{
-      width:100%;
-      border-collapse:collapse;
-      min-width:680px;
-    }
-    thead tr{background:var(--navy)}
-    th{
-      text-align:left;
-      color:#fff;
-      font-size:12px;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      padding:12px 16px;
-    }
-    td{
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
-      font-size:14px;
-      vertical-align:middle;
-    }
-    tbody tr:hover{background:#f8fbfc}
-    .name{font-weight:700}
-    .price,.points{font-weight:700}
-    .points{color:var(--primary)}
-    .btn{
-      padding:8px 14px;
-      border-radius:8px;
-      font-size:13px;
-      font-weight:700;
-    }
-    .btn-buy{background:var(--primary);color:#fff}
-    .btn-buy:hover{background:var(--primary-dark)}
-    .btn-buy:disabled{opacity:.4;cursor:not-allowed}
-    .btn-remove{background:#fff1f1;color:var(--error);border:1px solid #ffd0d0}
-    .subtle{
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .side-head{
-      padding:18px 18px 14px;
-      border-bottom:1px solid var(--border);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    .side-title{
-      font-family:Montserrat,sans-serif;
-      font-weight:700;
-      font-size:18px;
-    }
-    .count{
-      background:var(--primary);
-      color:#fff;
-      padding:4px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-    }
-    .side-body{padding:18px}
-    .group{margin-bottom:18px}
-    .group h3{
-      font-size:12px;
-      color:var(--muted);
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      margin-bottom:10px;
-    }
-    .slot,.filled{
-      border:1px dashed var(--border);
-      border-radius:8px;
-      padding:10px 12px;
-      min-height:48px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      background:#fafcfd;
-      margin-bottom:8px;
-    }
-    .filled{
-      border:1px solid #cde7ec;
-      background:#f2fbfd;
-    }
-    .filled-name{
-      font-weight:700;
-      font-size:14px;
-    }
-    .filled-meta{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .empty{
-      color:#8a9498;
-      font-size:13px;
-      font-weight:600;
-      text-transform:uppercase;
-    }
-    .confirm{
-      width:100%;
-      margin-top:12px;
-      background:var(--primary);
-      color:#fff;
-      padding:13px 16px;
-      border-radius:8px;
-      font-weight:700;
-    }
-    .confirm:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-    }
-    .note{
-      text-align:center;
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .ok{color:var(--ok);font-weight:700}
-    .error{color:var(--error);font-weight:700}
-
-    .footer{
-      margin-top:28px;
-      border-top:1px solid var(--border);
-      padding:24px 0 6px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    @media (max-width: 960px){
-      .grid{grid-template-columns:1fr}
-      .nav{height:auto;padding:12px 20px;align-items:flex-start;gap:10px;flex-wrap:wrap}
-      .nav-right{margin-left:auto}
-    }
+    /* NAV */
+    .nav { position:sticky; top:0; z-index:100; height:56px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 16px; gap:8px; }
+    .brand { font-family:Montserrat,sans-serif; font-weight:700; font-size:18px; color:var(--primary); cursor:pointer; white-space:nowrap; flex-shrink:0; }
+    .nav-links { display:flex; gap:12px; align-items:center; flex-shrink:0; }
+    .nav-links a { font-size:13px; color:var(--muted); font-weight:500; padding:4px 0; white-space:nowrap; text-decoration:none; }
+    .nav-links a:hover { color:var(--primary); }
+    .nav-links a.active { color:var(--primary); font-weight:700; border-bottom:2px solid var(--primary); }
+    .nav-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .badge { background:var(--gold); color:#fff; font-size:10px; font-weight:700; padding:5px 8px; border-radius:6px; white-space:nowrap; }
+    .lang { font-size:12px; color:var(--muted); display:flex; gap:3px; }
+    .lang span.active { color:var(--text); font-weight:700; }
+    .nav-auth-btn { font-size:12px; font-weight:600; padding:5px 10px; border-radius:6px; cursor:pointer; border:none; font-family:Inter,sans-serif; white-space:nowrap; }
+    .btn-login { background:transparent; color:var(--primary); border:1px solid var(--primary); }
+    .btn-register { background:var(--primary); color:#fff; }
+    .btn-logout { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .nav-user { font-size:12px; font-weight:600; color:var(--primary); white-space:nowrap; }
+    /* FOOTER */
+    .footer-bar { background:var(--surface); border-top:1px solid var(--border); padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+    .footer-brand { font-family:Montserrat,sans-serif; font-weight:700; color:var(--text); font-size:15px; }
+    .footer-copy { font-size:13px; color:var(--muted); }
+    /* MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:200; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--surface); border-radius:14px; padding:32px 28px; width:100%; max-width:380px; position:relative; }
+    .modal-title { font-family:Montserrat,sans-serif; font-size:20px; font-weight:700; margin-bottom:20px; }
+    .modal-close { position:absolute; top:16px; right:18px; font-size:22px; cursor:pointer; color:var(--muted); background:none; border:none; }
+    .form-group { margin-bottom:14px; }
+    .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:5px; color:var(--muted); }
+    .form-group input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; font-family:Inter,sans-serif; outline:none; }
+    .form-group input:focus { border-color:var(--primary); }
+    .submit-btn { width:100%; padding:12px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; font-family:Inter,sans-serif; margin-top:4px; }
+    .submit-btn:hover { background:var(--primary-dark); }
+    .form-switch { text-align:center; margin-top:14px; font-size:13px; color:var(--muted); }
+    .form-switch a { color:var(--primary); font-weight:600; cursor:pointer; }
+    .form-error { color:#ba1a1a; font-size:13px; margin-bottom:10px; display:none; }
+    .form-success { color:#1a7a3c; font-size:13px; margin-bottom:10px; display:none; }
+    /* PAGE */
+    .page { max-width:900px; margin:0 auto; padding:36px 20px 40px; flex:1; width:100%; }
+    .page-title { font-family:Montserrat,sans-serif; font-size:26px; font-weight:700; margin-bottom:6px; }
+    .page-sub { color:var(--muted); font-size:14px; margin-bottom:28px; }
+    .budget-bar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 22px; margin-bottom:20px; display:flex; gap:24px; flex-wrap:wrap; }
+    .budget-item { font-size:14px; color:var(--muted); }
+    .budget-item strong { color:var(--text); font-size:16px; }
+    .team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+    .slot-card { background:var(--surface); border:2px dashed var(--border); border-radius:12px; padding:16px; text-align:center; min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+    .slot-card.filled { border:1px solid var(--border); }
+    .slot-pos { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+    .slot-name { font-size:14px; font-weight:700; }
+    .slot-pts { font-size:13px; color:var(--primary); font-weight:600; }
+    .slot-price { font-size:12px; color:var(--muted); }
+    .remove-btn { margin-top:4px; font-size:11px; color:#ba1a1a; font-weight:600; cursor:pointer; }
+    .confirm-btn { width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; margin-bottom:20px; }
+    .confirm-btn:hover { background:var(--primary-dark); }
+    .login-notice { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:32px; text-align:center; color:var(--muted); }
+    @media(max-width:700px) { .nav-links{display:none;} .team-grid{grid-template-columns:repeat(2,1fr);} }
   </style>
 </head>
 <body>
   <header class="nav">
-    <div class="brand">Hockeymanager</div>
+    <div class="brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
     <nav class="nav-links">
-      <a href="etusivu.html">Etusivu</a>
-      <a href="joukkue.html">Joukkue</a>
-      <a href="oma-joukkue.html" class="active">Oma Joukkue</a>
-      <a href="liigat.html">Liigat</a>
-      <a href="pelikalenteri.html">Pelikalenteri</a>
-      <a href="info.html">Info</a>
+      <a href="etusivu.html" id="nav-etusivu">Etusivu</a>
+      <a href="joukkue.html" id="nav-joukkue">Joukkue</a>
+      <a href="liigat.html" id="nav-liigat">Liigat</a>
+      <a href="pelikalenteri.html" id="nav-pelikalenteri">Pelikalenteri</a>
+      <a href="info.html" id="nav-info">Info</a>
     </nav>
     <div class="nav-right">
-      <div class="badge">Vaihdot sulkeutuu 02:14:59</div>
+      <div class="badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="lang"><span class="active">FI</span><span style="color:var(--border)">|</span><span>EN</span></div>
+      <div id="navAuthButtons" style="display:flex;gap:4px;">
+        <button class="nav-auth-btn btn-login" onclick="openModal('login')">Kirjaudu</button>
+        <button class="nav-auth-btn btn-register" onclick="openModal('register')">Rekisteröidy</button>
+      </div>
+      <div id="navUserArea" style="display:none;align-items:center;gap:6px;">
+        <span class="nav-user" id="navUsername"></span>
+        <button class="nav-auth-btn btn-logout" onclick="logout()">Ulos</button>
+      </div>
     </div>
   </header>
 
   <div class="page">
-    <div class="grid">
-      <main class="card">
-        <div class="header-row">
-          <div>
-            <div class="title">Oma Joukkue</div>
-            <div class="subtle" style="margin-top:6px;">Valitse 3 hyökkääjää, 2 puolustajaa ja 1 maalivahti.</div>
-          </div>
-          <div class="budget">
-            <div class="chip">
-              <small>Pankissa</small>
-              <strong id="bankValue">1000</strong>
-            </div>
-            <div class="chip">
-              <small>Käytetty budjetti</small>
-              <strong id="usedValue">0 / 1000</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="filters">
-          <input type="text" id="searchInput" placeholder="Hae pelaajaa..." />
-          <select id="positionFilter">
-            <option value="">Kaikki pelipaikat</option>
-            <option value="H">Hyökkääjät</option>
-            <option value="P">Puolustajat</option>
-            <option value="MV">Maalivahdit</option>
-          </select>
-          <select id="countryFilter">
-            <option value="">Kaikki maat</option>
-            <option value="FIN">Suomi</option>
-            <option value="CAN">Kanada</option>
-            <option value="USA">USA</option>
-            <option value="SWE">Ruotsi</option>
-            <option value="CZE">Tšekki</option>
-            <option value="RUS">Venäjä</option>
-          </select>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Pelaaja</th>
-                <th>PP</th>
-                <th>Maa</th>
-                <th>Hinta</th>
-                <th>Pisteet</th>
-                <th>Toiminto</th>
-              </tr>
-            </thead>
-            <tbody id="playerTable"></tbody>
-          </table>
-        </div>
-      </main>
-
-      <aside class="card">
-        <div class="side-head">
-          <div class="side-title">Kokoonpano</div>
-          <div class="count" id="selectedCount">0 / 6</div>
-        </div>
-        <div class="side-body">
-          <div class="group">
-            <h3>Hyökkääjät (H)</h3>
-            <div id="forwards"></div>
-          </div>
-          <div class="group">
-            <h3>Puolustajat (P)</h3>
-            <div id="defenders"></div>
-          </div>
-          <div class="group">
-            <h3>Maalivahdit (MV)</h3>
-            <div id="goalies"></div>
-          </div>
-
-          <button id="confirmBtn" class="confirm" disabled>Vahvista vaihdot</button>
-          <div class="note" id="confirmNote">Valitse vielä 6 pelaajaa vahvistaaksesi joukkueen.</div>
-        </div>
-      </aside>
+    <div class="page-title">Oma Joukkue</div>
+    <div class="page-sub">Hallitse joukkuettasi</div>
+    <div id="pageContent">
+      <div class="login-notice">
+        <p>Kirjaudu sisään nähdäksesi oman joukkueesi.</p>
+        <button class="submit-btn" style="margin-top:12px;width:auto;padding:10px 24px;" onclick="openModal('login')">Kirjaudu sisään</button>
+      </div>
     </div>
+  </div>
 
-    <footer class="footer">
-      2026 Hockeymanager – Kaikki oikeudet pidätetään.
-    </footer>
+  <footer class="footer-bar">
+    <div class="footer-brand">Hockeymanager</div>
+    <div class="footer-copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
+  </footer>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('login')">x</button>
+      <div class="modal-title">Kirjaudu sisään</div>
+      <div class="form-error" id="loginError"></div>
+      <div class="form-success" id="loginSuccess"></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="loginEmail" placeholder="sinä@email.com"/></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>
+      <button class="submit-btn" onclick="doLogin()">Kirjaudu</button>
+      <div class="form-switch">Ei tiliä? <a onclick="switchModal('login','register')">Rekisteröidy</a></div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('register')">x</button>
+      <div class="modal-title">Rekisteröidy</div>
+      <div class="form-error" id="registerError"></div>
+      <div class="form-success" id="registerSuccess"></div>
+      <div class="form-group"><label>Käyttäjänimi</label><input type="text" id="registerUsername" placeholder="Managerin nimi"/></div>
+      <div class="form-group"><label>Sähköposti</label><input type="email" id="registerEmail" placeholder="sinä@email.com"/></div>
+      <div class="form-group"><label>Salasana</label><input type="password" id="registerPassword" placeholder="••••••••"/></div>
+      <button class="submit-btn" onclick="doRegister()">Luo tili</button>
+      <div class="form-switch">Onko sinulla jo tili? <a onclick="switchModal('register','login')">Kirjaudu</a></div>
+    </div>
   </div>
 
   <script>
-    const budgetMax = 1000;
-    const limits = { H: 3, P: 2, MV: 1 };
-
-    const players = [
-      { id: 1, name: "Connor McDavid", pos: "H", country: "CAN", price: 300, points: 148 },
-      { id: 2, name: "Auston Matthews", pos: "H", country: "USA", price: 290, points: 140 },
-      { id: 3, name: "Mikko Rantanen", pos: "H", country: "FIN", price: 285, points: 132 },
-      { id: 4, name: "Nathan MacKinnon", pos: "H", country: "CAN", price: 295, points: 146 },
-      { id: 5, name: "David Pastrnak", pos: "H", country: "CZE", price: 270, points: 124 },
-      { id: 6, name: "Cale Makar", pos: "P", country: "CAN", price: 280, points: 118 },
-      { id: 7, name: "Roman Josi", pos: "P", country: "SUI", price: 240, points: 101 },
-      { id: 8, name: "Miro Heiskanen", pos: "P", country: "FIN", price: 235, points: 96 },
-      { id: 9, name: "Victor Hedman", pos: "P", country: "SWE", price: 220, points: 89 },
-      { id: 10, name: "Juuse Saros", pos: "MV", country: "FIN", price: 190, points: 92 },
-      { id: 11, name: "Igor Shesterkin", pos: "MV", country: "RUS", price: 210, points: 99 },
-      { id: 12, name: "Connor Hellebuyck", pos: "MV", country: "USA", price: 215, points: 104 }
-    ];
-
-    let selected = [];
-
-    const playerTable = document.getElementById("playerTable");
-    const searchInput = document.getElementById("searchInput");
-    const positionFilter = document.getElementById("positionFilter");
-    const countryFilter = document.getElementById("countryFilter");
-
-    function usedBudget() {
-      return selected.reduce((sum, p) => sum + p.price, 0);
-    }
-
-    function remainingBudget() {
-      return budgetMax - usedBudget();
-    }
-
-    function countByPos(pos) {
-      return selected.filter(p => p.pos === pos).length;
-    }
-
-    function canAdd(player) {
-      if (selected.some(p => p.id === player.id)) return false;
-      if (countByPos(player.pos) >= limits[player.pos]) return false;
-      if (usedBudget() + player.price > budgetMax) return false;
-      return true;
-    }
-
-    function addPlayer(id) {
-      const player = players.find(p => p.id === id);
-      if (!player || !canAdd(player)) return;
-      selected.push(player);
-      render();
-    }
-
-    function removePlayer(id) {
-      selected = selected.filter(p => p.id !== id);
-      render();
-    }
-
-    function renderTable() {
-      const q = searchInput.value.toLowerCase().trim();
-      const pos = positionFilter.value;
-      const country = countryFilter.value;
-
-      const filtered = players.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(q);
-        const matchPos = !pos || p.pos === pos;
-        const matchCountry = !country || p.country === country;
-        return matchSearch && matchPos && matchCountry;
-      });
-
-      playerTable.innerHTML = filtered.map(player => {
-        const alreadySelected = selected.some(p => p.id === player.id);
-        const allowed = canAdd(player);
-
-        let action = "";
-        if (alreadySelected) {
-          action = `<button class="btn btn-remove" onclick="removePlayer(${player.id})">Poista</button>`;
-        } else {
-          action = `<button class="btn btn-buy" onclick="addPlayer(${player.id})" ${allowed ? "" : "disabled"}>Osta</button>`;
-        }
-
-        return `
-          <tr>
-            <td class="name">${player.name}</td>
-            <td>${player.pos}</td>
-            <td>${player.country}</td>
-            <td class="price">${player.price}</td>
-            <td class="points">${player.points}</td>
-            <td>${action}</td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function renderSlots(containerId, pos, limit) {
-      const container = document.getElementById(containerId);
-      const items = selected.filter(p => p.pos === pos);
-
-      let html = "";
-      for (let i = 0; i < limit; i++) {
-        if (items[i]) {
-          html += `
-            <div class="filled">
-              <div>
-                <div class="filled-name">${items[i].name}</div>
-                <div class="filled-meta">${items[i].country} • ${items[i].price}</div>
-              </div>
-              <button class="btn btn-remove" onclick="removePlayer(${items[i].id})">Poista</button>
-            </div>
-          `;
-        } else {
-          html += `<div class="slot"><span class="empty">Tyhjä paikka</span></div>`;
+    const SCHEDULE = {
+      "2026-05-15":[{time:"17:20",teams:"Suomi - Saksa"},{time:"17:20",teams:"Kanada - Ruotsi"},{time:"21:20",teams:"USA - Sveitsi"},{time:"21:20",teams:"Tsekki - Tanska"}],
+      "2026-05-16":[{time:"13:20",teams:"Iso-Britannia - Itävalta"},{time:"13:20",teams:"Slovakia - Norja"},{time:"17:20",teams:"Unkari - Suomi"},{time:"17:20",teams:"Italia - Kanada"},{time:"21:20",teams:"Sveitsi - Latvia"},{time:"21:20",teams:"Slovenia - Tsekki"}],
+      "2026-05-28":[{time:"17:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}],
+      "2026-05-30":[{time:"16:20",teams:"TBA - TBA"},{time:"21:00",teams:"TBA - TBA"}],
+      "2026-05-31":[{time:"16:30",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}]
+    };
+    function getNextGameTime() {
+      const now = new Date();
+      for (const day of Object.keys(SCHEDULE).sort()) {
+        for (const m of SCHEDULE[day]) {
+          const [h,min] = m.time.split(":").map(Number);
+          const t = new Date(day+"T"+String(h).padStart(2,"0")+":"+String(min).padStart(2,"0")+":00");
+          if (t > now) return t;
         }
       }
-      container.innerHTML = html;
+      return null;
     }
-
-    function renderSummary() {
-      document.getElementById("usedValue").textContent = `${usedBudget()} / ${budgetMax}`;
-      document.getElementById("bankValue").textContent = remainingBudget();
-      document.getElementById("selectedCount").textContent = `${selected.length} / 6`;
-
-      renderSlots("forwards", "H", 3);
-      renderSlots("defenders", "P", 2);
-      renderSlots("goalies", "MV", 1);
-
-      const confirmBtn = document.getElementById("confirmBtn");
-      const note = document.getElementById("confirmNote");
-
-      if (selected.length === 6 &&
-          countByPos("H") === 3 &&
-          countByPos("P") === 2 &&
-          countByPos("MV") === 1) {
-        confirmBtn.disabled = false;
-        note.innerHTML = `<span class="ok">Joukkue valmis. Voit vahvistaa vaihdot.</span>`;
-      } else {
-        confirmBtn.disabled = true;
-        const left = 6 - selected.length;
-        note.textContent = `Valitse vielä ${left} pelaajaa vahvistaaksesi joukkueen.`;
-      }
+    function updateCountdown() {
+      const next = getNextGameTime();
+      const el = document.getElementById("countdown");
+      if (!next){el.textContent="00:00:00";return;}
+      const diff = next - new Date();
+      if (diff<=0){el.textContent="00:00:00";return;}
+      const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+      el.textContent=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
     }
-
-    function render() {
-      renderTable();
-      renderSummary();
+    function updateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user")||"null");
+      document.getElementById("navAuthButtons").style.display = user?"none":"flex";
+      document.getElementById("navUserArea").style.display = user?"flex":"none";
+      if (user) document.getElementById("navUsername").textContent = "👤 "+user.username;
     }
-
-    searchInput.addEventListener("input", renderTable);
-    positionFilter.addEventListener("change", renderTable);
-    countryFilter.addEventListener("change", renderTable);
-
-    document.getElementById("confirmBtn").addEventListener("click", () => {
-      alert("Vaihdot vahvistettu!");
+    function openModal(t){const m=document.getElementById(t+"Modal");if(m)m.classList.add("open");}
+    function closeModal(t){const m=document.getElementById(t+"Modal");if(m)m.classList.remove("open");}
+    function switchModal(f,t){closeModal(f);openModal(t);}
+    async function logout(){
+      const token=localStorage.getItem("hm_token");
+      if(token){try{await fetch("/api/auth/logout",{method:"POST",headers:{"Authorization":"Bearer "+token}});}catch(e){}}
+      localStorage.removeItem("hm_token");localStorage.removeItem("hm_user");updateNavAuth();
+    }
+    async function doLogin(){
+      const email=document.getElementById("loginEmail").value.trim();
+      const password=document.getElementById("loginPassword").value;
+      const errEl=document.getElementById("loginError"),sucEl=document.getElementById("loginSuccess");
+      errEl.style.display="none";sucEl.style.display="none";
+      if(!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
+      try{
+        const res=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+        const data=await res.json();
+        if(!res.ok){errEl.textContent=data.error||"Kirjautuminen epäonnistui";errEl.style.display="block";return;}
+        localStorage.setItem("hm_token",data.access_token);localStorage.setItem("hm_user",JSON.stringify(data.user));
+        sucEl.textContent="Kirjautuminen onnistui!";sucEl.style.display="block";
+        setTimeout(()=>{closeModal("login");updateNavAuth();loadTeam();},800);
+      }catch(e){errEl.textContent="Verkkovirhe";errEl.style.display="block";}
+    }
+    async function doRegister(){
+      const username=document.getElementById("registerUsername").value.trim();
+      const email=document.getElementById("registerEmail").value.trim();
+      const password=document.getElementById("registerPassword").value;
+      const errEl=document.getElementById("registerError"),sucEl=document.getElementById("registerSuccess");
+      errEl.style.display="none";sucEl.style.display="none";
+      if(!username||!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
+      if(password.length<6){errEl.textContent="Salasana liian lyhyt";errEl.style.display="block";return;}
+      try{
+        const res=await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,email,password})});
+        const data=await res.json();
+        if(!res.ok){errEl.textContent=data.error||"Epäonnistui";errEl.style.display="block";return;}
+        sucEl.textContent="Tili luotu!";sucEl.style.display="block";
+        setTimeout(()=>switchModal("register","login"),1500);
+      }catch(e){errEl.textContent="Verkkovirhe";errEl.style.display="block";}
+    }
+    document.querySelectorAll(".modal-overlay").forEach(el=>{
+      el.addEventListener("click",e=>{if(e.target===el)el.classList.remove("open");});
     });
+    (function(){
+      const page=location.pathname.split("/").pop()||"etusivu.html";
+      const el=document.getElementById("nav-"+page.replace(".html",""));
+      if(el)el.classList.add("active");
+    })();
+    updateCountdown();setInterval(updateCountdown,1000);updateNavAuth();
 
-    render();
+    async function loadTeam(){
+      const token=localStorage.getItem("hm_token");
+      if(!token)return;
+      try{
+        const res=await fetch("/api/team",{headers:{"Authorization":"Bearer "+token}});
+        const data=await res.json();
+        renderTeam(data);
+      }catch(e){console.error(e);}
+    }
+    function renderTeam(data){
+      const players=data.players||[];
+      const budgetLeft=data.budget_left??1000;
+      const totalPts=data.total_points??0;
+      const byPos={};
+      players.forEach(p=>{(byPos[p.pos]=byPos[p.pos]||[]).push(p);});
+      const usedH=byPos["H"]||[],usedP=byPos["P"]||[],usedMV=byPos["MV"]||[];
+      const slots=[
+        ...usedH.map(p=>({...p,label:"Hyökkääjä",filled:true})),
+        ...[...Array(Math.max(0,3-usedH.length))].map(()=>({pos:"H",label:"Hyökkääjä",empty:true})),
+        ...usedP.map(p=>({...p,label:"Puolustaja",filled:true})),
+        ...[...Array(Math.max(0,2-usedP.length))].map(()=>({pos:"P",label:"Puolustaja",empty:true})),
+        ...(usedMV.length?usedMV.map(p=>({...p,label:"Maalivahti",filled:true})):[{pos:"MV",label:"Maalivahti",empty:true}])
+      ];
+      document.getElementById("pageContent").innerHTML=`
+        <div class="budget-bar">
+          <div class="budget-item">Budjetti jäljellä: <strong>${budgetLeft}</strong></div>
+          <div class="budget-item">Käytetty: <strong>${1000-budgetLeft}</strong> / 1000</div>
+          <div class="budget-item">Pisteet: <strong>${totalPts}</strong></div>
+        </div>
+        <div class="team-grid">
+          ${slots.map(s=>s.empty
+            ?`<div class="slot-card"><div class="slot-pos">${s.pos}</div><div style="color:var(--muted);font-size:13px;">${s.label} – Tyhjä</div><a href="joukkue.html" style="font-size:12px;color:var(--primary);font-weight:600;margin-top:4px;">+ Lisää pelaaja</a></div>`
+            :`<div class="slot-card filled"><div class="slot-pos">${s.pos}</div><div class="slot-name">${s.name}</div><div class="slot-pts">${s.points} pistettä</div><div class="slot-price">${s.price} M€</div><button class="remove-btn" onclick="removePlayer(${s.id})">x Poista</button></div>`
+          ).join("")}
+        </div>
+        ${players.length===6?'<button class="confirm-btn" onclick="confirmTeam()">✅ Vahvista joukkue</button>':''}
+      `;
+    }
+    async function removePlayer(id){
+      const token=localStorage.getItem("hm_token");
+      if(!token)return;
+      await fetch("/api/team/remove",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({player_id:id})});
+      loadTeam();
+    }
+    async function confirmTeam(){
+      const token=localStorage.getItem("hm_token");
+      const res=await fetch("/api/team/confirm",{method:"POST",headers:{"Authorization":"Bearer "+token}});
+      const data=await res.json();
+      alert(data.message||data.error);
+    }
+    const user=JSON.parse(localStorage.getItem("hm_user")||"null");
+    if(user)loadTeam();
   </script>
 </body>
 </html>
