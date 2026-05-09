@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hockeymanager – Pelikalenteri</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --primary: #005f6e;
       --primary-dark: #004a57;
@@ -19,260 +20,578 @@
       --text: #181c1d;
       --muted: #5b666a;
       --navy: #0d2233;
+      --nav-h: 56px;
     }
-    body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    a { text-decoration: none; color: inherit; }
-    button { font-family: Inter, sans-serif; cursor: pointer; border: none; background: none; }
-
-    .nav {
-      position: sticky; top: 0; z-index: 20;
-      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
-    }
-    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 20px; color: var(--primary); }
-    .nav-links { display: flex; gap: 20px; align-items: center; }
-    .nav-links a { font-size: 14px; color: var(--muted); padding: 4px 0; font-weight: 500; }
-    .nav-links a:hover { color: var(--primary); }
-    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); padding-bottom: 2px; }
-    .nav-right { display: flex; align-items: center; gap: 10px; }
-    .badge { background: var(--gold); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 6px; letter-spacing: .02em; }
-    .nav-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-family: Montserrat, sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .lang { font-size: 13px; color: var(--muted); display: flex; gap: 4px; align-items: center; }
-    .lang span.active { color: var(--text); font-weight: 700; }
-    .lang-sep { color: var(--border); }
-
-    .page { max-width: 900px; margin: 0 auto; padding: 36px 20px 60px; }
-    .page-title { font-family: Montserrat, sans-serif; font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 6px; }
-    .page-sub { color: var(--muted); font-size: 14px; text-align: center; margin-bottom: 32px; }
-
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .day-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-    .day-label {
-      font-family: Montserrat, sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 14px;
-    }
-    .match-row {
+    html { height: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100%;
       display: flex;
-      align-items: baseline;
-      gap: 12px;
-      margin-bottom: 10px;
+      flex-direction: column;
       font-size: 14px;
+      line-height: 1.5;
     }
-    .match-row:last-child { margin-bottom: 0; }
-    .match-time { color: var(--muted); font-size: 13px; min-width: 38px; flex-shrink: 0; }
-    .match-teams { color: var(--text); font-weight: 500; }
-    .match-teams.tba { color: var(--muted); }
+    a { text-decoration: none; color: inherit; }
 
-    .footer-bar {
-      background: var(--surface);
+    /* ── NAV ── */
+    .hm-nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      height: var(--nav-h);
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .hm-nav__brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--primary);
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 28px;
+      letter-spacing: -0.01em;
+    }
+    .hm-nav__links {
+      display: flex;
+      align-items: center;
+      height: var(--nav-h);
+      flex-shrink: 0;
+    }
+    .hm-nav__links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0 12px;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      border-top: 3px solid transparent;
+      transition: color 0.15s;
+    }
+    .hm-nav__links a:hover { color: var(--primary); }
+    .hm-nav__links a.active {
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom-color: var(--primary);
+    }
+    .hm-nav__spacer { flex: 1; min-width: 8px; }
+    .hm-nav__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .hm-nav__badge {
+      background: var(--gold);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 6px;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    .hm-nav__lang {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .hm-nav__lang .active { color: var(--text); font-weight: 700; }
+    .hm-nav__lang .sep { color: var(--border); }
+    .hm-nav__btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .hm-nav__btn--login {
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+    .hm-nav__btn--login:hover { background: #e6f4f7; }
+    .hm-nav__btn--register {
+      background: var(--primary);
+      color: #fff;
+      border: 1.5px solid var(--primary);
+    }
+    .hm-nav__btn--register:hover { background: var(--primary-dark); }
+    .hm-nav__btn--logout {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+    }
+    .hm-nav__btn--logout:hover { background: var(--bg); }
+    .hm-nav__username {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    /* ── FOOTER ── */
+    .hm-footer {
+      background: #ffffff;
       border-top: 1px solid var(--border);
-      margin-top: 48px;
-      padding: 20px 24px;
+      padding: 14px 24px;
+      flex-shrink: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
-      gap: 8px;
     }
-    .footer-brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 16px; color: var(--text); }
-    .footer-copy { font-size: 13px; color: var(--muted); }
+    .hm-footer__brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .hm-footer__copy {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── MODAL ── */
+    .hm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .hm-overlay.open { display: flex; }
+    .hm-modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
+    .hm-modal__close {
+      position: absolute;
+      top: 14px; right: 18px;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--muted);
+      background: none;
+      border: none;
+      line-height: 1;
+      font-family: inherit;
+    }
+    .hm-modal__title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .hm-field { margin-bottom: 14px; }
+    .hm-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .hm-field input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .hm-field input:focus { border-color: var(--primary); }
+    .hm-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .hm-submit:hover { background: var(--primary-dark); }
+    .hm-form-switch {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hm-form-switch a { color: var(--primary); font-weight: 600; cursor: pointer; }
+    .hm-msg { font-size: 13px; margin-bottom: 10px; display: none; padding: 8px 12px; border-radius: 6px; }
+    .hm-msg--error { background: #fff0f0; color: #ba1a1a; border: 1px solid #ffc0c0; }
+    .hm-msg--success { background: #f0fff5; color: #1a7a3c; border: 1px solid #b0e8c8; }
 
     @media (max-width: 700px) {
-      .cal-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      .nav { padding: 0 14px; }
+      .hm-nav__links { display: none; }
     }
-    @media (max-width: 960px) and (min-width: 701px) {
-      .cal-grid { grid-template-columns: repeat(2, 1fr); }
+
+
+    .page { max-width: 860px; margin: 0 auto; padding: 28px 20px 40px; flex: 1; width: 100%; }
+    .page-title { font-family: 'Montserrat',sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .day-block { background: #fff; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+    .day-header {
+      padding: 12px 18px;
+      background: var(--navy);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+    .day-header .today-badge {
+      background: var(--gold);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+    .match-row {
+      display: flex;
+      align-items: center;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 14px;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-time {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 44px;
+      flex-shrink: 0;
+    }
+    .match-teams {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
   </style>
 </head>
 <body>
-
-  <header class="nav">
-    <div class="brand">Hockeymanager</div>
-    <nav class="nav-links">
-      <a href="etusivu.html">Etusivu</a>
-      <a href="joukkue.html">Joukkue</a>
-      <a href="liigat.html">Liigat</a>
-      <a href="pelikalenteri.html" class="active">Pelikalenteri</a>
-      <a href="info.html">Info</a>
+  <header class="hm-nav">
+    <div class="hm-nav__brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
+    <nav class="hm-nav__links">
+      <a href="etusivu.html"     id="nav-etusivu">Etusivu</a>
+      <a href="joukkue.html"     id="nav-joukkue">Joukkue</a>
+      <a href="liigat.html"      id="nav-liigat">Liigat</a>
+      <a href="pelikalenteri.html" id="nav-pelikalenteri">Pelikalenteri</a>
+      <a href="info.html"        id="nav-info">Info</a>
     </nav>
-    <div class="nav-right">
-      <div class="badge">VAIHDOT SULKEUTUU 02:14:59</div>
-      <div class="lang"><span class="active">FI</span><span class="lang-sep">|</span><span>EN</span></div>
-      <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted);">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 0 0-5-5.917V4a1 1 0 0 0-2 0v1.083A6 6 0 0 0 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 0 1-6 0v-1m6 0H9"/></svg>
+    <div class="hm-nav__spacer"></div>
+    <div class="hm-nav__right">
+      <div class="hm-nav__badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="hm-nav__lang">
+        <span class="active">FI</span><span class="sep">|</span><span>EN</span>
       </div>
-      <div class="nav-icon">MM</div>
+      <div id="navAuthArea" style="display:flex;align-items:center;gap:6px;">
+        <button class="hm-nav__btn hm-nav__btn--login"    onclick="hmOpenModal('login')">Kirjaudu</button>
+        <button class="hm-nav__btn hm-nav__btn--register" onclick="hmOpenModal('register')">Rekisteröidy</button>
+      </div>
+      <div id="navUserArea" style="display:none;align-items:center;gap:6px;">
+        <span class="hm-nav__username" id="navUsername"></span>
+        <button class="hm-nav__btn hm-nav__btn--logout" onclick="hmLogout()">Ulos</button>
+      </div>
     </div>
   </header>
 
   <div class="page">
-    <div class="page-title">Pelikalenteri</div>
-    <div class="page-sub">Otteluohjelma</div>
+    <div class="page-title">📅 Pelikalenteri</div>
+    <div class="page-sub">MM-kisat 2026 – Otteluohjelma</div>
+    <div id="calendarContent"></div>
+  </div>
 
-    <div class="cal-grid">
-
-      <!-- Pe 15.05 -->
-      <div class="day-card">
-        <div class="day-label">Pe 15.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Suomi - Saksa</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Ruotsi</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">USA - Sveitsi</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tsekki - Tanska</span></div>
+  <footer class="hm-footer">
+    <div class="hm-footer__brand">Hockeymanager</div>
+    <div class="hm-footer__copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
+  </footer>
+  <!-- LOGIN MODAL -->
+  <div class="hm-overlay" id="loginModal">
+    <div class="hm-modal">
+      <button class="hm-modal__close" onclick="hmCloseModal('login')">&times;</button>
+      <div class="hm-modal__title">Kirjaudu sisään</div>
+      <div class="hm-msg hm-msg--error"   id="loginError"></div>
+      <div class="hm-msg hm-msg--success" id="loginSuccess"></div>
+      <div class="hm-field">
+        <label>Sähköposti</label>
+        <input type="email" id="loginEmail" placeholder="sinä@email.com" autocomplete="email"/>
       </div>
-
-      <!-- La 16.05 -->
-      <div class="day-card">
-        <div class="day-label">La 16.05.</div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Iso-Britannia - Itävalta</span></div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Slovakia - Norja</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Unkari - Suomi</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Italia - Kanada</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Latvia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Tsekki</span></div>
+      <div class="hm-field">
+        <label>Salasana</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/>
       </div>
-
-      <!-- Su 17.05 -->
-      <div class="day-card">
-        <div class="day-label">Su 17.05.</div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Iso-Britannia - USA</span></div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Italia - Slovakia</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Itävalta - Unkari</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tanska - Ruotsi</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Latvia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Norja - Slovenia</span></div>
-      </div>
-
-      <!-- Ma 18.05 -->
-      <div class="day-card">
-        <div class="day-label">Ma 18.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Suomi - USA</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Tanska</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Sveitsi</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Tsekki</span></div>
-      </div>
-
-      <!-- Ti 19.05 -->
-      <div class="day-card">
-        <div class="day-label">Ti 19.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Latvia - Itävalta</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Italia - Norja</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Unkari - Iso-Britannia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Slovakia</span></div>
-      </div>
-
-      <!-- Ke 20.05 -->
-      <div class="day-card">
-        <div class="day-label">Ke 20.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Itävalta - Sveitsi</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tsekki - Italia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">USA - Saksa</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Slovenia</span></div>
-      </div>
-
-      <!-- To 21.05 -->
-      <div class="day-card">
-        <div class="day-label">To 21.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Latvia - Suomi</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Norja</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Iso-Britannia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tanska - Slovakia</span></div>
-      </div>
-
-      <!-- Pe 22.05 -->
-      <div class="day-card">
-        <div class="day-label">Pe 22.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Saksa - Unkari</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Kanada - Slovenia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Suomi - Iso-Britannia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Ruotsi - Italia</span></div>
-      </div>
-
-      <!-- La 23.05 -->
-      <div class="day-card">
-        <div class="day-label">La 23.05.</div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Latvia - USA</span></div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Tanska - Slovenia</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Sveitsi - Unkari</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Slovakia - Tsekki</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Itävalta - Saksa</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Norja - Ruotsi</span></div>
-      </div>
-
-      <!-- Su 24.05 -->
-      <div class="day-card">
-        <div class="day-label">Su 24.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Iso-Britannia - Latvia</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tanska - Italia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Suomi - Itävalta</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovakia - Kanada</span></div>
-      </div>
-
-      <!-- Ma 25.05 -->
-      <div class="day-card">
-        <div class="day-label">Ma 25.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">USA - Unkari</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Tsekki - Norja</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Saksa - Iso-Britannia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Slovenia - Italia</span></div>
-      </div>
-
-      <!-- Ti 26.05 -->
-      <div class="day-card">
-        <div class="day-label">Ti 26.05.</div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Unkari - Latvia</span></div>
-        <div class="match-row"><span class="match-time">13:20</span><span class="match-teams">Norja - Tanska</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">USA - Itävalta</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams">Ruotsi - Slovakia</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Sveitsi - Suomi</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams">Tsekki - Kanada</span></div>
-      </div>
-
-      <!-- To 28.05 -->
-      <div class="day-card">
-        <div class="day-label">To 28.05.</div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams tba">TBA - TBA</span></div>
-        <div class="match-row"><span class="match-time">17:20</span><span class="match-teams tba">TBA - TBA</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
-      </div>
-
-      <!-- La 30.05 -->
-      <div class="day-card">
-        <div class="day-label">La 30.05.</div>
-        <div class="match-row"><span class="match-time">16:20</span><span class="match-teams tba">TBA - TBA</span></div>
-        <div class="match-row"><span class="match-time">21:00</span><span class="match-teams tba">TBA - TBA</span></div>
-      </div>
-
-      <!-- Su 31.05 -->
-      <div class="day-card">
-        <div class="day-label">Su 31.05.</div>
-        <div class="match-row"><span class="match-time">16:30</span><span class="match-teams tba">TBA - TBA</span></div>
-        <div class="match-row"><span class="match-time">21:20</span><span class="match-teams tba">TBA - TBA</span></div>
-      </div>
-
+      <button class="hm-submit" onclick="hmDoLogin()">Kirjaudu</button>
+      <div class="hm-form-switch">Ei tiliä? <a onclick="hmSwitchModal('login','register')">Rekisteröidy</a></div>
     </div>
   </div>
 
-  <footer class="footer-bar">
-    <div class="footer-brand">Hockeymanager</div>
-    <div class="footer-copy">© 2026 Hockeymanager - Kaikki oikeudet pidätetään.</div>
-  </footer>
+  <!-- REGISTER MODAL -->
+  <div class="hm-overlay" id="registerModal">
+    <div class="hm-modal">
+      <button class="hm-modal__close" onclick="hmCloseModal('register')">&times;</button>
+      <div class="hm-modal__title">Rekisteröidy</div>
+      <div class="hm-msg hm-msg--error"   id="registerError"></div>
+      <div class="hm-msg hm-msg--success" id="registerSuccess"></div>
+      <div class="hm-field">
+        <label>Käyttäjänimi</label>
+        <input type="text" id="registerUsername" placeholder="Managerin nimi" autocomplete="username"/>
+      </div>
+      <div class="hm-field">
+        <label>Sähköposti</label>
+        <input type="email" id="registerEmail" placeholder="sinä@email.com" autocomplete="email"/>
+      </div>
+      <div class="hm-field">
+        <label>Salasana</label>
+        <input type="password" id="registerPassword" placeholder="••••••••" autocomplete="new-password"/>
+      </div>
+      <button class="hm-submit" onclick="hmDoRegister()">Luo tili</button>
+      <div class="hm-form-switch">Onko sinulla jo tili? <a onclick="hmSwitchModal('register','login')">Kirjaudu</a></div>
+    </div>
+  </div>
 
+  <script>
+
+    // ── AIKATAULU ─────────────────────────────────────────────────────────────
+    const HM_SCHEDULE = {
+      "2026-05-15":[{t:"17:20",g:"Suomi – Saksa"},{t:"17:20",g:"Kanada – Ruotsi"},{t:"21:20",g:"USA – Sveitsi"},{t:"21:20",g:"Tsekki – Tanska"}],
+      "2026-05-16":[{t:"13:20",g:"Iso-Britannia – Itävalta"},{t:"13:20",g:"Slovakia – Norja"},{t:"17:20",g:"Unkari – Suomi"},{t:"17:20",g:"Italia – Kanada"},{t:"21:20",g:"Sveitsi – Latvia"},{t:"21:20",g:"Slovenia – Tsekki"}],
+      "2026-05-17":[{t:"13:20",g:"Iso-Britannia – USA"},{t:"13:20",g:"Italia – Slovakia"},{t:"17:20",g:"Itävalta – Unkari"},{t:"17:20",g:"Tanska – Ruotsi"},{t:"21:20",g:"Saksa – Latvia"},{t:"21:20",g:"Norja – Slovenia"}],
+      "2026-05-18":[{t:"17:20",g:"Suomi – USA"},{t:"17:20",g:"Kanada – Tanska"},{t:"21:20",g:"Saksa – Sveitsi"},{t:"21:20",g:"Ruotsi – Tsekki"}],
+      "2026-05-19":[{t:"17:20",g:"Latvia – Itävalta"},{t:"17:20",g:"Italia – Norja"},{t:"21:20",g:"Unkari – Iso-Britannia"},{t:"21:20",g:"Slovenia – Slovakia"}],
+      "2026-05-20":[{t:"17:20",g:"Itävalta – Sveitsi"},{t:"17:20",g:"Tsekki – Italia"},{t:"21:20",g:"USA – Saksa"},{t:"21:20",g:"Ruotsi – Slovenia"}],
+      "2026-05-21":[{t:"17:20",g:"Latvia – Suomi"},{t:"17:20",g:"Kanada – Norja"},{t:"21:20",g:"Sveitsi – Iso-Britannia"},{t:"21:20",g:"Tanska – Slovakia"}],
+      "2026-05-22":[{t:"17:20",g:"Saksa – Unkari"},{t:"17:20",g:"Kanada – Slovenia"},{t:"21:20",g:"Suomi – Iso-Britannia"},{t:"21:20",g:"Ruotsi – Italia"}],
+      "2026-05-23":[{t:"13:20",g:"Latvia – USA"},{t:"13:20",g:"Tanska – Slovenia"},{t:"17:20",g:"Sveitsi – Unkari"},{t:"17:20",g:"Slovakia – Tsekki"},{t:"21:20",g:"Itävalta – Saksa"},{t:"21:20",g:"Norja – Ruotsi"}],
+      "2026-05-24":[{t:"17:20",g:"Iso-Britannia – Latvia"},{t:"17:20",g:"Tanska – Italia"},{t:"21:20",g:"Suomi – Itävalta"},{t:"21:20",g:"Slovakia – Kanada"}],
+      "2026-05-25":[{t:"17:20",g:"USA – Unkari"},{t:"17:20",g:"Tsekki – Norja"},{t:"21:20",g:"Saksa – Iso-Britannia"},{t:"21:20",g:"Slovenia – Italia"}],
+      "2026-05-26":[{t:"13:20",g:"Unkari – Latvia"},{t:"13:20",g:"Norja – Tanska"},{t:"17:20",g:"USA – Itävalta"},{t:"17:20",g:"Ruotsi – Slovakia"},{t:"21:20",g:"Sveitsi – Suomi"},{t:"21:20",g:"Tsekki – Kanada"}],
+      "2026-05-28":[{t:"17:20",g:"TBA – TBA"},{t:"17:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}],
+      "2026-05-30":[{t:"16:20",g:"TBA – TBA"},{t:"21:00",g:"TBA – TBA"}],
+      "2026-05-31":[{t:"16:30",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}]
+    };
+
+    // Vaihdot sulkeutuu 15.05.2026 klo 17:20 (ensimmäinen peli)
+    const HM_DEADLINE = new Date("2026-05-15T17:20:00");
+
+    function hmPad(n){ return String(n).padStart(2,"0"); }
+
+    function hmUpdateCountdown() {
+      const el = document.getElementById("countdown");
+      if (!el) return;
+      const diff = HM_DEADLINE - new Date();
+      if (diff <= 0) { el.textContent = "SULJETTU"; return; }
+      const s = Math.floor(diff / 1000);
+      el.textContent = hmPad(Math.floor(s/3600)) + ":" + hmPad(Math.floor(s%3600/60)) + ":" + hmPad(s%60);
+    }
+
+    function hmGetMatchDayKey() {
+      const now = new Date();
+      const today = now.getFullYear() + "-" + hmPad(now.getMonth()+1) + "-" + hmPad(now.getDate());
+      const first = "2026-05-15";
+      const key = today < first ? first : today;
+      if (HM_SCHEDULE[key]) return key;
+      // etsi seuraava pelipäivä
+      for (const d of Object.keys(HM_SCHEDULE).sort()) {
+        if (d >= today) return d;
+      }
+      return null;
+    }
+
+    function hmDayLabel(isoKey) {
+      const d = new Date(isoKey + "T12:00:00");
+      const names = ["Su","Ma","Ti","Ke","To","Pe","La"];
+      return names[d.getDay()] + " " + hmPad(d.getDate()) + "." + hmPad(d.getMonth()+1) + ".";
+    }
+
+    // ── AUTH ──────────────────────────────────────────────────────────────────
+    function hmUpdateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user") || "null");
+      const authArea = document.getElementById("navAuthArea");
+      const userArea = document.getElementById("navUserArea");
+      const nameEl  = document.getElementById("navUsername");
+      if (!authArea || !userArea) return;
+      if (user) {
+        authArea.style.display = "none";
+        userArea.style.display = "flex";
+        if (nameEl) nameEl.textContent = "&#128100; " + user.username;
+      } else {
+        authArea.style.display = "flex";
+        userArea.style.display = "none";
+      }
+    }
+
+    function hmOpenModal(type) {
+      const el = document.getElementById(type + "Modal");
+      if (el) el.classList.add("open");
+    }
+    function hmCloseModal(type) {
+      const el = document.getElementById(type + "Modal");
+      if (el) el.classList.remove("open");
+    }
+    function hmSwitchModal(from, to) { hmCloseModal(from); hmOpenModal(to); }
+
+    function hmShowMsg(id, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      el.style.display = "block";
+    }
+    function hmHideMsg(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    }
+
+    async function hmDoLogin() {
+      hmHideMsg("loginError"); hmHideMsg("loginSuccess");
+      const email = document.getElementById("loginEmail").value.trim();
+      const pwd   = document.getElementById("loginPassword").value;
+      if (!email || !pwd) { hmShowMsg("loginError","Täytä kaikki kentät"); return; }
+      try {
+        const res  = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({email, password: pwd})
+        });
+        const data = await res.json();
+        if (!res.ok) { hmShowMsg("loginError", data.error || "Kirjautuminen epäonnistui"); return; }
+        localStorage.setItem("hm_token", data.access_token);
+        localStorage.setItem("hm_user",  JSON.stringify(data.user));
+        hmShowMsg("loginSuccess", "Kirjautuminen onnistui!");
+        setTimeout(() => { hmCloseModal("login"); hmUpdateNavAuth(); if (typeof onLoginSuccess === "function") onLoginSuccess(); }, 800);
+      } catch(e) { hmShowMsg("loginError","Verkkovirhe – yritä uudelleen"); }
+    }
+
+    async function hmDoRegister() {
+      hmHideMsg("registerError"); hmHideMsg("registerSuccess");
+      const uname = document.getElementById("registerUsername").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const pwd   = document.getElementById("registerPassword").value;
+      if (!uname || !email || !pwd) { hmShowMsg("registerError","Täytä kaikki kentät"); return; }
+      if (pwd.length < 6) { hmShowMsg("registerError","Salasana liian lyhyt (min 6 merkkiä)"); return; }
+      try {
+        const res  = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({username: uname, email, password: pwd})
+        });
+        const data = await res.json();
+        if (!res.ok) { hmShowMsg("registerError", data.error || "Rekisteröityminen epäonnistui"); return; }
+        hmShowMsg("registerSuccess", "Tili luotu! Tarkista sähköpostisi vahvistusviesti.");
+        setTimeout(() => hmSwitchModal("register","login"), 2000);
+      } catch(e) { hmShowMsg("registerError","Verkkovirhe – yritä uudelleen"); }
+    }
+
+    async function hmLogout() {
+      const token = localStorage.getItem("hm_token");
+      if (token) {
+        try { await fetch("/api/auth/logout",{method:"POST",headers:{"Authorization":"Bearer "+token}}); } catch(e){}
+      }
+      localStorage.removeItem("hm_token");
+      localStorage.removeItem("hm_user");
+      hmUpdateNavAuth();
+    }
+
+    // Aseta aktiivinen nav-linkki
+    (function() {
+      const page = (location.pathname.split("/").pop() || "etusivu.html").split("?")[0];
+      const el = document.getElementById("nav-" + page.replace(".html",""));
+      if (el) el.classList.add("active");
+    })();
+
+    // Sulje modal klikkaamalla taustan ulkopuolelta
+    document.querySelectorAll(".hm-overlay").forEach(function(el){
+      el.addEventListener("click", function(e){ if (e.target === el) el.classList.remove("open"); });
+    });
+
+    hmUpdateCountdown();
+    setInterval(hmUpdateCountdown, 1000);
+    hmUpdateNavAuth();
+
+
+    (function renderCalendar() {
+      const todayKey = (function(){
+        const n = new Date();
+        return n.getFullYear() + "-" + hmPad(n.getMonth()+1) + "-" + hmPad(n.getDate());
+      })();
+      const el = document.getElementById("calendarContent");
+      if (!el) return;
+      let html = "";
+      for (const [key, matches] of Object.entries(HM_SCHEDULE)) {
+        const isToday = key === todayKey;
+        const isFuture = key >= todayKey;
+        const label = hmDayLabel(key);
+        html += '<div class="day-block">';
+        html += '<div class="day-header">' + label;
+        if (isToday) html += ' <span class="today-badge">TÄNÄÄN</span>';
+        html += '</div>';
+        for (const m of matches) {
+          html += '<div class="match-row">'
+            + '<span class="match-time">' + m.t + '</span>'
+            + '<span class="match-teams">' + m.g + '</span>'
+            + '</div>';
+        }
+        html += '</div>';
+      }
+      el.innerHTML = html;
+
+      // Scroll tänään näkyviin
+      const first = el.querySelector(".day-block");
+      const allBlocks = el.querySelectorAll(".day-block");
+      for (let i = 0; i < Object.keys(HM_SCHEDULE).length; i++) {
+        const dayKey = Object.keys(HM_SCHEDULE).sort()[i];
+        if (dayKey >= todayKey && allBlocks[i]) {
+          allBlocks[i].scrollIntoView({behavior:"smooth", block:"start"});
+          break;
+        }
+      }
+    })();
+
+  </script>
 </body>
 </html>
