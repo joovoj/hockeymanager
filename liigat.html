@@ -8,271 +8,325 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;}
-    body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-    a{text-decoration:none;color:inherit;}
-    button{font-family:Inter,sans-serif;cursor:pointer;border:none;background:none;}
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --primary: #005f6e; --primary-dark: #004a57; --gold: #a05f29;
       --bg: #f7fafb; --surface: #ffffff; --border: #e2e8f0;
       --text: #181c1d; --muted: #5b666a; --navy: #0d2233;
     }
+    html, body { height: 100%; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: 'Inter', sans-serif; }
 
-    /* ── NAV ─────────────────────────────────────────────────── */
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; gap: 8px;
+    /* === NAV === */
+    .hm-nav {
+      position: sticky; top: 0; z-index: 999;
+      height: 56px; min-height: 56px; max-height: 56px;
+      background: #ffffff; border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .brand { font-family: Montserrat, sans-serif; font-weight: 700; font-size: 18px; color: var(--primary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-    .nav-links { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
-    .nav-links a { font-size: 13px; color: var(--muted); font-weight: 500; padding: 4px 0; white-space: nowrap; text-decoration: none; }
-    .nav-links a:hover { color: var(--primary); }
-    .nav-links a.active { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); }
-    .nav-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .badge { background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
-    .lang { font-size: 12px; color: var(--muted); display: flex; gap: 3px; }
-    .lang span.active { color: var(--text); font-weight: 700; }
-    .nav-auth-btn { font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: none; font-family: Inter, sans-serif; white-space: nowrap; }
-    .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
-    .btn-register { background: var(--primary); color: #fff; }
-    .btn-logout { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .nav-user { font-size: 12px; font-weight: 600; color: var(--primary); white-space: nowrap; }
-
-    /* ── FOOTER ──────────────────────────────────────────────── */
-    .footer-bar {
-      background: var(--surface); border-top: 1px solid var(--border);
-      padding: 16px 24px; display: flex; justify-content: space-between;
-      align-items: center; flex-shrink: 0;
+    .hm-nav .hm-brand {
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 17px;
+      color: #005f6e; cursor: pointer; white-space: nowrap;
+      flex-shrink: 0; margin-right: 28px; letter-spacing: -0.01em;
     }
-    .footer-brand { font-family: Montserrat, sans-serif; font-weight: 700; color: var(--text); font-size: 15px; }
-    .footer-copy { font-size: 13px; color: var(--muted); }
+    .hm-nav .hm-links {
+      display: flex; align-items: center; gap: 0; flex-shrink: 0;
+    }
+    .hm-nav .hm-links a {
+      font-size: 13.5px; font-weight: 500; color: #5b666a;
+      padding: 0 12px; height: 56px; display: flex; align-items: center;
+      white-space: nowrap; border-bottom: 3px solid transparent;
+      transition: color 0.15s;
+    }
+    .hm-nav .hm-links a:hover { color: #005f6e; }
+    .hm-nav .hm-links a.active { color: #005f6e; font-weight: 700; border-bottom: 3px solid #005f6e; }
+    .hm-nav .hm-spacer { flex: 1; }
+    .hm-nav .hm-right {
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .hm-nav .hm-badge {
+      background: #a05f29; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 5px 9px; border-radius: 6px;
+      white-space: nowrap; letter-spacing: 0.01em;
+      font-family: 'Inter', sans-serif;
+    }
+    .hm-nav .hm-lang {
+      font-size: 12px; color: #5b666a;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .hm-nav .hm-lang .active { color: #181c1d; font-weight: 700; }
+    .hm-nav .hm-btn {
+      font-size: 12px; font-weight: 600;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer;
+      white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .hm-nav .hm-btn-login { background: transparent; color: #005f6e; border: 1.5px solid #005f6e; }
+    .hm-nav .hm-btn-register { background: #005f6e; color: #fff; border: 1.5px solid #005f6e; }
+    .hm-nav .hm-btn-logout { background: transparent; color: #5b666a; border: 1.5px solid #e2e8f0; }
+    .hm-nav .hm-username { font-size: 12px; font-weight: 600; color: #005f6e; white-space: nowrap; }
 
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
-    .modal-overlay.open{display:flex;}
-    .modal{background:var(--surface);border-radius:14px;padding:32px 28px;width:100%;max-width:380px;position:relative;}
-    .modal-title{font-family:Montserrat,sans-serif;font-size:20px;font-weight:700;margin-bottom:20px;}
-    .modal-close{position:absolute;top:16px;right:18px;font-size:22px;cursor:pointer;color:var(--muted);background:none;border:none;}
-    .form-group{margin-bottom:14px;}
-    .form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--muted);}
-    .form-group input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Inter,sans-serif;outline:none;}
-    .form-group input:focus{border-color:var(--primary);}
-    .submit-btn{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px;}
-    .submit-btn:hover{background:var(--primary-dark);}
-    .form-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
-    .form-switch a{color:var(--primary);font-weight:600;cursor:pointer;}
-    .form-error{color:#ba1a1a;font-size:13px;margin-bottom:10px;display:none;}
-    .form-success{color:#1a7a3c;font-size:13px;margin-bottom:10px;display:none;}
-    .page{max-width:860px;margin:0 auto;padding:36px 20px 40px;flex:1;width:100%;}
-    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-    .page-title{font-family:Montserrat,sans-serif;font-size:26px;font-weight:700;}
-    .create-btn{background:var(--primary);color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
-    .create-btn:hover{background:var(--primary-dark);}
-    .filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-    .search-box{flex:1;min-width:180px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Inter,sans-serif;outline:none;}
-    .search-box:focus{border-color:var(--primary);}
-    .filter-btn{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
-    .filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
-    .league-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-    .league-info{flex:1;}
-    .league-name{font-family:Montserrat,sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;}
-    .league-meta{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
-    .league-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;}
-    .badge-public{background:#e6f4f7;color:var(--primary);}
-    .badge-private{background:#fef3e2;color:var(--gold);}
-    .badge-full{background:#fde8e8;color:#ba1a1a;}
-    .join-btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff;border:none;white-space:nowrap;}
-    .join-btn:hover{background:var(--primary-dark);}
-    .join-btn:disabled{background:var(--border);color:var(--muted);cursor:default;}
-    .empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
-    @media(max-width:700px){.nav-links{display:none;}.league-card{flex-direction:column;align-items:flex-start;}}
+    /* === FOOTER === */
+    .hm-footer {
+      background: #ffffff; border-top: 1px solid #e2e8f0;
+      padding: 14px 24px; flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .hm-footer .hm-footer-brand {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      color: #181c1d; font-size: 14px;
+    }
+    .hm-footer .hm-footer-copy { font-size: 12px; color: #5b666a; }
+
+    /* === MODAL === */
+    .hm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; align-items: center; justify-content: center; }
+    .hm-modal-overlay.open { display: flex; }
+    .hm-modal { background: #fff; border-radius: 14px; padding: 32px 28px; width: 100%; max-width: 380px; position: relative; }
+    .hm-modal-title { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+    .hm-modal-close { position: absolute; top: 14px; right: 18px; font-size: 22px; cursor: pointer; color: #5b666a; background: none; border: none; line-height: 1; }
+    .hm-form-group { margin-bottom: 14px; }
+    .hm-form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #5b666a; }
+    .hm-form-group input { width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+    .hm-form-group input:focus { border-color: #005f6e; }
+    .hm-submit { width: 100%; padding: 12px; background: #005f6e; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 4px; }
+    .hm-submit:hover { background: #004a57; }
+    .hm-form-switch { text-align: center; margin-top: 14px; font-size: 13px; color: #5b666a; }
+    .hm-form-switch a { color: #005f6e; font-weight: 600; cursor: pointer; }
+    .hm-form-error { color: #ba1a1a; font-size: 13px; margin-bottom: 10px; display: none; }
+    .hm-form-success { color: #1a7a3c; font-size: 13px; margin-bottom: 10px; display: none; }
+
+    @media (max-width: 700px) {
+      .hm-nav .hm-links { display: none; }
+      .hm-nav .hm-spacer { display: none; }
+    }
+
+
+    .page { max-width: 860px; margin: 0 auto; padding: 32px 20px 40px; flex: 1; width: 100%; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 10px; }
+    .page-title { font-family: 'Montserrat',sans-serif; font-size: 26px; font-weight: 700; }
+    .create-btn { background: #005f6e; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: 'Inter',sans-serif; }
+    .create-btn:hover { background: #004a57; }
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 160px; padding: 9px 13px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-family: 'Inter',sans-serif; outline: none; }
+    .search-box:focus { border-color: #005f6e; }
+    .filter-btn { padding: 8px 13px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #e2e8f0; background: #fff; color: #5b666a; font-family: 'Inter',sans-serif; }
+    .filter-btn.active { background: #005f6e; color: #fff; border-color: #005f6e; }
+    .league-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .league-name { font-family: 'Montserrat',sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .league-meta { font-size: 13px; color: #5b666a; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .league-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+    .badge-public { background: #e6f4f7; color: #005f6e; }
+    .badge-private { background: #fef3e2; color: #a05f29; }
+    .join-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; background: #005f6e; color: #fff; border: none; white-space: nowrap; font-family: 'Inter',sans-serif; }
+    .join-btn:hover { background: #004a57; }
+    .join-btn:disabled { background: #e2e8f0; color: #5b666a; cursor: default; }
+    .empty-state { text-align: center; padding: 44px 20px; color: #5b666a; font-size: 14px; }
+
   </style>
 </head>
 <body>
-  <!-- NAV -->
-  <header class="nav">
-    <div class="brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
-    <nav class="nav-links">
+  <header class="hm-nav">
+    <div class="hm-brand" onclick="location.href='etusivu.html'">Hockeymanager</div>
+    <nav class="hm-links">
       <a href="etusivu.html" id="nav-etusivu">Etusivu</a>
       <a href="joukkue.html" id="nav-joukkue">Joukkue</a>
       <a href="liigat.html" id="nav-liigat">Liigat</a>
       <a href="pelikalenteri.html" id="nav-pelikalenteri">Pelikalenteri</a>
       <a href="info.html" id="nav-info">Info</a>
     </nav>
-    <div class="nav-right">
-      <div class="badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
-      <div class="lang"><span class="active">FI</span><span style="color:var(--border)">|</span><span>EN</span></div>
-      <div id="navAuthButtons" style="display:flex;gap:4px;">
-        <button class="nav-auth-btn btn-login" onclick="openModal('login')">Kirjaudu</button>
-        <button class="nav-auth-btn btn-register" onclick="openModal('register')">Rekisteröidy</button>
+    <div class="hm-spacer"></div>
+    <div class="hm-right">
+      <div class="hm-badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="hm-lang"><span class="active">FI</span><span style="color:#e2e8f0">|</span><span>EN</span></div>
+      <div id="navAuthButtons" style="display:flex;gap:6px;">
+        <button class="hm-btn hm-btn-login" onclick="hmOpenModal('login')">Kirjaudu</button>
+        <button class="hm-btn hm-btn-register" onclick="hmOpenModal('register')">Rekisteröidy</button>
       </div>
       <div id="navUserArea" style="display:none;align-items:center;gap:6px;">
-        <span class="nav-user" id="navUsername"></span>
-        <button class="nav-auth-btn btn-logout" onclick="logout()">Ulos</button>
+        <span class="hm-username" id="navUsername"></span>
+        <button class="hm-btn hm-btn-logout" onclick="hmLogout()">Ulos</button>
       </div>
     </div>
   </header>
+
   <div class="page">
     <div class="page-header">
       <div class="page-title">Liigat</div>
       <button class="create-btn" onclick="showCreateLeague()">+ Luo liiga</button>
     </div>
     <div class="filter-bar">
-      <input class="search-box" id="leagueSearch" placeholder="Hae liigaa..." oninput="filterLeagues()"/>
+      <input class="search-box" id="leagueSearch" placeholder="Hae liigaa..." oninput="renderLeagues()"/>
       <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">Kaikki</button>
       <button class="filter-btn" id="filter-public" onclick="setFilter('public')">Julkiset</button>
       <button class="filter-btn" id="filter-private" onclick="setFilter('private')">Yksityiset</button>
     </div>
     <div id="leagueList"><div class="empty-state">Ladataan liigoja...</div></div>
   </div>
-  <!-- FOOTER -->
-  <footer class="footer-bar">
-    <div class="footer-brand">Hockeymanager</div>
-    <div class="footer-copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
-  </footer>
 
-  <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="loginModal">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('login')">×</button>
-      <div class="modal-title">Kirjaudu sisään</div>
-      <div class="form-error" id="loginError"></div>
-      <div class="form-success" id="loginSuccess"></div>
-      <div class="form-group"><label>Sähköposti</label><input type="email" id="loginEmail" placeholder="sinä@email.com"/></div>
-      <div class="form-group"><label>Salasana</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>
-      <button class="submit-btn" onclick="doLogin()">Kirjaudu</button>
-      <div class="form-switch">Ei tiliä? <a onclick="switchModal('login','register')">Rekisteröidy</a></div>
+  <footer class="hm-footer">
+    <div class="hm-footer-brand">Hockeymanager</div>
+    <div class="hm-footer-copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
+  </footer>
+  <div class="hm-modal-overlay" id="loginModal">
+    <div class="hm-modal">
+      <button class="hm-modal-close" onclick="hmCloseModal('login')">&times;</button>
+      <div class="hm-modal-title">Kirjaudu sisään</div>
+      <div class="hm-form-error" id="loginError"></div>
+      <div class="hm-form-success" id="loginSuccess"></div>
+      <div class="hm-form-group"><label>Sähköposti</label><input type="email" id="loginEmail" placeholder="sinä@email.com"/></div>
+      <div class="hm-form-group"><label>Salasana</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>
+      <button class="hm-submit" onclick="hmDoLogin()">Kirjaudu</button>
+      <div class="hm-form-switch">Ei tiliä? <a onclick="hmSwitchModal('login','register')">Rekisteröidy</a></div>
     </div>
   </div>
-  <!-- REGISTER MODAL -->
-  <div class="modal-overlay" id="registerModal">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal('register')">×</button>
-      <div class="modal-title">Rekisteröidy</div>
-      <div class="form-error" id="registerError"></div>
-      <div class="form-success" id="registerSuccess"></div>
-      <div class="form-group"><label>Käyttäjänimi</label><input type="text" id="registerUsername" placeholder="Managerin nimi"/></div>
-      <div class="form-group"><label>Sähköposti</label><input type="email" id="registerEmail" placeholder="sinä@email.com"/></div>
-      <div class="form-group"><label>Salasana</label><input type="password" id="registerPassword" placeholder="••••••••"/></div>
-      <button class="submit-btn" onclick="doRegister()">Luo tili</button>
-      <div class="form-switch">Onko sinulla jo tili? <a onclick="switchModal('register','login')">Kirjaudu</a></div>
+  <div class="hm-modal-overlay" id="registerModal">
+    <div class="hm-modal">
+      <button class="hm-modal-close" onclick="hmCloseModal('register')">&times;</button>
+      <div class="hm-modal-title">Rekisteröidy</div>
+      <div class="hm-form-error" id="registerError"></div>
+      <div class="hm-form-success" id="registerSuccess"></div>
+      <div class="hm-form-group"><label>Käyttäjänimi</label><input type="text" id="registerUsername" placeholder="Managerin nimi"/></div>
+      <div class="hm-form-group"><label>Sähköposti</label><input type="email" id="registerEmail" placeholder="sinä@email.com"/></div>
+      <div class="hm-form-group"><label>Salasana</label><input type="password" id="registerPassword" placeholder="••••••••"/></div>
+      <button class="hm-submit" onclick="hmDoRegister()">Luo tili</button>
+      <div class="hm-form-switch">Onko sinulla jo tili? <a onclick="hmSwitchModal('register','login')">Kirjaudu</a></div>
     </div>
   </div>
   <script>
 
-    // ── YHTEINEN NAV JS ──────────────────────────────────────────
-    const SCHEDULE = {
-      "2026-05-15":[{time:"17:20",teams:"Suomi - Saksa"},{time:"17:20",teams:"Kanada - Ruotsi"},{time:"21:20",teams:"USA - Sveitsi"},{time:"21:20",teams:"Tsekki - Tanska"}],
-      "2026-05-16":[{time:"13:20",teams:"Iso-Britannia - Itävalta"},{time:"13:20",teams:"Slovakia - Norja"},{time:"17:20",teams:"Unkari - Suomi"},{time:"17:20",teams:"Italia - Kanada"},{time:"21:20",teams:"Sveitsi - Latvia"},{time:"21:20",teams:"Slovenia - Tsekki"}],
-      "2026-05-17":[{time:"13:20",teams:"Iso-Britannia - USA"},{time:"13:20",teams:"Italia - Slovakia"},{time:"17:20",teams:"Itävalta - Unkari"},{time:"17:20",teams:"Tanska - Ruotsi"},{time:"21:20",teams:"Saksa - Latvia"},{time:"21:20",teams:"Norja - Slovenia"}],
-      "2026-05-18":[{time:"17:20",teams:"Suomi - USA"},{time:"17:20",teams:"Kanada - Tanska"},{time:"21:20",teams:"Saksa - Sveitsi"},{time:"21:20",teams:"Ruotsi - Tsekki"}],
-      "2026-05-19":[{time:"17:20",teams:"Latvia - Itävalta"},{time:"17:20",teams:"Italia - Norja"},{time:"21:20",teams:"Unkari - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Slovakia"}],
-      "2026-05-20":[{time:"17:20",teams:"Itävalta - Sveitsi"},{time:"17:20",teams:"Tsekki - Italia"},{time:"21:20",teams:"USA - Saksa"},{time:"21:20",teams:"Ruotsi - Slovenia"}],
-      "2026-05-21":[{time:"17:20",teams:"Latvia - Suomi"},{time:"17:20",teams:"Kanada - Norja"},{time:"21:20",teams:"Sveitsi - Iso-Britannia"},{time:"21:20",teams:"Tanska - Slovakia"}],
-      "2026-05-22":[{time:"17:20",teams:"Saksa - Unkari"},{time:"17:20",teams:"Kanada - Slovenia"},{time:"21:20",teams:"Suomi - Iso-Britannia"},{time:"21:20",teams:"Ruotsi - Italia"}],
-      "2026-05-23":[{time:"13:20",teams:"Latvia - USA"},{time:"13:20",teams:"Tanska - Slovenia"},{time:"17:20",teams:"Sveitsi - Unkari"},{time:"17:20",teams:"Slovakia - Tsekki"},{time:"21:20",teams:"Itävalta - Saksa"},{time:"21:20",teams:"Norja - Ruotsi"}],
-      "2026-05-24":[{time:"17:20",teams:"Iso-Britannia - Latvia"},{time:"17:20",teams:"Tanska - Italia"},{time:"21:20",teams:"Suomi - Itävalta"},{time:"21:20",teams:"Slovakia - Kanada"}],
-      "2026-05-25":[{time:"17:20",teams:"USA - Unkari"},{time:"17:20",teams:"Tsekki - Norja"},{time:"21:20",teams:"Saksa - Iso-Britannia"},{time:"21:20",teams:"Slovenia - Italia"}],
-      "2026-05-26":[{time:"13:20",teams:"Unkari - Latvia"},{time:"13:20",teams:"Norja - Tanska"},{time:"17:20",teams:"USA - Itävalta"},{time:"17:20",teams:"Ruotsi - Slovakia"},{time:"21:20",teams:"Sveitsi - Suomi"},{time:"21:20",teams:"Tsekki - Kanada"}],
-      "2026-05-28":[{time:"17:20",teams:"TBA - TBA"},{time:"17:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}],
-      "2026-05-30":[{time:"16:20",teams:"TBA - TBA"},{time:"21:00",teams:"TBA - TBA"}],
-      "2026-05-31":[{time:"16:30",teams:"TBA - TBA"},{time:"21:20",teams:"TBA - TBA"}]
+    const HM_SCHEDULE = {
+      "2026-05-15":[{t:"17:20",g:"Suomi – Saksa"},{t:"17:20",g:"Kanada – Ruotsi"},{t:"21:20",g:"USA – Sveitsi"},{t:"21:20",g:"Tsekki – Tanska"}],
+      "2026-05-16":[{t:"13:20",g:"Iso-Britannia – Itävalta"},{t:"13:20",g:"Slovakia – Norja"},{t:"17:20",g:"Unkari – Suomi"},{t:"17:20",g:"Italia – Kanada"},{t:"21:20",g:"Sveitsi – Latvia"},{t:"21:20",g:"Slovenia – Tsekki"}],
+      "2026-05-17":[{t:"13:20",g:"Iso-Britannia – USA"},{t:"13:20",g:"Italia – Slovakia"},{t:"17:20",g:"Itävalta – Unkari"},{t:"17:20",g:"Tanska – Ruotsi"},{t:"21:20",g:"Saksa – Latvia"},{t:"21:20",g:"Norja – Slovenia"}],
+      "2026-05-18":[{t:"17:20",g:"Suomi – USA"},{t:"17:20",g:"Kanada – Tanska"},{t:"21:20",g:"Saksa – Sveitsi"},{t:"21:20",g:"Ruotsi – Tsekki"}],
+      "2026-05-19":[{t:"17:20",g:"Latvia – Itävalta"},{t:"17:20",g:"Italia – Norja"},{t:"21:20",g:"Unkari – Iso-Britannia"},{t:"21:20",g:"Slovenia – Slovakia"}],
+      "2026-05-20":[{t:"17:20",g:"Itävalta – Sveitsi"},{t:"17:20",g:"Tsekki – Italia"},{t:"21:20",g:"USA – Saksa"},{t:"21:20",g:"Ruotsi – Slovenia"}],
+      "2026-05-21":[{t:"17:20",g:"Latvia – Suomi"},{t:"17:20",g:"Kanada – Norja"},{t:"21:20",g:"Sveitsi – Iso-Britannia"},{t:"21:20",g:"Tanska – Slovakia"}],
+      "2026-05-22":[{t:"17:20",g:"Saksa – Unkari"},{t:"17:20",g:"Kanada – Slovenia"},{t:"21:20",g:"Suomi – Iso-Britannia"},{t:"21:20",g:"Ruotsi – Italia"}],
+      "2026-05-23":[{t:"13:20",g:"Latvia – USA"},{t:"13:20",g:"Tanska – Slovenia"},{t:"17:20",g:"Sveitsi – Unkari"},{t:"17:20",g:"Slovakia – Tsekki"},{t:"21:20",g:"Itävalta – Saksa"},{t:"21:20",g:"Norja – Ruotsi"}],
+      "2026-05-24":[{t:"17:20",g:"Iso-Britannia – Latvia"},{t:"17:20",g:"Tanska – Italia"},{t:"21:20",g:"Suomi – Itävalta"},{t:"21:20",g:"Slovakia – Kanada"}],
+      "2026-05-25":[{t:"17:20",g:"USA – Unkari"},{t:"17:20",g:"Tsekki – Norja"},{t:"21:20",g:"Saksa – Iso-Britannia"},{t:"21:20",g:"Slovenia – Italia"}],
+      "2026-05-26":[{t:"13:20",g:"Unkari – Latvia"},{t:"13:20",g:"Norja – Tanska"},{t:"17:20",g:"USA – Itävalta"},{t:"17:20",g:"Ruotsi – Slovakia"},{t:"21:20",g:"Sveitsi – Suomi"},{t:"21:20",g:"Tsekki – Kanada"}],
+      "2026-05-28":[{t:"17:20",g:"TBA – TBA"},{t:"17:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}],
+      "2026-05-30":[{t:"16:20",g:"TBA – TBA"},{t:"21:00",g:"TBA – TBA"}],
+      "2026-05-31":[{t:"16:30",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}]
     };
 
-    function getNextGameTime() {
+    // Laskuri: laskee 15.05.2026 klo 17:20 asti (ensimmäinen peli)
+    const HM_VAIHTO_DEADLINE = new Date("2026-05-15T17:20:00");
+
+    function hmUpdateCountdown() {
       const now = new Date();
-      for (const day of Object.keys(SCHEDULE).sort()) {
-        for (const m of SCHEDULE[day]) {
-          const [h,min] = m.time.split(":").map(Number);
-          const t = new Date(day + "T" + String(h).padStart(2,"0") + ":" + String(min).padStart(2,"0") + ":00");
-          if (t > now) return t;
-        }
-      }
+      const el = document.getElementById("countdown");
+      if (!el) return;
+      const diff = HM_VAIHTO_DEADLINE - now;
+      if (diff <= 0) { el.textContent = "00:00:00"; return; }
+      const totalSec = Math.floor(diff / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      el.textContent = String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+    }
+
+    function hmGetTodayKey() {
+      const now = new Date();
+      return now.getFullYear() + "-" +
+        String(now.getMonth()+1).padStart(2,"0") + "-" +
+        String(now.getDate()).padStart(2,"0");
+    }
+
+    // Palauttaa sen päivän avain josta näytetään ottelut:
+    // ennen 15.05 -> näytä 15.05, muuten tänään
+    function hmGetMatchDayKey() {
+      const today = hmGetTodayKey();
+      const firstDay = "2026-05-15";
+      if (today < firstDay) return firstDay;
+      if (HM_SCHEDULE[today]) return today;
+      // Etsi seuraava pelipäivä jos tänään ei ole pelejä
+      const days = Object.keys(HM_SCHEDULE).sort();
+      for (const d of days) { if (d >= today) return d; }
       return null;
     }
 
-    function updateCountdown() {
-      const next = getNextGameTime();
-      const el = document.getElementById("countdown");
-      if (!next) { el.textContent = "00:00:00"; return; }
-      const diff = next - new Date();
-      if (diff <= 0) { el.textContent = "00:00:00"; return; }
-      const h = Math.floor(diff/3600000);
-      const m = Math.floor((diff%3600000)/60000);
-      const s = Math.floor((diff%60000)/1000);
-      el.textContent = String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    function hmUpdateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user") || "null");
+      const btnArea = document.getElementById("navAuthButtons");
+      const userArea = document.getElementById("navUserArea");
+      if (btnArea) btnArea.style.display = user ? "none" : "flex";
+      if (userArea) userArea.style.display = user ? "flex" : "none";
+      const nameEl = document.getElementById("navUsername");
+      if (nameEl && user) nameEl.textContent = "👤 " + user.username;
     }
 
-    function updateNavAuth() {
-      const user = JSON.parse(localStorage.getItem("hm_user")||"null");
-      document.getElementById("navAuthButtons").style.display = user ? "none" : "flex";
-      document.getElementById("navUserArea").style.display = user ? "flex" : "none";
-      if (user) document.getElementById("navUsername").textContent = "👤 " + user.username;
-    }
+    function hmOpenModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.add("open"); }
+    function hmCloseModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.remove("open"); }
+    function hmSwitchModal(f,t) { hmCloseModal(f); hmOpenModal(t); }
 
-    function openModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.add("open"); }
-    function closeModal(t) { const m = document.getElementById(t+"Modal"); if(m) m.classList.remove("open"); }
-    function switchModal(f,t) { closeModal(f); openModal(t); }
-
-    async function logout() {
+    async function hmLogout() {
       const token = localStorage.getItem("hm_token");
       if (token) { try { await fetch("/api/auth/logout",{method:"POST",headers:{"Authorization":"Bearer "+token}}); } catch(e){} }
       localStorage.removeItem("hm_token"); localStorage.removeItem("hm_user");
-      updateNavAuth();
+      hmUpdateNavAuth();
     }
 
-    // Aseta aktiivinen nav-linkki automaattisesti
+    async function hmDoLogin() {
+      const email = document.getElementById("loginEmail").value.trim();
+      const pwd = document.getElementById("loginPassword").value;
+      const err = document.getElementById("loginError");
+      const suc = document.getElementById("loginSuccess");
+      err.style.display="none"; suc.style.display="none";
+      if (!email||!pwd){err.textContent="Täytä kaikki kentät";err.style.display="block";return;}
+      try {
+        const res = await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pwd})});
+        const data = await res.json();
+        if (!res.ok){err.textContent=data.error||"Kirjautuminen epäonnistui";err.style.display="block";return;}
+        localStorage.setItem("hm_token",data.access_token);
+        localStorage.setItem("hm_user",JSON.stringify(data.user));
+        suc.textContent="Kirjautuminen onnistui!";suc.style.display="block";
+        setTimeout(()=>{hmCloseModal("login");hmUpdateNavAuth();if(typeof onLoginSuccess==="function")onLoginSuccess();},800);
+      } catch(e){err.textContent="Verkkovirhe";err.style.display="block";}
+    }
+
+    async function hmDoRegister() {
+      const uname = document.getElementById("registerUsername").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const pwd = document.getElementById("registerPassword").value;
+      const err = document.getElementById("registerError");
+      const suc = document.getElementById("registerSuccess");
+      err.style.display="none"; suc.style.display="none";
+      if (!uname||!email||!pwd){err.textContent="Täytä kaikki kentät";err.style.display="block";return;}
+      if (pwd.length<6){err.textContent="Salasana liian lyhyt (min 6 merkkiä)";err.style.display="block";return;}
+      try {
+        const res = await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:uname,email,password:pwd})});
+        const data = await res.json();
+        if (!res.ok){err.textContent=data.error||"Rekisteröityminen epäonnistui";err.style.display="block";return;}
+        suc.textContent="Tili luotu! Voit nyt kirjautua sisään.";suc.style.display="block";
+        setTimeout(()=>hmSwitchModal("register","login"),1500);
+      } catch(e){err.textContent="Verkkovirhe";err.style.display="block";}
+    }
+
+    // Aseta aktiivinen nav-linkki
     (function(){
       const page = location.pathname.split("/").pop() || "etusivu.html";
-      const el = document.getElementById("nav-" + page.replace(".html",""));
+      const key = page.replace(".html","").replace("oma-","");
+      const el = document.getElementById("nav-"+page.replace(".html","")) ||
+                 document.getElementById("nav-"+key);
       if (el) el.classList.add("active");
     })();
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-    updateNavAuth();
-
-    async function doLogin() {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      const errEl = document.getElementById("loginError");
-      const sucEl = document.getElementById("loginSuccess");
-      errEl.style.display="none"; sucEl.style.display="none";
-      if (!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
-      try {
-        const res = await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-        const data = await res.json();
-        if (!res.ok){errEl.textContent=data.error||"Kirjautuminen epäonnistui";errEl.style.display="block";return;}
-        localStorage.setItem("hm_token",data.access_token);
-        localStorage.setItem("hm_user",JSON.stringify(data.user));
-        sucEl.textContent="Kirjautuminen onnistui!";sucEl.style.display="block";
-        setTimeout(()=>{closeModal("login");updateNavAuth();},800);
-      } catch(e){errEl.textContent="Verkkovirhe, yritä uudelleen";errEl.style.display="block";}
-    }
-
-    async function doRegister() {
-      const username = document.getElementById("registerUsername").value.trim();
-      const email = document.getElementById("registerEmail").value.trim();
-      const password = document.getElementById("registerPassword").value;
-      const errEl = document.getElementById("registerError");
-      const sucEl = document.getElementById("registerSuccess");
-      errEl.style.display="none"; sucEl.style.display="none";
-      if (!username||!email||!password){errEl.textContent="Täytä kaikki kentät";errEl.style.display="block";return;}
-      if (password.length<6){errEl.textContent="Salasana liian lyhyt (min 6 merkkiä)";errEl.style.display="block";return;}
-      try {
-        const res = await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,email,password})});
-        const data = await res.json();
-        if (!res.ok){errEl.textContent=data.error||"Rekisteröityminen epäonnistui";errEl.style.display="block";return;}
-        sucEl.textContent="Tili luotu! Voit nyt kirjautua sisään.";sucEl.style.display="block";
-        setTimeout(()=>switchModal("register","login"),1500);
-      } catch(e){errEl.textContent="Verkkovirhe, yritä uudelleen";errEl.style.display="block";}
-    }
-
-    document.querySelectorAll(".modal-overlay").forEach(el=>{
+    document.querySelectorAll(".hm-modal-overlay").forEach(el=>{
       el.addEventListener("click",e=>{if(e.target===el)el.classList.remove("open");});
     });
+
+    hmUpdateCountdown();
+    setInterval(hmUpdateCountdown, 1000);
+    hmUpdateNavAuth();
+
 
     let allLeagues = [];
     let currentFilter = "all";
@@ -281,67 +335,60 @@
       try {
         const res = await fetch("/api/leagues");
         allLeagues = await res.json();
-      } catch(e) {
-        allLeagues = [];
-      }
+      } catch(e) { allLeagues = []; }
       renderLeagues();
     }
 
     function setFilter(f) {
       currentFilter = f;
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      document.getElementById("filter-" + f).classList.add("active");
+      document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+      document.getElementById("filter-"+f).classList.add("active");
       renderLeagues();
     }
-
-    function filterLeagues() { renderLeagues(); }
 
     function renderLeagues() {
       const q = document.getElementById("leagueSearch").value.toLowerCase();
       let list = allLeagues;
-      if (currentFilter !== "all") list = list.filter(l => l.type === currentFilter);
-      if (q) list = list.filter(l => l.name.toLowerCase().includes(q));
+      if (currentFilter !== "all") list = list.filter(l=>l.type===currentFilter);
+      if (q) list = list.filter(l=>l.name.toLowerCase().includes(q));
       const el = document.getElementById("leagueList");
       if (!list.length) { el.innerHTML = '<div class="empty-state">Ei liigoja löytynyt</div>'; return; }
-      el.innerHTML = list.map(l => {
+      el.innerHTML = list.map(l=>{
         const full = l.member_count >= l.max_members;
-        const typeLabel = l.type === "public" ? '<span class="league-badge badge-public">Julkinen</span>' : '<span class="league-badge badge-private">Yksityinen</span>';
+        const tb = l.type==="public"
+          ? '<span class="league-badge badge-public">Julkinen</span>'
+          : '<span class="league-badge badge-private">Yksityinen</span>';
         const btn = full
           ? '<button class="join-btn" disabled>Täynnä</button>'
-          : `<button class="join-btn" onclick="joinLeague('${l.id}')">Liity</button>`;
-        return `<div class="league-card">
-          <div class="league-info">
-            <div class="league-name">${l.name}</div>
-            <div class="league-meta">${typeLabel}<span>👥 ${l.member_count} / ${l.max_members}</span></div>
-          </div>
-          ${btn}
-        </div>`;
+          : '<button class="join-btn" onclick="joinLeague(''+l.id+'')">Liity</button>';
+        return '<div class="league-card"><div><div class="league-name">'+l.name+'</div><div class="league-meta">'+tb+'<span>👥 '+l.member_count+' / '+l.max_members+'</span></div></div>'+btn+'</div>';
       }).join("");
     }
 
     async function joinLeague(id) {
       const token = localStorage.getItem("hm_token");
-      if (!token) { openModal("login"); return; }
+      if (!token) { hmOpenModal("login"); return; }
       try {
-        const res = await fetch(`/api/leagues/${id}/join`, {method:"POST",headers:{"Authorization":"Bearer "+token}});
+        const res = await fetch('/api/leagues/'+id+'/join',{method:"POST",headers:{"Authorization":"Bearer "+token}});
         const data = await res.json();
-        alert(data.message || data.error);
+        alert(data.message||data.error);
         loadLeagues();
       } catch(e) { alert("Verkkovirhe"); }
     }
 
     function showCreateLeague() {
       const token = localStorage.getItem("hm_token");
-      if (!token) { openModal("login"); return; }
+      if (!token) { hmOpenModal("login"); return; }
       const name = prompt("Liigan nimi:");
       if (!name) return;
       const type = confirm("Julkinen liiga? (OK = Julkinen, Peruuta = Yksityinen)") ? "public" : "private";
-      const max = parseInt(prompt("Maksimijäsenmäärä (2-500):", "20")) || 20;
+      const max = parseInt(prompt("Maksimijäsenmäärä (2-500):","20")) || 20;
       fetch("/api/leagues",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({name,type,max_members:max})})
         .then(r=>r.json()).then(d=>{alert(d.message||d.error);loadLeagues();});
     }
 
     loadLeagues();
+
   </script>
 </body>
 </html>
