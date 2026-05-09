@@ -18,7 +18,12 @@ def get_supabase():
     global _supabase
     if _supabase is None:
         url = os.environ.get("SUPABASE_URL", "")
-        key = os.environ.get("SUPABASE_KEY", "")
+        # Tue sekä uusia (sb_secret_/sb_publishable_) että vanhoja avaimia
+        key = (
+            os.environ.get("SUPABASE_SECRET_KEY") or
+            os.environ.get("SUPABASE_SERVICE_KEY") or
+            os.environ.get("SUPABASE_KEY", "")
+        )
         if not url or not key:
             raise Exception("SUPABASE_URL tai SUPABASE_KEY puuttuu ympäristömuuttujista")
         _supabase = create_client(url, key)
