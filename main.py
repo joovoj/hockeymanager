@@ -206,18 +206,25 @@ def register():
     if len(password) < 6:
         return jsonify({"error":"Salasana liian lyhyt (min 6 merkkiä)"}), 400
     status, resp = auth_signup(email, password)
-    if status not in (200, 201) or not resp.get("id"):
-        err = resp.get("msg") or resp.get("message") or resp.get("error") or "Rekisteröityminen epäonnistui"
-        if "already" in str(err).lower():
+    if status not in (200, 201):
+        err = resp.get("msg") or resp.get("message") or resp.get("error_description") or resp.get("error") or "Rekisteröityminen epäonnistui"
+        if "already" in str(err).lower() or "already registered" in str(err).lower():
             err = "Sähköposti on jo käytössä"
+        if "rate limit" in str(err).lower():
+            err = "Liian monta yritystä - odota hetki ja yritä uudelleen"
         return jsonify({"error": err}), 400
-    uid = resp["id"]
-    sb_insert("profiles", {
-        "id": uid, "username": username, "email": email,
-        "transfers_left": 17, "total_points": 0,
-        "created_at": datetime.utcnow().isoformat()
-    })
-    return jsonify({"message":"Rekisteröityminen onnistui! Tarkista sähköpostisi.", "user_id":uid}), 201
+    uid = resp.get("id")
+    if uid:
+        # Confirm email OFF - käyttäjä luotu suoraan
+        sb_insert("profiles", {
+            "id": uid, "username": username, "email": email,
+            "transfers_left": 17, "total_points": 0,
+            "created_at": datetime.utcnow().isoformat()
+        })
+        return jsonify({"message":"Rekisteröityminen onnistui!", "user_id":uid}), 201
+    else:
+        # Confirm email ON - sähköposti lähetetty, tallennetaan käyttäjänimi väliaikaisesti
+        return jsonify({"message":"Rekisteröityminen onnistui! Tarkista sähköpostisi ja klikkaa vahvistuslinkkiä.", "pending": True}), 201
 
 @app.route("/api/auth/login", methods=["POST"])
 def login():
