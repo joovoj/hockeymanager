@@ -554,12 +554,12 @@
       const user = JSON.parse(localStorage.getItem("hm_user") || "null");
       const authArea = document.getElementById("navAuthArea");
       const userArea = document.getElementById("navUserArea");
-      const nameEl  = document.getElementById("navUsername");
+      const nameEl   = document.getElementById("navUsername");
       if (!authArea || !userArea) return;
-      if (user) {
+      if (user && (user.username || user.email)) {
         authArea.style.display = "none";
         userArea.style.display = "flex";
-        if (nameEl) nameEl.innerHTML = "👤 " + user.username;
+        if (nameEl) nameEl.innerHTML = "👤 " + (user.username || user.email);
       } else {
         authArea.style.display = "flex";
         userArea.style.display = "none";

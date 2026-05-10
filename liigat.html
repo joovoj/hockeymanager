@@ -536,12 +536,12 @@
       const user = JSON.parse(localStorage.getItem("hm_user") || "null");
       const authArea = document.getElementById("navAuthArea");
       const userArea = document.getElementById("navUserArea");
-      const nameEl  = document.getElementById("navUsername");
+      const nameEl   = document.getElementById("navUsername");
       if (!authArea || !userArea) return;
-      if (user) {
+      if (user && (user.username || user.email)) {
         authArea.style.display = "none";
         userArea.style.display = "flex";
-        if (nameEl) nameEl.innerHTML = "👤 " + user.username;
+        if (nameEl) nameEl.innerHTML = "👤 " + (user.username || user.email);
       } else {
         authArea.style.display = "flex";
         userArea.style.display = "none";
@@ -670,40 +670,176 @@
           : '<span class="badge badge-private">Yksityinen</span>';
         const btn  = full
           ? '<button class="join-btn" disabled>Täynnä</button>'
-          : '<button class="join-btn" onclick="hmJoinLeague(''+l.id+'')">Liity</button>';
+          : '<button class="join-btn" onclick="hmJoinLeague(\''+l.id+'\','+( l.type==='private' ? 'true' : 'false' )+')">Liity</button>';
         return '<div class="league-card"><div><div class="league-name">'+l.name+'</div>'
              + '<div class="league-meta">'+tb+'<span>&#128101; '+l.member_count+' / '+l.max_members+'</span></div></div>'+btn+'</div>';
       }).join("");
     }
 
-    async function hmJoinLeague(id) {
-      const token = localStorage.getItem("hm_token");
-      if (!token) { hmOpenModal("login"); return; }
-      try {
-        const res  = await fetch('/api/leagues/'+id+'/join', {method:"POST",headers:{"Authorization":"Bearer "+token}});
-        const data = await res.json();
-        alert(data.message || data.error);
-        hmLoadLeagues();
-      } catch(e) { alert("Verkkovirhe"); }
+    
+
+    
+
+    hmLoadLeagues();
+
+  
+    function hmToggleJoinCode() {
+      // Ei tarvita lomakkeessa - tyyppi luetaan suoraan submit-vaiheessa
     }
 
     function hmShowCreateLeague() {
       const token = localStorage.getItem("hm_token");
       if (!token) { hmOpenModal("login"); return; }
-      const name = prompt("Liigan nimi:");
-      if (!name || !name.trim()) return;
-      const pub  = confirm("Julkinen liiga?\n\nOK = Julkinen\nPeruuta = Yksityinen");
-      const max  = parseInt(prompt("Maksimijäsenmäärä (2–500):", "20")) || 20;
-      fetch("/api/leagues", {
-        method: "POST",
-        headers: {"Content-Type":"application/json","Authorization":"Bearer "+token},
-        body: JSON.stringify({name: name.trim(), type: pub?"public":"private", max_members: max})
-      }).then(r=>r.json()).then(d=>{ alert(d.message||d.error); hmLoadLeagues(); })
-        .catch(()=>alert("Verkkovirhe"));
+      document.getElementById("clName").value = "";
+      document.getElementById("clMax").value  = "20";
+      document.querySelector('input[name="clType"][value="public"]').checked = true;
+      const err = document.getElementById("clError");
+      err.style.display = "none"; err.textContent = "";
+      const modal = document.getElementById("createLeagueModal");
+      modal.style.display = "flex";
+      setTimeout(()=>document.getElementById("clName").focus(), 50);
     }
 
-    hmLoadLeagues();
+    async function hmSubmitCreateLeague() {
+      const token = localStorage.getItem("hm_token");
+      if (!token) return;
+      const name  = (document.getElementById("clName").value || "").trim();
+      const type  = document.querySelector('input[name="clType"]:checked').value;
+      const max   = parseInt(document.getElementById("clMax").value) || 20;
+      const err   = document.getElementById("clError");
+      err.style.display = "none";
+      if (!name) { err.textContent = "Anna liigalle nimi"; err.style.display = "block"; return; }
+      if (max < 2 || max > 500) { err.textContent = "Maksimijäsenmäärä 2–500"; err.style.display = "block"; return; }
+      try {
+        const res  = await fetch("/api/leagues", {
+          method: "POST",
+          headers: {"Content-Type":"application/json","Authorization":"Bearer "+token},
+          body: JSON.stringify({name, type, max_members: max})
+        });
+        const data = await res.json();
+        if (!res.ok) { err.textContent = data.error || "Virhe luodessa liigaa"; err.style.display = "block"; return; }
+        document.getElementById("createLeagueModal").style.display = "none";
+        if (data.join_code) {
+          alert("Liiga luotu! 🎉\n\nLiittymiskoodi yksityiseen liigaasi:\n\n" + data.join_code + "\n\nJaa tämä koodi kavereillesi.");
+        }
+        hmLoadLeagues();
+      } catch(e) { err.textContent = "Verkkovirhe – yritä uudelleen"; err.style.display = "block"; }
+    }
+
+    let _joinPrivateId = null;
+
+    async function hmJoinLeague(id, isPrivate) {
+      const token = localStorage.getItem("hm_token");
+      if (!token) { hmOpenModal("login"); return; }
+      if (isPrivate) {
+        _joinPrivateId = id;
+        const leagues  = _leagues.find(l => l.id === id);
+        const nameEl   = document.getElementById("joinPrivateName");
+        if (nameEl) nameEl.textContent = leagues ? '"' + leagues.name + '"' : "";
+        document.getElementById("joinCodeInput").value = "";
+        const err = document.getElementById("joinPrivateError");
+        err.style.display = "none"; err.textContent = "";
+        document.getElementById("joinPrivateModal").style.display = "flex";
+        setTimeout(()=>document.getElementById("joinCodeInput").focus(), 50);
+        return;
+      }
+      try {
+        const res  = await fetch("/api/leagues/"+id+"/join", {
+          method: "POST",
+          headers: {"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error || "Virhe liittymisessä"); return; }
+        alert(data.message || "Liittyminen onnistui!");
+        hmLoadLeagues();
+      } catch(e) { alert("Verkkovirhe"); }
+    }
+
+    async function hmSubmitJoinPrivate() {
+      const token = localStorage.getItem("hm_token");
+      if (!token || !_joinPrivateId) return;
+      const code  = (document.getElementById("joinCodeInput").value || "").trim().toUpperCase();
+      const err   = document.getElementById("joinPrivateError");
+      err.style.display = "none";
+      if (!code) { err.textContent = "Syötä liittymiskoodi"; err.style.display = "block"; return; }
+      try {
+        const res  = await fetch("/api/leagues/"+_joinPrivateId+"/join", {
+          method: "POST",
+          headers: {"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+          body: JSON.stringify({join_code: code})
+        });
+        const data = await res.json();
+        if (!res.ok) { err.textContent = data.error || "Virhe liittymisessä"; err.style.display = "block"; return; }
+        document.getElementById("joinPrivateModal").style.display = "none";
+        alert(data.message || "Liittyminen onnistui!");
+        hmLoadLeagues();
+      } catch(e) { err.textContent = "Verkkovirhe"; err.style.display = "block"; }
+    }
 
   </script>
+
+  <!-- Luo liiga -modal -->
+  <div id="createLeagueModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9000;
+    background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:14px;padding:28px 24px;width:340px;max-width:94vw;
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);font-family:'Inter',sans-serif;">
+      <h3 style="margin:0 0 18px;font-size:17px;color:#0a3d4a;">Luo uusi liiga</h3>
+      <label style="font-size:13px;font-weight:600;color:#2d3a3c;">Liigan nimi</label>
+      <input id="clName" type="text" maxlength="50" placeholder="Esim. Kaveriporukka 2026"
+        style="width:100%;box-sizing:border-box;margin:4px 0 12px;padding:9px 12px;
+        border:1px solid #cde;border-radius:8px;font-size:14px;outline:none;"/>
+      <label style="font-size:13px;font-weight:600;color:#2d3a3c;">Tyyppi</label>
+      <div style="display:flex;gap:10px;margin:4px 0 12px;">
+        <label style="flex:1;display:flex;align-items:center;gap:6px;cursor:pointer;
+          padding:8px 12px;border:2px solid #cde;border-radius:8px;font-size:13px;"
+          id="clTypePublicLabel">
+          <input type="radio" name="clType" value="public" checked onchange="hmToggleJoinCode()"> Julkinen
+        </label>
+        <label style="flex:1;display:flex;align-items:center;gap:6px;cursor:pointer;
+          padding:8px 12px;border:2px solid #cde;border-radius:8px;font-size:13px;"
+          id="clTypePrivateLabel">
+          <input type="radio" name="clType" value="private" onchange="hmToggleJoinCode()"> Yksityinen 🔒
+        </label>
+      </div>
+      <label style="font-size:13px;font-weight:600;color:#2d3a3c;">Maksimijäsenmäärä</label>
+      <input id="clMax" type="number" min="2" max="500" value="20"
+        style="width:100%;box-sizing:border-box;margin:4px 0 16px;padding:9px 12px;
+        border:1px solid #cde;border-radius:8px;font-size:14px;outline:none;"/>
+      <div style="display:flex;gap:10px;">
+        <button onclick="document.getElementById('createLeagueModal').style.display='none'"
+          style="flex:1;padding:10px;background:#f0f4f5;border:none;border-radius:8px;
+          font-size:14px;cursor:pointer;color:#2d3a3c;">Peruuta</button>
+        <button onclick="hmSubmitCreateLeague()"
+          style="flex:1;padding:10px;background:#1a7f8e;border:none;border-radius:8px;
+          font-size:14px;font-weight:700;color:#fff;cursor:pointer;">Luo liiga</button>
+      </div>
+      <p id="clError" style="color:#c0392b;font-size:13px;margin:10px 0 0;display:none;"></p>
+    </div>
+  </div>
+
+  <!-- Liity yksityiseen liigaan -modal -->
+  <div id="joinPrivateModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9000;
+    background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:14px;padding:28px 24px;width:320px;max-width:94vw;
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);font-family:'Inter',sans-serif;">
+      <h3 style="margin:0 0 8px;font-size:17px;color:#0a3d4a;">🔒 Yksityinen liiga</h3>
+      <p style="font-size:13px;color:#666;margin:0 0 14px;" id="joinPrivateName"></p>
+      <label style="font-size:13px;font-weight:600;color:#2d3a3c;">Liittymiskoodi</label>
+      <input id="joinCodeInput" type="text" maxlength="8" placeholder="Esim. A3F2C1B4"
+        style="width:100%;box-sizing:border-box;margin:4px 0 16px;padding:9px 12px;
+        border:1px solid #cde;border-radius:8px;font-size:14px;text-transform:uppercase;outline:none;"/>
+      <div style="display:flex;gap:10px;">
+        <button onclick="document.getElementById('joinPrivateModal').style.display='none'"
+          style="flex:1;padding:10px;background:#f0f4f5;border:none;border-radius:8px;
+          font-size:14px;cursor:pointer;">Peruuta</button>
+        <button onclick="hmSubmitJoinPrivate()"
+          style="flex:1;padding:10px;background:#1a7f8e;border:none;border-radius:8px;
+          font-size:14px;font-weight:700;color:#fff;cursor:pointer;">Liity</button>
+      </div>
+      <p id="joinPrivateError" style="color:#c0392b;font-size:13px;margin:10px 0 0;display:none;"></p>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -532,12 +532,12 @@
       const user = JSON.parse(localStorage.getItem("hm_user") || "null");
       const authArea = document.getElementById("navAuthArea");
       const userArea = document.getElementById("navUserArea");
-      const nameEl  = document.getElementById("navUsername");
+      const nameEl   = document.getElementById("navUsername");
       if (!authArea || !userArea) return;
-      if (user) {
+      if (user && (user.username || user.email)) {
         authArea.style.display = "none";
         userArea.style.display = "flex";
-        if (nameEl) nameEl.innerHTML = "👤 " + user.username;
+        if (nameEl) nameEl.innerHTML = "👤 " + (user.username || user.email);
       } else {
         authArea.style.display = "flex";
         userArea.style.display = "none";
@@ -635,16 +635,21 @@
 
     async function hmLoadTeam() {
       const token = localStorage.getItem("hm_token");
-      if (!token) {
-        document.getElementById("pageContent").style.visibility = "visible";
-        return;
-      }
+      const pc = document.getElementById("pageContent");
+      if (!token) { if (pc) pc.style.visibility = "visible"; return; }
       try {
         const res = await fetch("/api/team", {headers:{"Authorization":"Bearer "+token}});
-        if (!res.ok) return;
+        if (res.status === 401) {
+          localStorage.removeItem("hm_token");
+          localStorage.removeItem("hm_user");
+          hmUpdateNavAuth();
+          if (pc) pc.style.visibility = "visible";
+          return;
+        }
+        if (!res.ok) { if (pc) pc.style.visibility = "visible"; return; }
         const data = await res.json();
         hmRenderTeam(data);
-      } catch(e) {}
+      } catch(e) { if (pc) pc.style.visibility = "visible"; }
     }
 
     function hmRenderTeam(data) {
@@ -737,11 +742,11 @@
 
     async function hmAddPlayerFromPanel(playerId) {
       const token = localStorage.getItem("hm_token");
-      if (!token) return;
+      if (!token) { alert("Kirjaudu ensin sisään"); return; }
       const res  = await fetch("/api/team/add", {
         method: "POST",
         headers: {"Authorization": "Bearer " + token, "Content-Type": "application/json"},
-        body: JSON.stringify({player_id: playerId})
+        body: JSON.stringify({player_id: parseInt(playerId, 10)})
       });
       const data = await res.json();
       if (!res.ok) { alert(data.error || "Virhe lisätessä pelaajaa"); return; }
@@ -771,14 +776,22 @@
       <select id="ppCountry" onchange="hmLoadPanelPlayers()"
         style="flex:1;padding:6px;border:1px solid #cde;border-radius:6px;font-size:13px;">
         <option value="">Kaikki maat</option>
-        <option value="FIN">Suomi</option>
+        <option value="AUT">Itävalta</option>
         <option value="CAN">Kanada</option>
-        <option value="USA">USA</option>
-        <option value="SWE">Ruotsi</option>
         <option value="CZE">Tsekki</option>
+        <option value="DEN">Tanska</option>
+        <option value="FIN">Suomi</option>
+        <option value="GBR">Iso-Britannia</option>
         <option value="GER">Saksa</option>
-        <option value="RUS">Venäjä</option>
+        <option value="HUN">Unkari</option>
+        <option value="ITA">Italia</option>
+        <option value="LAT">Latvia</option>
+        <option value="NOR">Norja</option>
+        <option value="SVK">Slovakia</option>
+        <option value="SVN">Slovenia</option>
+        <option value="SWE">Ruotsi</option>
         <option value="SUI">Sveitsi</option>
+        <option value="USA">USA</option>
       </select>
       <select id="ppPos" onchange="hmLoadPanelPlayers()"
         style="flex:1;padding:6px;border:1px solid #cde;border-radius:6px;font-size:13px;">

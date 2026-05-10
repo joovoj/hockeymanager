@@ -193,6 +193,117 @@ PLAYERS = [
     {"id":73 , "name":"Ryker Lee             ", "pos":"H", "country":"USA","price":120,"points":0},
     {"id":74 , "name":"Mathieu Olivier       ", "pos":"H", "country":"USA","price":130,"points":0},
     {"id":75 , "name":"Max Plante            ", "pos":"H", "country":"USA","price":110,"points":0},
+    {"id":76 , "name":"Bernd Bruckler        ", "pos":"MV", "country":"AUT","price":130,"points":0},
+    {"id":77 , "name":"David Madlener        ", "pos":"MV", "country":"AUT","price":110,"points":0},
+    {"id":78 , "name":"Stefan Ulmer          ", "pos":"P", "country":"AUT","price":130,"points":0},
+    {"id":79 , "name":"Thomas Pock           ", "pos":"P", "country":"AUT","price":120,"points":0},
+    {"id":80 , "name":"Nico Brunner          ", "pos":"P", "country":"AUT","price":110,"points":0},
+    {"id":81 , "name":"Benjamin Baumgartner  ", "pos":"H", "country":"AUT","price":200,"points":0},
+    {"id":82 , "name":"Marco Kasper          ", "pos":"H", "country":"AUT","price":220,"points":0},
+    {"id":83 , "name":"Dominic Zwerger       ", "pos":"H", "country":"AUT","price":170,"points":0},
+    {"id":84 , "name":"Michael Raffl         ", "pos":"H", "country":"AUT","price":160,"points":0},
+    {"id":85 , "name":"Manuel Ganahl         ", "pos":"H", "country":"AUT","price":150,"points":0},
+    {"id":86 , "name":"Peter Schneider       ", "pos":"H", "country":"AUT","price":130,"points":0},
+    {"id":87 , "name":"Sam Montembeault      ", "pos":"MV", "country":"CAN","price":200,"points":0},
+    {"id":88 , "name":"Tristan Jarry         ", "pos":"MV", "country":"CAN","price":180,"points":0},
+    {"id":89 , "name":"Josh Morrissey        ", "pos":"P", "country":"CAN","price":240,"points":0},
+    {"id":90 , "name":"Travis Sanheim        ", "pos":"P", "country":"CAN","price":200,"points":0},
+    {"id":91 , "name":"Shea Theodore         ", "pos":"P", "country":"CAN","price":220,"points":0},
+    {"id":92 , "name":"Dylan Cozens          ", "pos":"H", "country":"CAN","price":230,"points":0},
+    {"id":93 , "name":"Nick Suzuki           ", "pos":"H", "country":"CAN","price":240,"points":0},
+    {"id":94 , "name":"Nico Daws             ", "pos":"MV", "country":"CAN","price":150,"points":0},
+    {"id":95 , "name":"Jiri Patera           ", "pos":"MV", "country":"CZE","price":160,"points":0},
+    {"id":96 , "name":"Lukas Dostal          ", "pos":"MV", "country":"CZE","price":180,"points":0},
+    {"id":97 , "name":"Radko Gudas           ", "pos":"P", "country":"CZE","price":190,"points":0},
+    {"id":98 , "name":"Jakub Zboril          ", "pos":"P", "country":"CZE","price":160,"points":0},
+    {"id":99 , "name":"Jakub Vrana           ", "pos":"H", "country":"CZE","price":200,"points":0},
+    {"id":100, "name":"Tomas Hertl           ", "pos":"H", "country":"CZE","price":240,"points":0},
+    {"id":101, "name":"Ondrej Palat          ", "pos":"H", "country":"CZE","price":210,"points":0},
+    {"id":102, "name":"Martin Necas          ", "pos":"H", "country":"CZE","price":250,"points":0},
+    {"id":103, "name":"Sebastian Dahm        ", "pos":"MV", "country":"DEN","price":150,"points":0},
+    {"id":104, "name":"Mikkel Honore         ", "pos":"MV", "country":"DEN","price":120,"points":0},
+    {"id":105, "name":"Oliver Bjorkstrand    ", "pos":"H", "country":"DEN","price":240,"points":0},
+    {"id":106, "name":"Nikolaj Ehlers        ", "pos":"H", "country":"DEN","price":250,"points":0},
+    {"id":107, "name":"Lars Eller            ", "pos":"H", "country":"DEN","price":180,"points":0},
+    {"id":108, "name":"Markus Lauridsen      ", "pos":"P", "country":"DEN","price":160,"points":0},
+    {"id":109, "name":"Stefan Lassen         ", "pos":"P", "country":"DEN","price":140,"points":0},
+    {"id":110, "name":"Jesper Jensen         ", "pos":"H", "country":"DEN","price":150,"points":0},
+    {"id":111, "name":"Kaapo Kakko           ", "pos":"H", "country":"FIN","price":240,"points":0},
+    {"id":112, "name":"Mikael Granlund       ", "pos":"H", "country":"FIN","price":210,"points":0},
+    {"id":113, "name":"Joel Armia            ", "pos":"H", "country":"FIN","price":180,"points":0},
+    {"id":114, "name":"Olli Maatta           ", "pos":"P", "country":"FIN","price":180,"points":0},
+    {"id":115, "name":"Esa Lindell           ", "pos":"P", "country":"FIN","price":200,"points":0},
+    {"id":116, "name":"Henri Jokiharju       ", "pos":"P", "country":"FIN","price":190,"points":0},
+    {"id":117, "name":"Philipp Grubauer      ", "pos":"MV", "country":"GER","price":190,"points":0},
+    {"id":118, "name":"Thomas Greiss         ", "pos":"MV", "country":"GER","price":160,"points":0},
+    {"id":119, "name":"Moritz Seider         ", "pos":"P", "country":"GER","price":260,"points":0},
+    {"id":120, "name":"Nico Sturm            ", "pos":"H", "country":"GER","price":180,"points":0},
+    {"id":121, "name":"Tim Stutzle           ", "pos":"H", "country":"GER","price":270,"points":0},
+    {"id":122, "name":"JJ Peterka            ", "pos":"H", "country":"GER","price":240,"points":0},
+    {"id":123, "name":"Ben Bowns             ", "pos":"MV", "country":"GBR","price":130,"points":0},
+    {"id":124, "name":"Jackson Whistle       ", "pos":"MV", "country":"GBR","price":110,"points":0},
+    {"id":125, "name":"David Phillips        ", "pos":"P", "country":"GBR","price":130,"points":0},
+    {"id":126, "name":"Mark Richardson       ", "pos":"P", "country":"GBR","price":120,"points":0},
+    {"id":127, "name":"Robert Dowd           ", "pos":"H", "country":"GBR","price":150,"points":0},
+    {"id":128, "name":"Jonathan Phillips     ", "pos":"H", "country":"GBR","price":140,"points":0},
+    {"id":129, "name":"Colin Shields         ", "pos":"H", "country":"GBR","price":130,"points":0},
+    {"id":130, "name":"Adam Vay              ", "pos":"MV", "country":"HUN","price":130,"points":0},
+    {"id":131, "name":"Bence Stipsicz        ", "pos":"MV", "country":"HUN","price":110,"points":0},
+    {"id":132, "name":"Adam Jaros            ", "pos":"P", "country":"HUN","price":150,"points":0},
+    {"id":133, "name":"Tamas Vas             ", "pos":"P", "country":"HUN","price":130,"points":0},
+    {"id":134, "name":"Tamas Erdely          ", "pos":"H", "country":"HUN","price":140,"points":0},
+    {"id":135, "name":"Daniel Fekete         ", "pos":"H", "country":"HUN","price":130,"points":0},
+    {"id":136, "name":"Justin Fazio          ", "pos":"MV", "country":"ITA","price":140,"points":0},
+    {"id":137, "name":"Andreas Bernard       ", "pos":"MV", "country":"ITA","price":130,"points":0},
+    {"id":138, "name":"Stefano Marchetti     ", "pos":"P", "country":"ITA","price":130,"points":0},
+    {"id":139, "name":"Alex Trivellato       ", "pos":"P", "country":"ITA","price":120,"points":0},
+    {"id":140, "name":"Daniel Mantenuto      ", "pos":"H", "country":"ITA","price":150,"points":0},
+    {"id":141, "name":"Luca Zanatta          ", "pos":"H", "country":"ITA","price":140,"points":0},
+    {"id":142, "name":"Anthony Bardaro       ", "pos":"H", "country":"ITA","price":130,"points":0},
+    {"id":143, "name":"Elvis Merzlikins      ", "pos":"MV", "country":"LAT","price":190,"points":0},
+    {"id":144, "name":"Ervins Mustukovs      ", "pos":"MV", "country":"LAT","price":140,"points":0},
+    {"id":145, "name":"Kristians Rubins      ", "pos":"P", "country":"LAT","price":160,"points":0},
+    {"id":146, "name":"Sandis Vilmanis       ", "pos":"P", "country":"LAT","price":140,"points":0},
+    {"id":147, "name":"Rodrigo Abols         ", "pos":"H", "country":"LAT","price":170,"points":0},
+    {"id":148, "name":"Rihards Bukarts       ", "pos":"H", "country":"LAT","price":160,"points":0},
+    {"id":149, "name":"Zemgus Girgensons     ", "pos":"H", "country":"LAT","price":190,"points":0},
+    {"id":150, "name":"Rolands Kenins        ", "pos":"H", "country":"LAT","price":150,"points":0},
+    {"id":151, "name":"Henrik Haukeland      ", "pos":"MV", "country":"NOR","price":160,"points":0},
+    {"id":152, "name":"Lars Volden           ", "pos":"MV", "country":"NOR","price":120,"points":0},
+    {"id":153, "name":"Jonas Holos           ", "pos":"P", "country":"NOR","price":150,"points":0},
+    {"id":154, "name":"Andreas Martinsen     ", "pos":"H", "country":"NOR","price":160,"points":0},
+    {"id":155, "name":"Patrick Thoresen      ", "pos":"H", "country":"NOR","price":170,"points":0},
+    {"id":156, "name":"Mathis Olimb          ", "pos":"H", "country":"NOR","price":160,"points":0},
+    {"id":157, "name":"Mats Zuccarello       ", "pos":"H", "country":"NOR","price":250,"points":0},
+    {"id":158, "name":"Patrik Rybar          ", "pos":"MV", "country":"SVK","price":170,"points":0},
+    {"id":159, "name":"Samuel Hlavaj         ", "pos":"MV", "country":"SVK","price":150,"points":0},
+    {"id":160, "name":"Martin Gernat         ", "pos":"P", "country":"SVK","price":170,"points":0},
+    {"id":161, "name":"Christos Sarris       ", "pos":"P", "country":"SVK","price":140,"points":0},
+    {"id":162, "name":"Tomas Tatar           ", "pos":"H", "country":"SVK","price":220,"points":0},
+    {"id":163, "name":"Pavol Regenda         ", "pos":"H", "country":"SVK","price":200,"points":0},
+    {"id":164, "name":"Robert Lantosi        ", "pos":"H", "country":"SVK","price":170,"points":0},
+    {"id":165, "name":"Libor Hudacek         ", "pos":"H", "country":"SVK","price":180,"points":0},
+    {"id":166, "name":"Gasper Kroselj        ", "pos":"MV", "country":"SVN","price":160,"points":0},
+    {"id":167, "name":"Luka Gracnar          ", "pos":"MV", "country":"SVN","price":130,"points":0},
+    {"id":168, "name":"Ziga Pavlin           ", "pos":"P", "country":"SVN","price":140,"points":0},
+    {"id":169, "name":"Bostjan Golicic       ", "pos":"P", "country":"SVN","price":130,"points":0},
+    {"id":170, "name":"Anze Kopitar          ", "pos":"H", "country":"SVN","price":280,"points":0},
+    {"id":171, "name":"Robert Sabolic        ", "pos":"H", "country":"SVN","price":180,"points":0},
+    {"id":172, "name":"Rok Ticar             ", "pos":"H", "country":"SVN","price":160,"points":0},
+    {"id":173, "name":"Jan Drozg             ", "pos":"H", "country":"SVN","price":170,"points":0},
+    {"id":174, "name":"Jacob Markstrom       ", "pos":"MV", "country":"SWE","price":200,"points":0},
+    {"id":175, "name":"Filip Gustavsson      ", "pos":"MV", "country":"SWE","price":190,"points":0},
+    {"id":176, "name":"Gustav Forsling       ", "pos":"P", "country":"SWE","price":220,"points":0},
+    {"id":177, "name":"Erik Brannstrom       ", "pos":"P", "country":"SWE","price":180,"points":0},
+    {"id":178, "name":"Linus Sandin          ", "pos":"H", "country":"SWE","price":190,"points":0},
+    {"id":179, "name":"Joel Eriksson Ek      ", "pos":"H", "country":"SWE","price":210,"points":0},
+    {"id":180, "name":"Rickard Rakell        ", "pos":"H", "country":"SWE","price":200,"points":0},
+    {"id":181, "name":"Akira Schmid          ", "pos":"MV", "country":"SUI","price":170,"points":0},
+    {"id":182, "name":"Yannick Weber         ", "pos":"P", "country":"SUI","price":160,"points":0},
+    {"id":183, "name":"Janis Moser           ", "pos":"P", "country":"SUI","price":200,"points":0},
+    {"id":184, "name":"Sven Andrighetto      ", "pos":"H", "country":"SUI","price":190,"points":0},
+    {"id":185, "name":"Damien Riat           ", "pos":"H", "country":"SUI","price":180,"points":0},
+    {"id":186, "name":"Lian Bichsel          ", "pos":"H", "country":"SUI","price":170,"points":0},
 
 ]
 
@@ -334,6 +445,8 @@ def get_team():
 def add_player():
     data      = request.get_json(force=True) or {}
     player_id = data.get("player_id")
+    try: player_id = int(player_id)
+    except (TypeError, ValueError): return jsonify({"error":"Virheellinen player_id"}), 400
     player    = next((p for p in PLAYERS if p["id"]==player_id), None)
     if not player:
         return jsonify({"error":"Pelaajaa ei löydy"}), 404
@@ -366,6 +479,8 @@ def add_player():
 def remove_player():
     data      = request.get_json(force=True) or {}
     player_id = data.get("player_id")
+    try: player_id = int(player_id)
+    except (TypeError, ValueError): return jsonify({"error":"Virheellinen player_id"}), 400
     sb_delete("teams", {"user_id":request.user_id,"player_id":player_id})
     return jsonify({"message":"Pelaaja poistettu"}), 200
 
@@ -412,31 +527,47 @@ def create_league():
         return jsonify({"error":"Virheellinen liigan tyyppi"}), 400
     if not 2<=max_members<=500:
         return jsonify({"error":"Max jäsenmäärä 2–500"}), 400
-    status, res = sb_insert("leagues",{
-        "name":name,"type":league_type,"max_members":max_members,
-        "created_by":request.user_id,"created_at":datetime.utcnow().isoformat()
-    })
-    lid = res[0]["id"] if isinstance(res,list) and res else None
+    import secrets as _sec
+    join_code = _sec.token_hex(4).upper() if league_type == "private" else None
+    row = {
+        "name": name, "type": league_type, "max_members": max_members,
+        "created_by": request.user_id, "created_at": datetime.utcnow().isoformat()
+    }
+    if join_code:
+        row["join_code"] = join_code
+    status, res = sb_insert("leagues", row)
+    lid = res[0]["id"] if isinstance(res, list) and res else None
     if lid:
-        sb_insert("league_members",{"league_id":lid,"user_id":request.user_id,
-                                     "joined_at":datetime.utcnow().isoformat()})
-    return jsonify({"message":"Liiga luotu!","league_id":lid}), 201
+        sb_insert("league_members", {"league_id": lid, "user_id": request.user_id,
+                                      "joined_at": datetime.utcnow().isoformat()})
+    resp = {"message": "Liiga luotu!", "league_id": lid}
+    if join_code:
+        resp["join_code"] = join_code
+    return jsonify(resp), 201
 
 @app.route("/api/leagues/<league_id>/join", methods=["POST"])
 @require_auth
 def join_league(league_id):
+    data   = request.get_json(force=True) or {}
     league = sb_select("leagues", eq={"id":league_id}, single=True)
     if not league:
         return jsonify({"error":"Liigaa ei löydy"}), 404
-    mc = sb_count("league_members",{"league_id":league_id})
+    if league.get("type") == "private":
+        provided = (data.get("join_code") or "").strip().upper()
+        if not provided:
+            return jsonify({"error":"Syötä liigan liittymiskoodi"}), 400
+        if provided != (league.get("join_code") or "").upper():
+            return jsonify({"error":"Väärä liittymiskoodi"}), 403
+    mc = sb_count("league_members", {"league_id": league_id})
     if mc >= league["max_members"]:
         return jsonify({"error":"Liiga on täynnä"}), 400
-    already = sb_select("league_members",eq={"league_id":league_id,"user_id":request.user_id})
+    already = sb_select("league_members", eq={"league_id":league_id,"user_id":request.user_id})
     if already:
         return jsonify({"error":"Olet jo tässä liigassa"}), 400
-    sb_insert("league_members",{"league_id":league_id,"user_id":request.user_id,
-                                  "joined_at":datetime.utcnow().isoformat()})
+    sb_insert("league_members", {"league_id":league_id,"user_id":request.user_id,
+                                   "joined_at":datetime.utcnow().isoformat()})
     return jsonify({"message":"Liittyminen onnistui!"}), 200
+
 
 @app.route("/api/leagues/<league_id>/leave", methods=["POST"])
 @require_auth
