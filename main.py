@@ -338,33 +338,45 @@ def serve_file(filename):
 @app.route("/api/auth/register", methods=["POST"])
 def register():
     data     = request.get_json(force=True) or {}
-    email    = data.get("email","").strip()
+    email    = data.get("email","").strip().lower()
     password = data.get("password","")
     username = data.get("username","").strip()
     if not email or not password or not username:
         return jsonify({"error":"Täytä kaikki kentät"}), 400
     if len(password) < 6:
         return jsonify({"error":"Salasana liian lyhyt (min 6 merkkiä)"}), 400
+    if len(username) < 2:
+        return jsonify({"error":"Käyttäjänimi liian lyhyt (min 2 merkkiä)"}), 400
     status, resp = auth_signup(email, password)
     if status not in (200, 201):
-        err = resp.get("msg") or resp.get("message") or resp.get("error_description") or resp.get("error") or "Rekisteröityminen epäonnistui"
-        if "already" in str(err).lower() or "already registered" in str(err).lower():
+        raw = resp if isinstance(resp, dict) else {}
+        err = (raw.get("msg") or raw.get("message") or
+               raw.get("error_description") or raw.get("error") or
+               "Rekisteröityminen epäonnistui")
+        if "already" in str(err).lower():
             err = "Sähköposti on jo käytössä"
-        if "rate limit" in str(err).lower():
-            err = "Liian monta yritystä - odota hetki ja yritä uudelleen"
-        return jsonify({"error": err}), 400
-    uid = resp.get("id")
+        elif "rate limit" in str(err).lower():
+            err = "Liian monta yritystä – odota hetki"
+        elif "invalid" in str(err).lower() and "email" in str(err).lower():
+            err = "Virheellinen sähköpostiosoite"
+        elif "password" in str(err).lower():
+            err = "Salasana ei täytä vaatimuksia (min 6 merkkiä)"
+        return jsonify({"error": str(err)}), 400
+    uid = resp.get("id") or (resp.get("user") or {}).get("id")
     if uid:
-        # Confirm email OFF - käyttäjä luotu suoraan
-        sb_insert("profiles", {
-            "id": uid, "username": username, "email": email,
-            "transfers_left": 17, "total_points": 0,
-            "created_at": datetime.utcnow().isoformat()
-        })
-        return jsonify({"message":"Tili luotu! Voit nyt kirjautua sisään.", "user_id":uid}), 201
+        existing = sb_select("profiles", eq={"id": uid}, single=True)
+        if not existing:
+            sb_insert("profiles", {
+                "id":             uid,
+                "username":       username,
+                "email":          email,
+                "transfers_left": 17,
+                "total_points":   0,
+                "created_at":     datetime.utcnow().isoformat()
+            })
+        return jsonify({"message": "Tili luotu! Voit nyt kirjautua sisään.", "user_id": uid}), 201
     else:
-        return jsonify({"message":"Tili luotu! Voit nyt kirjautua sisään.", "pending": True}), 201
-
+        return jsonify({"message": "Tili luotu! Tarkista sähköpostisi ja vahvista tili."}), 201
 @app.route("/api/auth/login", methods=["POST"])
 def login():
     data     = request.get_json(force=True) or {}
@@ -374,22 +386,35 @@ def login():
         return jsonify({"error":"Täytä kaikki kentät"}), 400
     status, resp = auth_login(email, password)
     if status != 200 or not resp.get("access_token"):
-        return jsonify({"error":"Väärä sähköposti tai salasana"}), 401
-    uid     = resp["user"]["id"]
-    profile = sb_select("profiles", eq={"id":uid}, single=True)
+        err_msg = "Väärä sähköposti tai salasana"
+        if isinstance(resp, dict):
+            raw = resp.get("error_description") or resp.get("message") or resp.get("error") or ""
+            if "confirm" in str(raw).lower() or "not confirmed" in str(raw).lower():
+                err_msg = "Vahvista sähköpostiosoitteesi ennen kirjautumista"
+        return jsonify({"error": err_msg}), 401
+    uid            = resp["user"]["id"]
+    uname_fallback = email.split("@")[0]
+    profile        = sb_select("profiles", eq={"id": uid}, single=True)
     if not profile:
-        return jsonify({"error":"Profiilia ei löydy"}), 404
+        sb_insert("profiles", {
+            "id":             uid,
+            "username":       uname_fallback,
+            "email":          email,
+            "transfers_left": 17,
+            "total_points":   0,
+            "created_at":     datetime.utcnow().isoformat()
+        })
+        profile = {"username": uname_fallback, "transfers_left": 17, "total_points": 0}
     return jsonify({
         "access_token": resp["access_token"],
         "user": {
             "id":             uid,
             "email":          resp["user"]["email"],
-            "username":       profile["username"],
-            "transfers_left": profile["transfers_left"],
-            "total_points":   profile["total_points"],
+            "username":       profile.get("username") or uname_fallback,
+            "transfers_left": profile.get("transfers_left", 17),
+            "total_points":   profile.get("total_points", 0),
         }
     }), 200
-
 @app.route("/api/auth/logout", methods=["POST"])
 @require_auth
 def logout():
@@ -398,12 +423,26 @@ def logout():
 @app.route("/api/auth/me", methods=["GET"])
 @require_auth
 def me():
-    profile = sb_select("profiles", eq={"id":request.user_id}, single=True)
+    profile = sb_select("profiles", eq={"id": request.user_id}, single=True)
     if not profile:
-        return jsonify({"error":"Profiilia ei löydy"}), 404
-    return jsonify(profile), 200
-
-# ── PLAYERS ───────────────────────────────────────────────────────────────────
+        uname = request.user_email.split("@")[0] if request.user_email else "käyttäjä"
+        sb_insert("profiles", {
+            "id":             request.user_id,
+            "username":       uname,
+            "email":          request.user_email,
+            "transfers_left": 17,
+            "total_points":   0,
+            "created_at":     datetime.utcnow().isoformat()
+        })
+        profile = {"username": uname, "transfers_left": 17, "total_points": 0}
+    return jsonify({
+        "id":             request.user_id,
+        "email":          request.user_email,
+        "username":       profile.get("username",""),
+        "transfers_left": profile.get("transfers_left", 17),
+        "total_points":   profile.get("total_points", 0),
+        "team_name":      profile.get("team_name",""),
+    }), 200
 @app.route("/api/players", methods=["GET"])
 def get_players():
     pos     = request.args.get("pos","")
