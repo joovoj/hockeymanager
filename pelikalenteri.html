@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hockeymanager – Pelikalenteri</title>
+  <title>Hockeymanager – Etusivu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -267,51 +267,69 @@
     }
 
 
-    .page { max-width: 860px; margin: 0 auto; padding: 28px 20px 40px; flex: 1; width: 100%; }
-    .page-title { font-family: 'Montserrat',sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
-    .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-    .day-block { background: #fff; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+    .hero {
+      background: linear-gradient(135deg, #0d2233 0%, #005f6e 100%);
+      color: #fff; text-align: center; padding: 52px 20px 40px;
+    }
+    .hero h1 { font-family:'Montserrat',sans-serif; font-size:32px; font-weight:700; margin-bottom:10px; }
+    .hero p  { font-size:15px; opacity:.85; margin-bottom:24px; }
+    .hero-btn {
+      display:inline-block; background:var(--gold); color:#fff;
+      font-family:'Inter',sans-serif; font-weight:700; font-size:14px;
+      padding:11px 28px; border-radius:8px; cursor:pointer; border:none;
+      transition: background 0.15s;
+    }
+    .hero-btn:hover { background:#8a5022; }
+    .main-content { flex:1; }
+    .main-grid {
+      max-width:940px; margin:24px auto; padding:0 20px 40px;
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    }
+    .card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
+    .card-title { font-family:'Montserrat',sans-serif; font-size:15px; font-weight:700; margin-bottom:14px; color:var(--text); }
+    .match-day-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--primary); margin-bottom:10px; }
+    .match-row { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; }
+    .match-row:last-child { margin-bottom:0; }
+    .match-time { font-size:12px; font-weight:700; color:var(--muted); min-width:40px; flex-shrink:0; }
+    .match-teams { font-size:14px; font-weight:500; }
+    .no-matches { color:var(--muted); font-size:14px; text-align:center; padding:16px 0; }
+    .standings-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .standings-table th { text-align:left; color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em; padding:0 8px 8px; }
+    .standings-table td { padding:8px; border-top:1px solid var(--border); }
+    .standings-table tr:hover td { background:var(--bg); }
+    .rank-badge { width:22px; height:22px; border-radius:50%; background:var(--bg); font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; }
+    .rank-1 { background:#ffd700; color:#000; }
+    .rank-2 { background:#c0c0c0; color:#000; }
+    .rank-3 { background:#cd7f32; color:#fff; }
+    @media(max-width:700px){ .main-grid{grid-template-columns:1fr;} .hero h1{font-size:24px;} }
+
+  
+    /* ── Pelikalenteri päiväkortit ─────────────────────── */
+    .day-block {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
     .day-header {
-      padding: 12px 18px;
-      background: var(--navy);
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
       font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
-    .day-header .today-badge {
-      background: var(--gold);
+    .today-badge {
+      background: var(--primary);
       color: #fff;
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 11px;
       padding: 2px 8px;
       border-radius: 20px;
-      letter-spacing: 0.05em;
-    }
-    .match-row {
-      display: flex;
-      align-items: center;
-      padding: 11px 18px;
-      border-bottom: 1px solid var(--border);
-      gap: 14px;
-    }
-    .match-row:last-child { border-bottom: none; }
-    .match-time {
-      font-size: 12px;
       font-weight: 700;
-      color: var(--primary);
-      min-width: 44px;
-      flex-shrink: 0;
     }
-    .match-teams {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
+    .past-day { opacity: 0.45; }
   </style>
 </head>
 <body>
@@ -340,13 +358,27 @@
       </div>
     </div>
   </header>
-
-  <div class="page">
-    <div class="page-title">📅 Pelikalenteri</div>
-    <div class="page-sub">MM-kisat 2026 – Otteluohjelma</div>
-    <div id="calendarContent"></div>
+  <div class="main-content">
+    <section class="hero">
+      <h1>MM-KISAT 2026</h1>
+      <button class="hero-btn" onclick="location.href='joukkue.html'">LUO JOUKKUEESI HETI</button>
+    </section>
+    <div class="main-grid">
+      <div class="card">
+        <div class="card-title">&#128197; Seuraavat ottelut</div>
+        <div id="nextMatches"><div class="no-matches">Ladataan...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#127942; Sarjataulukko</div>
+        <table class="standings-table">
+          <thead><tr><th>Sija</th><th>Pelaaja</th><th>Pisteet</th></tr></thead>
+          <tbody id="standingsBody">
+            <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:18px">Ei pisteitä vielä</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-
   <footer class="hm-footer">
     <div class="hm-footer__brand">Hockeymanager</div>
     <div class="hm-footer__copy">© 2026 Hockeymanager – Kaikki oikeudet pidätetään.</div>
@@ -444,8 +476,8 @@
         "footer.rights":    "Kaikki oikeudet pidätetään.",
         "footer.contact":   "Ota yhteyttä",
         // Etusivu
-        "home.title":       "Tervetuloa Hockeymanageriin! 🏒",
-        "home.subtitle":    "Rakenna paras joukkue MM-kisoihin 2026",
+        "home.title":       "<span data-i18n="home.title">Tervetuloa Hockeymanageriin! 🏒</span>",
+        "home.subtitle":    "<span data-i18n="home.subtitle">Rakenna paras joukkue MM-kisoihin 2026</span>",
         "home.cta":         "Luo joukkue",
         "home.rules_title": "Säännöt",
         "home.how_title":   "Miten pelaat?",
@@ -757,36 +789,48 @@
     hmApplyLang();
 
 
-    function renderCalendar() {
-      const todayKey = (function(){
-        const n = new Date();
-        return n.getFullYear() + "-" + hmPad(n.getMonth()+1) + "-" + hmPad(n.getDate());
-      })();
-      const el = document.getElementById("calendarContent");
+    function hmRenderNextMatches() {
+      const key = hmGetMatchDayKey();
+      const el = document.getElementById("nextMatches");
       if (!el) return;
-      let html = "";
-      for (const [key, matches] of Object.entries(HM_SCHEDULE)) {
-        const isToday = key === todayKey;
-        const isFuture = key >= todayKey;
-        const label = hmDayLabel(key);
-        html += '<div class="day-block">';
-        html += '<div class="day-header">' + label;
-        if (isToday) html += ' <span class="today-badge">TÄNÄÄN</span>';
-        html += '</div>';
-        for (const m of matches) {
-          html += '<div class="match-row">'
-            + '<span class="match-time">' + m.t + '</span>'
-            + '<span class="match-teams">' + m.g + '</span>'
-            + '</div>';
-        }
-        html += '</div>';
+      if (!key || !HM_SCHEDULE[key]) {
+        el.innerHTML = '<div class="no-matches">Ei tulossa olevia otteluita</div>';
+        return;
       }
-      el.innerHTML = html;
+      el.innerHTML = '<div class="match-day-label">' + hmDayLabel(key) + '</div>' +
+        HM_SCHEDULE[key].map(m =>
+          '<div class="match-row">' +
+          '<span class="match-time">' + m.t + '</span>' +
+          '<span class="match-teams">' + m.g + '</span></div>'
+        ).join("");
     }
-    document.addEventListener("DOMContentLoaded", function() {
-      try { renderCalendar(); } catch(e) { console.error("renderCalendar:", e); }
-    });
+
+    async function hmLoadStandings() {
+      try {
+        const res = await fetch("/api/points/leaderboard");
+        if (!res.ok) return;
+        const data = await res.json();
+        const tbody = document.getElementById("standingsBody");
+        if (!data.length) return;
+        tbody.innerHTML = data.map(p => {
+          const rc = p.rank <= 3 ? "rank-"+p.rank : "";
+          return '<tr><td><span class="rank-badge '+rc+'">'+p.rank+'</span></td>' +
+                 '<td>'+p.username+'</td><td><strong>'+p.points+'</strong></td></tr>';
+        }).join("");
+      } catch(e) {}
+    }
+
+    hmRenderNextMatches();
+    hmLoadStandings();
 
   </script>
-</body>
+<script>
+function hmRenderCalendar(){
+  const root = document.getElementById('calendarWrap');
+  if(!root || typeof HM_SCHEDULE === 'undefined') return;
+  const days = Object.keys(HM_SCHEDULE).sort();
+  root.innerHTML = days.map(day => '<div style="margin-bottom:16px"><div style="font-weight:800;color:#0c6978;margin-bottom:8px">'+day+'</div>'+HM_SCHEDULE[day].map(m => '<div class="match-row"><span class="match-time">'+m.t+'</span><span class="match-teams">'+m.g+'</span></div>').join('')+'</div>').join('');
+}
+document.addEventListener('DOMContentLoaded', hmRenderCalendar);
+</script></body>
 </html>
