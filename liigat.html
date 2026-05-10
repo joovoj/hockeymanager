@@ -302,9 +302,9 @@
     </nav>
     <div class="hm-nav__spacer"></div>
     <div class="hm-nav__right">
-      <div class="hm-nav__badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
+      <div class="hm-nav__badge"><span id="tradesBadgeText">VAIHDOT SULKEUTUU</span> <span id="countdown">--:--:--</span></div>
       <div class="hm-nav__lang">
-        <span class="hm-lang-fi" onclick="hmSetLang('fi')" style="cursor:pointer">FI</span><span class="sep">|</span><span class="hm-lang-en" onclick="hmSetLang('en')" style="cursor:pointer">EN</span>
+        <span class="hm-lang-btn" data-lang="fi" onclick="hmSetLang('fi')" style="cursor:pointer;font-weight:600;" title="Suomi">FI</span><span class="sep">|</span><span class="hm-lang-btn" data-lang="en" onclick="hmSetLang('en')" style="cursor:pointer;font-weight:600;" title="English">EN</span>
       </div>
       <div id="navAuthArea" style="display:none;align-items:center;gap:6px;">
         <button class="hm-nav__btn hm-nav__btn--login"    onclick="hmOpenModal('login')">Kirjaudu</button>
@@ -319,11 +319,11 @@
   <div class="page">
     <div class="page-header">
       <div class="page-title">Liigat</div>
-      <button class="create-btn" onclick="hmShowCreateLeague()">+ Luo liiga</button>
+      <button class="create-btn" onclick="hmShowCreateLeague()"><span data-i18n="leagues.create">+ Luo liiga</span></button>
     </div>
     <div class="filter-bar">
       <input class="search-box" id="leagueSearch" placeholder="Hae liigaa..." oninput="hmRenderLeagues()"/>
-      <button class="filter-btn active" id="filter-all"     onclick="hmSetFilter('all')">Kaikki</button>
+      <button class="filter-btn active" id="filter-all"     onclick="hmSetFilter('all')"><span data-i18n="leagues.all">Kaikki</span></button>
       <button class="filter-btn"        id="filter-public"  onclick="hmSetFilter('public')">Julkiset</button>
       <button class="filter-btn"        id="filter-private" onclick="hmSetFilter('private')">Yksityiset</button>
     </div>
@@ -402,97 +402,194 @@
     const HM_DEADLINE = new Date("2026-05-15T17:20:00");
 
     
-    // ── i18n ────────────────────────────────────────────────────────────────
-    const HM_I18N = {
+    // ════════════════════════════════════════════════════════
+    // i18n — täydellinen kielivaihto
+    // ════════════════════════════════════════════════════════
+    const HM_TRANSLATIONS = {
       fi: {
-        "nav.login":      "Kirjaudu",
-        "nav.register":   "Rekisteröidy",
-        "nav.logout":     "Ulos",
-        "nav.etusivu":    "Etusivu",
-        "nav.liigat":     "Liigat",
-        "nav.joukkue":    "Joukkue",
-        "nav.kalenteri":  "Pelikalenteri",
-        "nav.info":       "Info",
-        "nav.trades":     "VAIHDOT SULKEUTUU",
-        "nav.closed":     "SULJETTU",
-        "team.budget":    "Budjetti jäljellä",
-        "team.spent":     "Käytetty",
-        "team.pts":       "Pisteet",
-        "team.fwd":       "Hyökkääjä",
-        "team.def":       "Puolustaja",
-        "team.gtd":       "Maalivahti",
-        "team.empty":     "– Tyhjä",
-        "team.add":       "+ Lisää pelaaja",
-        "team.confirm":   "Vahvista joukkue",
-        "team.login_msg": "Kirjaudu sisään nähdäksesi oman joukkueesi.",
-        "team.login_btn": "Kirjaudu sisään",
-        "time.days":      "pv",
-        "time.hours":     "h",
-        "time.min":       "min",
+        // Nav
+        "nav.login":        "Kirjaudu",
+        "nav.register":     "Rekisteröidy",
+        "nav.logout":       "Ulos",
+        "nav.etusivu":      "Etusivu",
+        "nav.liigat":       "Liigat",
+        "nav.joukkue":      "Joukkue",
+        "nav.kalenteri":    "Pelikalenteri",
+        "nav.info":         "Info",
+        "nav.trades":       "VAIHDOT SULKEUTUU",
+        "nav.closed":       "SULJETTU",
+        // Footer
+        "footer.rights":    "Kaikki oikeudet pidätetään.",
+        "footer.contact":   "Ota yhteyttä",
+        // Etusivu
+        "home.title":       "Tervetuloa Hockeymanageriin! 🏒",
+        "home.subtitle":    "Rakenna paras joukkue MM-kisoihin 2026",
+        "home.cta":         "Luo joukkue",
+        "home.rules_title": "Säännöt",
+        "home.how_title":   "Miten pelaat?",
+        // Joukkue
+        "team.title":       "Oma joukkue",
+        "team.name_label":  "JOUKKUEEN NIMI:",
+        "team.no_name":     "Ei nimeä",
+        "team.edit":        "✏️ Muokkaa",
+        "team.save":        "Tallenna",
+        "team.budget":      "Budjetti jäljellä:",
+        "team.spent":       "Käytetty:",
+        "team.pts":         "Pisteet:",
+        "team.empty":       "– Tyhjä",
+        "team.add_btn":     "+ Lisää pelaaja",
+        "team.remove":      "✕ Poista",
+        "team.confirm":     "✓ Vahvista joukkue",
+        "team.login_msg":   "Kirjaudu sisään nähdäksesi oman joukkueesi.",
+        "team.login_btn":   "Kirjaudu sisään",
+        // Panel
+        "panel.title":      "Valitse pelaaja",
+        "panel.search":     "Hae nimellä...",
+        "panel.all_ctry":   "Kaikki maat",
+        "panel.all_pos":    "Kaikki pos.",
+        "panel.loading":    "Ladataan...",
+        "panel.no_players": "Ei pelaajia",
+        // Liigat
+        "leagues.title":    "Liigat",
+        "leagues.create":   "+ Luo liiga",
+        "leagues.search":   "Hae liigaa...",
+        "leagues.all":      "Kaikki",
+        "leagues.public":   "Julkiset",
+        "leagues.private":  "Yksityiset",
+        "leagues.join":     "Liity",
+        "leagues.full":     "Täynnä",
+        "leagues.pub_badge":"Julkinen",
+        "leagues.priv_badge":"Yksityinen",
+        // Kalenteri
+        "cal.title":        "Pelikalenteri",
+        "cal.date":         "Päivämäärä",
+        "cal.teams":        "Joukkueet",
+        "cal.time":         "Aika",
+        // Info
+        "info.title":       "Info",
+        "info.rules":       "Säännöt",
+        "info.updates":     "Päivitykset",
       },
       en: {
-        "nav.login":      "Sign In",
-        "nav.register":   "Register",
-        "nav.logout":     "Sign Out",
-        "nav.etusivu":    "Home",
-        "nav.liigat":     "Leagues",
-        "nav.joukkue":    "Team",
-        "nav.kalenteri":  "Schedule",
-        "nav.info":       "Info",
-        "nav.trades":     "TRADES CLOSE",
-        "nav.closed":     "CLOSED",
-        "team.budget":    "Budget remaining",
-        "team.spent":     "Spent",
-        "team.pts":       "Points",
-        "team.fwd":       "Forward",
-        "team.def":       "Defender",
-        "team.gtd":       "Goalie",
-        "team.empty":     "– Empty",
-        "team.add":       "+ Add player",
-        "team.confirm":   "Confirm team",
-        "team.login_msg": "Sign in to view your team.",
-        "team.login_btn": "Sign In",
-        "time.days":      "d",
-        "time.hours":     "h",
-        "time.min":       "min",
+        "nav.login":        "Sign In",
+        "nav.register":     "Register",
+        "nav.logout":       "Sign Out",
+        "nav.etusivu":      "Home",
+        "nav.liigat":       "Leagues",
+        "nav.joukkue":      "Team",
+        "nav.kalenteri":    "Schedule",
+        "nav.info":         "Info",
+        "nav.trades":       "TRADES CLOSE",
+        "nav.closed":       "CLOSED",
+        "footer.rights":    "All rights reserved.",
+        "footer.contact":   "Contact us",
+        "home.title":       "Welcome to Hockeymanager! 🏒",
+        "home.subtitle":    "Build the best team for the 2026 World Championships",
+        "home.cta":         "Create team",
+        "home.rules_title": "Rules",
+        "home.how_title":   "How to play?",
+        "team.title":       "My Team",
+        "team.name_label":  "TEAM NAME:",
+        "team.no_name":     "No name",
+        "team.edit":        "✏️ Edit",
+        "team.save":        "Save",
+        "team.budget":      "Budget remaining:",
+        "team.spent":       "Spent:",
+        "team.pts":         "Points:",
+        "team.empty":       "– Empty",
+        "team.add_btn":     "+ Add player",
+        "team.remove":      "✕ Remove",
+        "team.confirm":     "✓ Confirm team",
+        "team.login_msg":   "Sign in to view your team.",
+        "team.login_btn":   "Sign In",
+        "panel.title":      "Select player",
+        "panel.search":     "Search by name...",
+        "panel.all_ctry":   "All countries",
+        "panel.all_pos":    "All pos.",
+        "panel.loading":    "Loading...",
+        "panel.no_players": "No players",
+        "leagues.title":    "Leagues",
+        "leagues.create":   "+ Create league",
+        "leagues.search":   "Search leagues...",
+        "leagues.all":      "All",
+        "leagues.public":   "Public",
+        "leagues.private":  "Private",
+        "leagues.join":     "Join",
+        "leagues.full":     "Full",
+        "leagues.pub_badge":"Public",
+        "leagues.priv_badge":"Private",
+        "cal.title":        "Schedule",
+        "cal.date":         "Date",
+        "cal.teams":        "Teams",
+        "cal.time":         "Time",
+        "info.title":       "Info",
+        "info.rules":       "Rules",
+        "info.updates":     "Updates",
       }
     };
-    function hmLang() { return localStorage.getItem("hm_lang") || "fi"; }
-    function hmT(key) { return (HM_I18N[hmLang()] || HM_I18N["fi"])[key] || key; }
+
+    function hmLang() {
+      return localStorage.getItem("hm_lang") || "fi";
+    }
+    function hmT(key) {
+      const lang = hmLang();
+      return (HM_TRANSLATIONS[lang] || HM_TRANSLATIONS["fi"])[key] || key;
+    }
     function hmSetLang(lang) {
       localStorage.setItem("hm_lang", lang);
       location.reload();
     }
     function hmApplyLang() {
       const lang = hmLang();
-      // Nav-buttons
+      // 1. Kaikki data-i18n -attribuutit
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        const val = hmT(key);
+        if (el.tagName === "INPUT" && el.hasAttribute("placeholder")) {
+          el.placeholder = val;
+        } else {
+          el.textContent = val;
+        }
+      });
+      // 2. data-i18n-placeholder
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        el.placeholder = hmT(el.getAttribute("data-i18n-placeholder"));
+      });
+      // 3. Nav-linkit
+      const navMap = {
+        "nav-etusivu":    "nav.etusivu",
+        "nav-liigat":     "nav.liigat",
+        "nav-joukkue":    "nav.joukkue",
+        "nav-pelikalenteri":"nav.kalenteri",
+        "nav-info":       "nav.info",
+      };
+      Object.entries(navMap).forEach(([id,key]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = hmT(key);
+      });
+      // 4. Auth-napit
       const loginBtn = document.querySelector(".hm-nav__btn--login");
       const regBtn   = document.querySelector(".hm-nav__btn--register");
       const outBtn   = document.querySelector(".hm-nav__btn--logout");
       if (loginBtn) loginBtn.textContent = hmT("nav.login");
       if (regBtn)   regBtn.textContent   = hmT("nav.register");
       if (outBtn)   outBtn.textContent   = hmT("nav.logout");
-      // Nav links
-      const navMap = {etusivu:"nav.etusivu", liigat:"nav.liigat", joukkue:"nav.joukkue", pelikalenteri:"nav.kalenteri", info:"nav.info"};
-      Object.entries(navMap).forEach(([id,key]) => {
-        const el = document.getElementById("nav-"+id);
-        if (el) el.textContent = hmT(key);
+      // 5. Lang-napit
+      document.querySelectorAll(".hm-lang-btn").forEach(el => {
+        const l = el.getAttribute("data-lang");
+        el.classList.toggle("active", l === lang);
       });
-      // Lang buttons
-      document.querySelectorAll(".hm-nav__lang span:not(.sep)").forEach(el => {
-        if (el.textContent === "FI" || el.textContent === "EN") {
-          el.classList.toggle("active", (el.textContent === "FI") === (lang === "fi"));
-        }
-      });
-      // Trades badge
-      const badge = document.querySelector(".hm-nav__badge");
-      if (badge) {
-        const span = badge.querySelector("span#countdown");
-        badge.childNodes[0].textContent = hmT("nav.trades") + " ";
-        if (!span) badge.textContent = hmT("nav.trades");
-      }
+      // 6. Trades-badge
+      const badge = document.getElementById("tradesBadgeText");
+      if (badge) badge.textContent = hmT("nav.trades");
+      // 7. Footer
+      const footerRights = document.getElementById("footerRights");
+      if (footerRights) footerRights.textContent = "\u00a9 2026 Hockeymanager \u2014 " + hmT("footer.rights");
     }
-    // ── END i18n ─────────────────────────────────────────────────────────────
+    // ════════════════════════════════════════════════════════
+    // END i18n
+    // ════════════════════════════════════════════════════════
+    ─────────────────────────────────────────────────────────
 
     function hmPad(n){ return String(n).padStart(2,"0"); }
 

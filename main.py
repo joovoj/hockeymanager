@@ -430,14 +430,17 @@ def get_player(player_id):
 @require_auth
 def get_team():
     rows       = sb_select("teams", eq={"user_id":request.user_id})
-    player_ids = [r["player_id"] for r in (rows or [])]
+    player_ids = [int(r["player_id"]) for r in (rows or [])]
     players    = [p for p in PLAYERS if p["id"] in player_ids]
     total_price= sum(p["price"]  for p in players)
+    profile   = sb_select("profiles", eq={"id":request.user_id}, single=True)
+    team_name = (profile or {}).get("team_name") or ""
     return jsonify({
         "players":      players,
         "total_price":  total_price,
         "budget_left":  BUDGET-total_price,
         "total_points": sum(p["points"] for p in players),
+        "team_name":    team_name,
     }), 200
 
 @app.route("/api/team/add", methods=["POST"])
@@ -451,7 +454,7 @@ def add_player():
     if not player:
         return jsonify({"error":"Pelaajaa ei löydy"}), 404
     rows    = sb_select("teams", eq={"user_id":request.user_id})
-    cur_ids = [r["player_id"] for r in (rows or [])]
+    cur_ids = [int(r["player_id"]) for r in (rows or [])]
     if player_id in cur_ids:
         return jsonify({"error":"Pelaaja on jo joukkueessasi"}), 400
     if len(cur_ids) >= 6:
@@ -462,16 +465,16 @@ def add_player():
     if sum(p["price"] for p in cur_players)+player["price"] > BUDGET:
         return jsonify({"error":"Budjetti ylittyy"}), 400
     if len(cur_ids) > 0:
-        profile = sb_select("profiles", eq={"id":request.user_id}, single=True)
-        if profile and profile["transfers_left"] <= 0:
+        _prof = sb_select("profiles", eq={"id":request.user_id}, single=True)
+        if _prof and isinstance(_prof.get("transfers_left"), int) and _prof["transfers_left"] <= 0:
             return jsonify({"error":"Ei vaihtoja jäljellä"}), 400
     sb_insert("teams", {"user_id":request.user_id,"player_id":player_id,
                          "added_at":datetime.utcnow().isoformat()})
     if len(cur_ids) > 0:
-        profile = sb_select("profiles", eq={"id":request.user_id}, single=True)
-        if profile:
+        _prof = sb_select("profiles", eq={"id":request.user_id}, single=True)
+        if _prof and isinstance(_prof.get("transfers_left"), int):
             sb_update("profiles", {"id":request.user_id},
-                      {"transfers_left": profile["transfers_left"]-1})
+                      {"transfers_left": _prof["transfers_left"]-1})
     return jsonify({"message":f"{player['name']} lisätty joukkueeseen"}), 200
 
 @app.route("/api/team/remove", methods=["POST"])
@@ -488,7 +491,7 @@ def remove_player():
 @require_auth
 def confirm_team():
     rows       = sb_select("teams", eq={"user_id":request.user_id})
-    player_ids = [r["player_id"] for r in (rows or [])]
+    player_ids = [int(r["player_id"]) for r in (rows or [])]
     players    = [p for p in PLAYERS if p["id"] in player_ids]
     if len(players) != 6:
         return jsonify({"error":"Joukkueessa täytyy olla tasan 6 pelaajaa"}), 400
@@ -500,6 +503,22 @@ def confirm_team():
     return jsonify({"message":"Joukkue vahvistettu!"}), 200
 
 # ── LEAGUES ───────────────────────────────────────────────────────────────────
+
+@app.route("/api/team/name", methods=["POST"])
+@require_auth
+def set_team_name():
+    data = request.get_json(force=True) or {}
+    name = (data.get("name") or "").strip()[:40]
+    if not name:
+        return jsonify({"error":"Anna joukkueelle nimi"}), 400
+    profile = sb_select("profiles", eq={"id":request.user_id}, single=True)
+    if profile:
+        sb_update("profiles", {"id":request.user_id}, {"team_name": name})
+    else:
+        sb_insert("profiles", {"id":request.user_id,
+                                "team_name": name, "transfers_left": 10})
+    return jsonify({"message":"Joukkueen nimi tallennettu", "name": name}), 200
+
 @app.route("/api/leagues", methods=["GET"])
 def get_leagues():
     type_f = request.args.get("type","")
