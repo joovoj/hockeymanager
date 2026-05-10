@@ -498,7 +498,7 @@
       if (user) {
         authArea.style.display = "none";
         userArea.style.display = "flex";
-        if (nameEl) nameEl.textContent = "&#128100; " + user.username;
+        if (nameEl) nameEl.innerHTML = "👤 " + user.username;
       } else {
         authArea.style.display = "flex";
         userArea.style.display = "none";
