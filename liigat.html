@@ -288,6 +288,33 @@
     .join-btn:disabled { background:var(--border); color:var(--muted); cursor:default; }
     .empty-state { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
 
+  
+    /* ── Pelikalenteri päiväkortit ─────────────────────── */
+    .day-block {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .day-header {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .today-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .past-day { opacity: 0.45; }
   </style>
 </head>
 <body>
@@ -378,6 +405,10 @@
   </div>
 
   <script>
+    window.onerror = function(msg,src,line,col,err){
+      console.error("JS ERROR:",msg,"rivi:",line,err);
+    };
+
 
     // ── AIKATAULU ─────────────────────────────────────────────────────────────
     const HM_SCHEDULE = {

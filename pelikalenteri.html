@@ -396,6 +396,10 @@
   </div>
 
   <script>
+    window.onerror = function(msg,src,line,col,err){
+      console.error("JS ERROR:",msg,"rivi:",line,err);
+    };
+
 
     // ── AIKATAULU ─────────────────────────────────────────────────────────────
     const HM_SCHEDULE = {
@@ -753,7 +757,7 @@
     hmApplyLang();
 
 
-    (function renderCalendar() {
+    function renderCalendar() {
       const todayKey = (function(){
         const n = new Date();
         return n.getFullYear() + "-" + hmPad(n.getMonth()+1) + "-" + hmPad(n.getDate());
@@ -778,9 +782,10 @@
         html += '</div>';
       }
       el.innerHTML = html;
-
-
-    })();
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      try { renderCalendar(); } catch(e) { console.error("renderCalendar:", e); }
+    });
 
   </script>
 </body>
