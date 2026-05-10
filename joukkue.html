@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hockeymanager – Oma Joukkue</title>
+  <title>Hockeymanager – Joukkue</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -316,7 +316,7 @@
     </div>
   </header>
   <div class="page">
-    <div class="page-title">Oma Joukkue</div>
+    <div class="page-title">Joukkue</div>
     <div class="page-sub">Hallitse kokoonpanoasi</div>
     <div id="pageContent">
       <div class="login-notice">
@@ -404,8 +404,15 @@
       if (!el) return;
       const diff = HM_DEADLINE - new Date();
       if (diff <= 0) { el.textContent = "SULJETTU"; return; }
-      const s = Math.floor(diff / 1000);
-      el.textContent = hmPad(Math.floor(s/3600)) + ":" + hmPad(Math.floor(s%3600/60)) + ":" + hmPad(s%60);
+      const totalSecs = Math.floor(diff / 1000);
+      const days    = Math.floor(totalSecs / 86400);
+      const hours   = Math.floor((totalSecs % 86400) / 3600);
+      const minutes = Math.floor((totalSecs % 3600) / 60);
+      if (days > 0) {
+        el.textContent = days + "pv " + hmPad(hours) + "h " + hmPad(minutes) + "min";
+      } else {
+        el.textContent = hmPad(hours) + "h " + hmPad(minutes) + "min";
+      }
     }
 
     function hmGetMatchDayKey() {
@@ -500,8 +507,8 @@
         });
         const data = await res.json();
         if (!res.ok) { hmShowMsg("registerError", data.error || "Rekisteröityminen epäonnistui"); return; }
-        hmShowMsg("registerSuccess", "Tili luotu! Tarkista sähköpostisi vahvistusviesti.");
-        setTimeout(() => hmSwitchModal("register","login"), 2000);
+        hmShowMsg("registerSuccess", "Tili luotu! Voit nyt kirjautua sisään.");
+        setTimeout(() => hmSwitchModal("register","login"), 1500);
       } catch(e) { hmShowMsg("registerError","Verkkovirhe – yritä uudelleen"); }
     }
 

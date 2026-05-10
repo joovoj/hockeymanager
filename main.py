@@ -95,6 +95,10 @@ def auth_signup(email, password):
     status, data = _req("POST", f"{_SB_URL}/auth/v1/signup",
                          body={"email":email,"password":password},
                          extra_headers={"apikey":_SB_KEY,"Authorization":f"Bearer {_SB_KEY}"})
+    # Normalisoi vastaus: jos user on nested, nosta se ylös
+    if isinstance(data, dict) and "user" in data and data["user"]:
+        data["id"]    = data["user"].get("id")
+        data["email"] = data["user"].get("email")
     return status, data
 
 def auth_login(email, password):
@@ -221,10 +225,9 @@ def register():
             "transfers_left": 17, "total_points": 0,
             "created_at": datetime.utcnow().isoformat()
         })
-        return jsonify({"message":"Rekisteröityminen onnistui!", "user_id":uid}), 201
+        return jsonify({"message":"Tili luotu! Voit nyt kirjautua sisään.", "user_id":uid}), 201
     else:
-        # Confirm email ON - sähköposti lähetetty, tallennetaan käyttäjänimi väliaikaisesti
-        return jsonify({"message":"Rekisteröityminen onnistui! Tarkista sähköpostisi ja klikkaa vahvistuslinkkiä.", "pending": True}), 201
+        return jsonify({"message":"Tili luotu! Voit nyt kirjautua sisään.", "pending": True}), 201
 
 @app.route("/api/auth/login", methods=["POST"])
 def login():

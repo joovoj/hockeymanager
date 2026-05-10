@@ -319,20 +319,20 @@
     <div class="page-sub">Peliohjeet ja pistelasku</div>
 
     <div class="section-card">
-      <div class="section-header"><div class="section-icon">&#127944;</div><div class="section-title">Hockeymanagerista</div></div>
+      <div class="section-header"><div class="section-title">Hockeymanageri</div></div>
       <div class="section-body">Hockeymanagerissa valitset yhden kentällisen verran pelaajia: <strong>3 hyökkääjää, 2 puolustajaa ja 1 maalivahdin</strong>. Pelaajat keräävät pisteitä joukkueellesi tehtyjen maalien, syöttöjen ja muiden tilastojen perusteella.</div>
     </div>
 
     <div class="section-card">
-      <div class="section-header"><div class="section-icon">&#128203;</div><div class="section-title">Pelissäännöt</div></div>
+      <div class="section-header"><div class="section-title">Säännöt</div></div>
       <div class="section-body">
         <p>Pelaaminen on täysin <strong>ilmaista</strong>. Jokainen joukkue saa <strong>17 vaihtoa</strong> käyttöön koko turnauksen ajaksi.</p>
-        <p>Peli kestää ensimmäisestä alkulohkon peliestä finaaliin saakka. Pelaajien hinnat eivät muutu turnauksen aikana.</p>
+        <p>Peli kestää ensimmäisestä alkulohkon pelistä finaaliin saakka. Pelaajien hinnat eivät muutu turnauksen aikana.</p>
       </div>
     </div>
 
     <div class="section-card">
-      <div class="section-header"><div class="section-icon">&#128260;</div><div class="section-title">Päivitykset</div></div>
+      <div class="section-header"><div class="section-title">Päivitykset</div></div>
       <div class="section-body">Pisteet päivitetään joukkueille <strong>tunnin sisällä</strong> viimeisen pelin päätyttyä.</div>
     </div>
 
@@ -458,8 +458,15 @@
       if (!el) return;
       const diff = HM_DEADLINE - new Date();
       if (diff <= 0) { el.textContent = "SULJETTU"; return; }
-      const s = Math.floor(diff / 1000);
-      el.textContent = hmPad(Math.floor(s/3600)) + ":" + hmPad(Math.floor(s%3600/60)) + ":" + hmPad(s%60);
+      const totalSecs = Math.floor(diff / 1000);
+      const days    = Math.floor(totalSecs / 86400);
+      const hours   = Math.floor((totalSecs % 86400) / 3600);
+      const minutes = Math.floor((totalSecs % 3600) / 60);
+      if (days > 0) {
+        el.textContent = days + "pv " + hmPad(hours) + "h " + hmPad(minutes) + "min";
+      } else {
+        el.textContent = hmPad(hours) + "h " + hmPad(minutes) + "min";
+      }
     }
 
     function hmGetMatchDayKey() {
@@ -554,8 +561,8 @@
         });
         const data = await res.json();
         if (!res.ok) { hmShowMsg("registerError", data.error || "Rekisteröityminen epäonnistui"); return; }
-        hmShowMsg("registerSuccess", "Tili luotu! Tarkista sähköpostisi vahvistusviesti.");
-        setTimeout(() => hmSwitchModal("register","login"), 2000);
+        hmShowMsg("registerSuccess", "Tili luotu! Voit nyt kirjautua sisään.");
+        setTimeout(() => hmSwitchModal("register","login"), 1500);
       } catch(e) { hmShowMsg("registerError","Verkkovirhe – yritä uudelleen"); }
     }
 
