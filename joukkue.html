@@ -305,7 +305,7 @@
       <div class="hm-nav__lang">
         <span class="hm-lang-btn" data-lang="fi" onclick="hmSetLang('fi')" style="cursor:pointer;font-weight:600;" title="Suomi">FI</span><span class="sep">|</span><span class="hm-lang-btn" data-lang="en" onclick="hmSetLang('en')" style="cursor:pointer;font-weight:600;" title="English">EN</span>
       </div>
-      <div id="navAuthArea" style="display:none;align-items:center;gap:6px;">
+      <div id="navAuthArea" style="display:flex;align-items:center;gap:6px;">
         <button class="hm-nav__btn hm-nav__btn--login"    onclick="hmOpenModal('login')">Kirjaudu</button>
         <button class="hm-nav__btn hm-nav__btn--register" onclick="hmOpenModal('register')">Rekisteröidy</button>
       </div>
@@ -536,51 +536,52 @@
       location.reload();
     }
     function hmApplyLang() {
-      const lang = hmLang();
-      // 1. Kaikki data-i18n -attribuutit
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        const val = hmT(key);
-        if (el.tagName === "INPUT" && el.hasAttribute("placeholder")) {
-          el.placeholder = val;
-        } else {
-          el.textContent = val;
-        }
-      });
-      // 2. data-i18n-placeholder
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        el.placeholder = hmT(el.getAttribute("data-i18n-placeholder"));
-      });
-      // 3. Nav-linkit
-      const navMap = {
-        "nav-etusivu":    "nav.etusivu",
-        "nav-liigat":     "nav.liigat",
-        "nav-joukkue":    "nav.joukkue",
-        "nav-pelikalenteri":"nav.kalenteri",
-        "nav-info":       "nav.info",
-      };
-      Object.entries(navMap).forEach(([id,key]) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = hmT(key);
-      });
-      // 4. Auth-napit
-      const loginBtn = document.querySelector(".hm-nav__btn--login");
-      const regBtn   = document.querySelector(".hm-nav__btn--register");
-      const outBtn   = document.querySelector(".hm-nav__btn--logout");
-      if (loginBtn) loginBtn.textContent = hmT("nav.login");
-      if (regBtn)   regBtn.textContent   = hmT("nav.register");
-      if (outBtn)   outBtn.textContent   = hmT("nav.logout");
-      // 5. Lang-napit
-      document.querySelectorAll(".hm-lang-btn").forEach(el => {
-        const l = el.getAttribute("data-lang");
-        el.classList.toggle("active", l === lang);
-      });
-      // 6. Trades-badge
-      const badge = document.getElementById("tradesBadgeText");
-      if (badge) badge.textContent = hmT("nav.trades");
-      // 7. Footer
-      const footerRights = document.getElementById("footerRights");
-      if (footerRights) footerRights.textContent = "\u00a9 2026 Hockeymanager \u2014 " + hmT("footer.rights");
+      try {
+        const lang = hmLang();
+        // 1. Kaikki data-i18n -attribuutit
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          const key = el.getAttribute("data-i18n");
+          const val = hmT(key);
+          if (el.tagName === "INPUT" && el.hasAttribute("placeholder")) el.placeholder = val;
+          else el.textContent = val;
+        });
+        // 2. data-i18n-placeholder
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+          el.placeholder = hmT(el.getAttribute("data-i18n-placeholder"));
+        });
+        // 3. Nav-linkit
+        const navMap = {
+          "nav-etusivu":       "nav.etusivu",
+          "nav-liigat":        "nav.liigat",
+          "nav-joukkue":       "nav.joukkue",
+          "nav-pelikalenteri": "nav.kalenteri",
+          "nav-info":          "nav.info",
+        };
+        Object.entries(navMap).forEach(([id, key]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = hmT(key);
+        });
+        // 4. Auth-napit
+        const loginBtn = document.querySelector(".hm-nav__btn--login");
+        const regBtn   = document.querySelector(".hm-nav__btn--register");
+        const outBtn   = document.querySelector(".hm-nav__btn--logout");
+        if (loginBtn) loginBtn.textContent = hmT("nav.login");
+        if (regBtn)   regBtn.textContent   = hmT("nav.register");
+        if (outBtn)   outBtn.textContent   = hmT("nav.logout");
+        // 5. Lang-napit active-tila
+        document.querySelectorAll(".hm-lang-btn").forEach(el => {
+          el.classList.toggle("active", el.getAttribute("data-lang") === lang);
+          el.style.opacity = el.getAttribute("data-lang") === lang ? "1" : "0.5";
+        });
+        // 6. Trades-badge
+        const badge = document.getElementById("tradesBadgeText");
+        if (badge) badge.textContent = hmT("nav.trades");
+        // 7. Footer
+        const footerRights = document.getElementById("footerRights");
+        if (footerRights) footerRights.textContent = "\u00a9 2026 Hockeymanager \u2014 " + hmT("footer.rights");
+      } catch(e) {
+        console.warn("hmApplyLang error:", e);
+      }
     }
     // ════════════════════════════════════════════════════════
     // END i18n
