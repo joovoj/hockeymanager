@@ -319,9 +319,9 @@
     <div class="hm-nav__right">
       <div class="hm-nav__badge">VAIHDOT SULKEUTUU <span id="countdown">--:--:--</span></div>
       <div class="hm-nav__lang">
-        <span class="active">FI</span><span class="sep">|</span><span>EN</span>
+        <span class="hm-lang-fi" onclick="hmSetLang('fi')" style="cursor:pointer">FI</span><span class="sep">|</span><span class="hm-lang-en" onclick="hmSetLang('en')" style="cursor:pointer">EN</span>
       </div>
-      <div id="navAuthArea" style="display:flex;align-items:center;gap:6px;">
+      <div id="navAuthArea" style="display:none;align-items:center;gap:6px;">
         <button class="hm-nav__btn hm-nav__btn--login"    onclick="hmOpenModal('login')">Kirjaudu</button>
         <button class="hm-nav__btn hm-nav__btn--register" onclick="hmOpenModal('register')">Rekisteröidy</button>
       </div>
@@ -423,6 +423,99 @@
 
     // Vaihdot sulkeutuu 15.05.2026 klo 17:20 (ensimmäinen peli)
     const HM_DEADLINE = new Date("2026-05-15T17:20:00");
+
+    
+    // ── i18n ────────────────────────────────────────────────────────────────
+    const HM_I18N = {
+      fi: {
+        "nav.login":      "Kirjaudu",
+        "nav.register":   "Rekisteröidy",
+        "nav.logout":     "Ulos",
+        "nav.etusivu":    "Etusivu",
+        "nav.liigat":     "Liigat",
+        "nav.joukkue":    "Joukkue",
+        "nav.kalenteri":  "Pelikalenteri",
+        "nav.info":       "Info",
+        "nav.trades":     "VAIHDOT SULKEUTUU",
+        "nav.closed":     "SULJETTU",
+        "team.budget":    "Budjetti jäljellä",
+        "team.spent":     "Käytetty",
+        "team.pts":       "Pisteet",
+        "team.fwd":       "Hyökkääjä",
+        "team.def":       "Puolustaja",
+        "team.gtd":       "Maalivahti",
+        "team.empty":     "– Tyhjä",
+        "team.add":       "+ Lisää pelaaja",
+        "team.confirm":   "Vahvista joukkue",
+        "team.login_msg": "Kirjaudu sisään nähdäksesi oman joukkueesi.",
+        "team.login_btn": "Kirjaudu sisään",
+        "time.days":      "pv",
+        "time.hours":     "h",
+        "time.min":       "min",
+      },
+      en: {
+        "nav.login":      "Sign In",
+        "nav.register":   "Register",
+        "nav.logout":     "Sign Out",
+        "nav.etusivu":    "Home",
+        "nav.liigat":     "Leagues",
+        "nav.joukkue":    "Team",
+        "nav.kalenteri":  "Schedule",
+        "nav.info":       "Info",
+        "nav.trades":     "TRADES CLOSE",
+        "nav.closed":     "CLOSED",
+        "team.budget":    "Budget remaining",
+        "team.spent":     "Spent",
+        "team.pts":       "Points",
+        "team.fwd":       "Forward",
+        "team.def":       "Defender",
+        "team.gtd":       "Goalie",
+        "team.empty":     "– Empty",
+        "team.add":       "+ Add player",
+        "team.confirm":   "Confirm team",
+        "team.login_msg": "Sign in to view your team.",
+        "team.login_btn": "Sign In",
+        "time.days":      "d",
+        "time.hours":     "h",
+        "time.min":       "min",
+      }
+    };
+    function hmLang() { return localStorage.getItem("hm_lang") || "fi"; }
+    function hmT(key) { return (HM_I18N[hmLang()] || HM_I18N["fi"])[key] || key; }
+    function hmSetLang(lang) {
+      localStorage.setItem("hm_lang", lang);
+      location.reload();
+    }
+    function hmApplyLang() {
+      const lang = hmLang();
+      // Nav-buttons
+      const loginBtn = document.querySelector(".hm-nav__btn--login");
+      const regBtn   = document.querySelector(".hm-nav__btn--register");
+      const outBtn   = document.querySelector(".hm-nav__btn--logout");
+      if (loginBtn) loginBtn.textContent = hmT("nav.login");
+      if (regBtn)   regBtn.textContent   = hmT("nav.register");
+      if (outBtn)   outBtn.textContent   = hmT("nav.logout");
+      // Nav links
+      const navMap = {etusivu:"nav.etusivu", liigat:"nav.liigat", joukkue:"nav.joukkue", pelikalenteri:"nav.kalenteri", info:"nav.info"};
+      Object.entries(navMap).forEach(([id,key]) => {
+        const el = document.getElementById("nav-"+id);
+        if (el) el.textContent = hmT(key);
+      });
+      // Lang buttons
+      document.querySelectorAll(".hm-nav__lang span:not(.sep)").forEach(el => {
+        if (el.textContent === "FI" || el.textContent === "EN") {
+          el.classList.toggle("active", (el.textContent === "FI") === (lang === "fi"));
+        }
+      });
+      // Trades badge
+      const badge = document.querySelector(".hm-nav__badge");
+      if (badge) {
+        const span = badge.querySelector("span#countdown");
+        badge.childNodes[0].textContent = hmT("nav.trades") + " ";
+        if (!span) badge.textContent = hmT("nav.trades");
+      }
+    }
+    // ── END i18n ─────────────────────────────────────────────────────────────
 
     function hmPad(n){ return String(n).padStart(2,"0"); }
 
@@ -564,6 +657,7 @@
     hmUpdateCountdown();
     setInterval(hmUpdateCountdown, 1000);
     hmUpdateNavAuth();
+    hmApplyLang();
 
 
     function hmRenderNextMatches() {
