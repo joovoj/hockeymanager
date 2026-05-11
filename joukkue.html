@@ -346,7 +346,7 @@
   <div class="page">
     <div class="page-title">Joukkue</div>
     <div class="page-sub"><span data-i18n="team.title">Hallitse kokoonpanoasi</span></div>
-    <div id="pageContent" style="visibility:hidden">
+    <div id="pageContent">
       <div class="login-notice">
         <p>Kirjaudu sisään nähdäksesi oman joukkueesi.</p>
         <button class="confirm-btn" style="width:auto;padding:10px 28px;margin:0;" onclick="hmOpenModal('login')">Kirjaudu sisään</button>
@@ -427,7 +427,7 @@
     };
 
     // Vaihdot sulkeutuu 15.05.2026 klo 17:20 (ensimmäinen peli)
-    const HM_DEADLINE = new Date("2026-05-15T17:20:00");
+    const HM_DEADLINE = new Date("2026-05-15T14:20:00Z");
 
     
     // ════════════════════════════════════════════════════════
@@ -777,9 +777,12 @@
           headers: {"Authorization":"Bearer "+token}
         });
         if (res.status === 401) {
-          localStorage.removeItem("hm_token");
-          localStorage.removeItem("hm_user");
-          hmUpdateNavAuth();
+          // Token vanhentunut — näytetään sivu silti, ei kirjata ulos
+          if (pc) pc.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#5b666a;">'
+            + '<p style="font-size:15px;margin-bottom:12px;">&#128274; Istunto vanhentunut</p>'
+            + '<button onclick="hmOpenModal('login')" style="background:#005f6e;color:#fff;border:none;'
+            + 'padding:10px 22px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">'
+            + 'Kirjaudu uudelleen</button></div>';
           if (pc) pc.style.visibility = "visible";
           return;
         }

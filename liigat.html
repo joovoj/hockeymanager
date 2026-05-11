@@ -431,7 +431,7 @@
     };
 
     // Vaihdot sulkeutuu 15.05.2026 klo 17:20 (ensimmäinen peli)
-    const HM_DEADLINE = new Date("2026-05-15T17:20:00");
+    const HM_DEADLINE = new Date("2026-05-15T14:20:00Z");
 
     
     // ════════════════════════════════════════════════════════
@@ -771,10 +771,24 @@
     let _filter  = "all";
 
     async function hmLoadLeagues() {
+      var el = document.getElementById("leagueList");
+      if (el) el.innerHTML = '<div class="empty-state">Ladataan liigoja...</div>';
       try {
-        const res = await fetch("/api/leagues");
-        if (res.ok) _leagues = await res.json();
-      } catch(e) { _leagues = []; }
+        var token = hmGetToken();
+        var headers = token ? {"Authorization":"Bearer " + token} : {};
+        var res = await fetch("/api/leagues", {headers: headers});
+        if (res.ok) {
+          _leagues = await res.json();
+        } else {
+          _leagues = [];
+          if (el) el.innerHTML = '<div class="empty-state">Liigoja ei voitu ladata (virhe ' + res.status + ')</div>';
+          return;
+        }
+      } catch(e) {
+        _leagues = [];
+        if (el) el.innerHTML = '<div class="empty-state">Yhteysvirhe — tarkista verkkoyhteys</div>';
+        return;
+      }
       hmRenderLeagues();
     }
 
