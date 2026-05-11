@@ -458,6 +458,7 @@ function renderBuilder(data){
     +(players.length===6
       ?'<button class="cfm-btn" id="cfmBtn">&#10003; Vahvista ja tallenna joukkue</button>'
       :'<div class="cfm-hint">Lisää vielä '+miss+' pelaaja'+(miss!==1?"a":"")+'.</div>')
+    +(players.length>0?'<div style="text-align:center;margin-top:8px"><button onclick="clearTeam()" style="background:none;border:none;color:#ba1a1a;font-size:12px;cursor:pointer;text-decoration:underline">Tyhjennä joukkue</button></div>':'')
     +'</div>';
 
   pc.innerHTML=nh+bh+gh+ch;
@@ -468,6 +469,7 @@ function renderBuilder(data){
     if(t.classList.contains("sbtn-rem")){ removePlayer(parseInt(t.getAttribute("data-rid"),10)); return; }
     if(t.classList.contains("sbtn-cap")){ setCaptainLocal(parseInt(t.getAttribute("data-cap"),10)); return; }
     if(t.id==="cfmBtn"){ confirmTeam(); return; }
+    if(t.id==="clearBtn"){ clearTeam(); return; }
     if(t.id==="tnSaveBtn"){ saveName(); return; }
   };
 }
@@ -585,6 +587,18 @@ function renderConfirmed(data){
 }
 
 // ── POISTA PELAAJA ─────────────────────────────────────────────────
+
+// ── TYHJENNÄ JOUKKUE ──────────────────────────────────────────────
+async function clearTeam(){
+  var t=tok(); if(!t) return;
+  if(!confirm("Haluatko varmasti tyhjentää koko joukkueen?")) return;
+  try{
+    var r=await fetch("/api/team/clear",{method:"POST",
+      headers:{"Authorization":"Bearer "+t}});
+    if(r.ok){ _td=null; loadTeam(); }
+  }catch(e){}
+}
+
 async function removePlayer(id){
   var t=tok(); if(!t) return;
   try{
