@@ -259,6 +259,7 @@
     }
     .hm-form-switch a { color: var(--primary); font-weight: 600; cursor: pointer; }
     .hm-msg { font-size: 13px; margin-bottom: 10px; display: none; padding: 8px 12px; border-radius: 6px; }
+    .hm-msg.show { display: block; }
     .hm-msg--error { background: #fff0f0; color: #ba1a1a; border: 1px solid #ffc0c0; }
     .hm-msg--success { background: #f0fff5; color: #1a7a3c; border: 1px solid #b0e8c8; }
 
@@ -287,6 +288,33 @@
     .login-notice p { font-size:15px; margin-bottom:16px; color:var(--text); }
     @media(max-width:700px){ .team-grid{grid-template-columns:repeat(2,1fr);} }
 
+  
+    /* ── Pelikalenteri päiväkortit ─────────────────────── */
+    .day-block {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .day-header {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .today-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .past-day { opacity: 0.45; }
   </style>
 </head>
 <body>
@@ -372,44 +400,40 @@
       <div class="hm-form-switch">Onko sinulla jo tili? <a onclick="hmSwitchModal('register','login')">Kirjaudu</a></div>
     </div>
   </div>
-  <!-- PLAYER PANEL -->
-  <div id="playerPanelOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998;" onclick="document.getElementById('playerPanel').style.display='none';this.style.display='none';"></div>
-  <div id="playerPanel" style="display:none;position:fixed;top:0;right:0;width:min(400px,100vw);height:100vh;background:var(--card);border-left:1px solid var(--border);z-index:999;overflow-y:auto;padding:20px;box-shadow:-4px 0 24px rgba(0,0,0,.3);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <div style="font-weight:800;font-size:17px;">Lisää pelaaja</div>
-      <button onclick="document.getElementById('playerPanel').style.display='none';document.getElementById('playerPanelOverlay').style.display='none';" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;">&times;</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-      <select id="ppPos" onchange="hmLoadPanelPlayers()" style="flex:1;min-width:100px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;">
-        <option value="">Kaikki</option>
-        <option value="H">Hyökkääjät</option>
-        <option value="P">Puolustajat</option>
-        <option value="MV">Maalivahdit</option>
-      </select>
-      <select id="ppCountry" onchange="hmLoadPanelPlayers()" style="flex:1;min-width:100px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;">
-        <option value="">Kaikki maat</option>
-        <option value="FIN">Suomi</option><option value="SWE">Ruotsi</option>
-        <option value="CAN">Kanada</option><option value="USA">USA</option>
-        <option value="CZE">Tsekki</option><option value="RUS">Venäjä</option>
-        <option value="GER">Saksa</option><option value="SUI">Sveitsi</option>
-        <option value="SVK">Slovakia</option><option value="DEN">Tanska</option>
-        <option value="NOR">Norja</option><option value="AUT">Itävalta</option>
-        <option value="LAT">Latvia</option><option value="GBR">Iso-Britannia</option>
-        <option value="HUN">Unkari</option><option value="KAZ">Kazakstan</option>
-      </select>
-    </div>
-    <input id="ppSearch" type="text" placeholder="Hae pelaajaa..." onkeyup="hmLoadPanelPlayers()"
-      style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-size:13px;margin-bottom:12px;outline:none;"/>
-    <div id="ppList"></div>
-  </div>
-<script>
-  window.onerror = function(msg, src, line, col, err) {
-    console.error("JS ERROR:", msg, "rivi:", line, err);
-  };
 
-  const HM_DEADLINE = new Date("2026-05-15T17:20:00Z");
+  <script>
+    window.onerror = function(msg,src,line,col,err){
+      console.error("JS ERROR:",msg,"rivi:",line,err);
+    };
 
-  const HM_TRANSLATIONS = {
+
+    // ── AIKATAULU ─────────────────────────────────────────────────────────────
+    const HM_SCHEDULE = {
+      "2026-05-15":[{t:"17:20",g:"Suomi – Saksa"},{t:"17:20",g:"Kanada – Ruotsi"},{t:"21:20",g:"USA – Sveitsi"},{t:"21:20",g:"Tsekki – Tanska"}],
+      "2026-05-16":[{t:"13:20",g:"Iso-Britannia – Itävalta"},{t:"13:20",g:"Slovakia – Norja"},{t:"17:20",g:"Unkari – Suomi"},{t:"17:20",g:"Italia – Kanada"},{t:"21:20",g:"Sveitsi – Latvia"},{t:"21:20",g:"Slovenia – Tsekki"}],
+      "2026-05-17":[{t:"13:20",g:"Iso-Britannia – USA"},{t:"13:20",g:"Italia – Slovakia"},{t:"17:20",g:"Itävalta – Unkari"},{t:"17:20",g:"Tanska – Ruotsi"},{t:"21:20",g:"Saksa – Latvia"},{t:"21:20",g:"Norja – Slovenia"}],
+      "2026-05-18":[{t:"17:20",g:"Suomi – USA"},{t:"17:20",g:"Kanada – Tanska"},{t:"21:20",g:"Saksa – Sveitsi"},{t:"21:20",g:"Ruotsi – Tsekki"}],
+      "2026-05-19":[{t:"17:20",g:"Latvia – Itävalta"},{t:"17:20",g:"Italia – Norja"},{t:"21:20",g:"Unkari – Iso-Britannia"},{t:"21:20",g:"Slovenia – Slovakia"}],
+      "2026-05-20":[{t:"17:20",g:"Itävalta – Sveitsi"},{t:"17:20",g:"Tsekki – Italia"},{t:"21:20",g:"USA – Saksa"},{t:"21:20",g:"Ruotsi – Slovenia"}],
+      "2026-05-21":[{t:"17:20",g:"Latvia – Suomi"},{t:"17:20",g:"Kanada – Norja"},{t:"21:20",g:"Sveitsi – Iso-Britannia"},{t:"21:20",g:"Tanska – Slovakia"}],
+      "2026-05-22":[{t:"17:20",g:"Saksa – Unkari"},{t:"17:20",g:"Kanada – Slovenia"},{t:"21:20",g:"Suomi – Iso-Britannia"},{t:"21:20",g:"Ruotsi – Italia"}],
+      "2026-05-23":[{t:"13:20",g:"Latvia – USA"},{t:"13:20",g:"Tanska – Slovenia"},{t:"17:20",g:"Sveitsi – Unkari"},{t:"17:20",g:"Slovakia – Tsekki"},{t:"21:20",g:"Itävalta – Saksa"},{t:"21:20",g:"Norja – Ruotsi"}],
+      "2026-05-24":[{t:"17:20",g:"Iso-Britannia – Latvia"},{t:"17:20",g:"Tanska – Italia"},{t:"21:20",g:"Suomi – Itävalta"},{t:"21:20",g:"Slovakia – Kanada"}],
+      "2026-05-25":[{t:"17:20",g:"USA – Unkari"},{t:"17:20",g:"Tsekki – Norja"},{t:"21:20",g:"Saksa – Iso-Britannia"},{t:"21:20",g:"Slovenia – Italia"}],
+      "2026-05-26":[{t:"13:20",g:"Unkari – Latvia"},{t:"13:20",g:"Norja – Tanska"},{t:"17:20",g:"USA – Itävalta"},{t:"17:20",g:"Ruotsi – Slovakia"},{t:"21:20",g:"Sveitsi – Suomi"},{t:"21:20",g:"Tsekki – Kanada"}],
+      "2026-05-28":[{t:"17:20",g:"TBA – TBA"},{t:"17:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}],
+      "2026-05-30":[{t:"16:20",g:"TBA – TBA"},{t:"21:00",g:"TBA – TBA"}],
+      "2026-05-31":[{t:"16:30",g:"TBA – TBA"},{t:"21:20",g:"TBA – TBA"}]
+    };
+
+    // Vaihdot sulkeutuu 15.05.2026 klo 17:20 (ensimmäinen peli)
+    const HM_DEADLINE = new Date("2026-05-15T17:20:00");
+
+    
+    // ════════════════════════════════════════════════════════
+    // i18n — täydellinen kielivaihto
+    // ════════════════════════════════════════════════════════
+    const HM_TRANSLATIONS = {
       fi: {
         // Nav
         "nav.login":        "Kirjaudu",
@@ -426,8 +450,8 @@
         "footer.rights":    "Kaikki oikeudet pidätetään.",
         "footer.contact":   "Ota yhteyttä",
         // Etusivu
-        "home.title":       "<span data-i18n="home.title">Tervetuloa Hockeymanageriin! 🏒</span>",
-        "home.subtitle":    "<span data-i18n="home.subtitle">Rakenna paras joukkue MM-kisoihin 2026</span>",
+        "home.title":       "Tervetuloa Hockeymanageriin! 🏒",
+        "home.subtitle":    "Rakenna paras joukkue MM-kisoihin 2026",
         "home.cta":         "Luo joukkue",
         "home.rules_title": "Säännöt",
         "home.how_title":   "Miten pelaat?",
@@ -530,362 +554,496 @@
         "info.rules":       "Rules",
         "info.updates":     "Updates",
       }
+    };
+
+    function hmLang() {
+      return localStorage.getItem("hm_lang") || "fi";
+    }
+    function hmT(key) {
+      const lang = hmLang();
+      return (HM_TRANSLATIONS[lang] || HM_TRANSLATIONS["fi"])[key] || key;
+    }
+    function hmSetLang(lang) {
+      localStorage.setItem("hm_lang", lang);
+      location.reload();
+    }
+    function hmApplyLang() {
+      try {
+        const lang = hmLang();
+        // 1. Kaikki data-i18n -attribuutit
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          const key = el.getAttribute("data-i18n");
+          const val = hmT(key);
+          if (el.tagName === "INPUT" && el.hasAttribute("placeholder")) el.placeholder = val;
+          else el.textContent = val;
+        });
+        // 2. data-i18n-placeholder
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+          el.placeholder = hmT(el.getAttribute("data-i18n-placeholder"));
+        });
+        // 3. Nav-linkit
+        const navMap = {
+          "nav-etusivu":       "nav.etusivu",
+          "nav-liigat":        "nav.liigat",
+          "nav-joukkue":       "nav.joukkue",
+          "nav-pelikalenteri": "nav.kalenteri",
+          "nav-info":          "nav.info",
+        };
+        Object.entries(navMap).forEach(([id, key]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = hmT(key);
+        });
+        // 4. Auth-napit
+        const loginBtn = document.querySelector(".hm-nav__btn--login");
+        const regBtn   = document.querySelector(".hm-nav__btn--register");
+        const outBtn   = document.querySelector(".hm-nav__btn--logout");
+        if (loginBtn) loginBtn.textContent = hmT("nav.login");
+        if (regBtn)   regBtn.textContent   = hmT("nav.register");
+        if (outBtn)   outBtn.textContent   = hmT("nav.logout");
+        // 5. Lang-napit active-tila
+        document.querySelectorAll(".hm-lang-btn").forEach(el => {
+          el.classList.toggle("active", el.getAttribute("data-lang") === lang);
+          el.style.opacity = el.getAttribute("data-lang") === lang ? "1" : "0.5";
+        });
+        // 6. Trades-badge
+        const badge = document.getElementById("tradesBadgeText");
+        if (badge) badge.textContent = hmT("nav.trades");
+        // 7. Footer
+        const footerRights = document.getElementById("footerRights");
+        if (footerRights) footerRights.textContent = "\u00a9 2026 Hockeymanager \u2014 " + hmT("footer.rights");
+      } catch(e) {
+        console.warn("hmApplyLang error:", e);
+      }
+    }
+    // ════════════════════════════════════════════════════════
+    // END i18n
+    // ════════════════════════════════════════════════════════
+    ─────────────────────────────────────────────────────────
+
+    function hmPad(n){ return String(n).padStart(2,"0"); }
+
+    function hmUpdateCountdown() {
+      const el = document.getElementById("countdown");
+      if (!el) return;
+      const diff = HM_DEADLINE - new Date();
+      if (diff <= 0) { el.textContent = "SULJETTU"; return; }
+      const totalSecs = Math.floor(diff / 1000);
+      const days    = Math.floor(totalSecs / 86400);
+      const hours   = Math.floor((totalSecs % 86400) / 3600);
+      const minutes = Math.floor((totalSecs % 3600) / 60);
+      if (days > 0) {
+        el.textContent = days + "pv " + hmPad(hours) + "h " + hmPad(minutes) + "min";
+      } else {
+        el.textContent = hmPad(hours) + "h " + hmPad(minutes) + "min";
+      }
     }
 
-  function hmLang() { return localStorage.getItem("hm_lang") || "fi"; }
-  function hmT(key) {
-    var lang = hmLang();
-    return (HM_TRANSLATIONS[lang] || HM_TRANSLATIONS["fi"])[key] || key;
-  }
-  function hmSetLang(lang) { localStorage.setItem("hm_lang", lang); location.reload(); }
-  function hmApplyLang() {
-    try {
-      document.querySelectorAll("[data-i18n]").forEach(function(el) {
-        var val = hmT(el.getAttribute("data-i18n"));
-        if (el.tagName === "INPUT") el.placeholder = val; else el.textContent = val;
-      });
-      document.querySelectorAll(".hm-lang-btn").forEach(function(el) {
-        el.classList.toggle("active", el.getAttribute("data-lang") === hmLang());
-      });
-    } catch(e) { console.warn("hmApplyLang:", e); }
-  }
-
-  function hmPad(n) { return String(n).padStart(2, "0"); }
-  function hmUpdateCountdown() {
-    var el = document.getElementById("countdown");
-    if (!el) return;
-    var diff = HM_DEADLINE - new Date();
-    if (diff <= 0) { el.textContent = "SULJETTU"; return; }
-    var d = Math.floor(diff / 86400000);
-    var h = Math.floor((diff % 86400000) / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    el.textContent = d + " PV " + hmPad(h) + " H " + hmPad(m) + " MIN";
-  }
-  setInterval(hmUpdateCountdown, 1000);
-
-  function hmGetUser()  { try { return JSON.parse(localStorage.getItem("hm_user") || "null"); } catch { return null; } }
-  function hmGetToken() { return localStorage.getItem("hm_token") || ""; }
-
-  function hmUpdateNavAuth() {
-    var user     = hmGetUser();
-    var authArea = document.getElementById("navAuthArea");
-    var userArea = document.getElementById("navUserArea");
-    var nameEl   = document.getElementById("navUsername");
-    if (!authArea || !userArea) return;
-    if (user && user.id) {
-      authArea.style.display = "none";
-      userArea.style.display = "flex";
-      if (nameEl) nameEl.textContent = "👤 " + (user.username || user.email || "");
-    } else {
-      authArea.style.display = "flex";
-      userArea.style.display = "none";
+    function hmGetMatchDayKey() {
+      const now = new Date();
+      const today = now.getFullYear() + "-" + hmPad(now.getMonth()+1) + "-" + hmPad(now.getDate());
+      const first = "2026-05-15";
+      const key = today < first ? first : today;
+      if (HM_SCHEDULE[key]) return key;
+      // etsi seuraava pelipäivä
+      for (const d of Object.keys(HM_SCHEDULE).sort()) {
+        if (d >= today) return d;
+      }
+      return null;
     }
-  }
 
-  function hmOpenModal(type)  { var el = document.getElementById(type+"Modal"); if (el) el.classList.add("open"); }
-  function hmCloseModal(type) { var el = document.getElementById(type+"Modal"); if (el) el.classList.remove("open"); }
-  function hmSwitchModal(from, to) { hmCloseModal(from); hmOpenModal(to); }
+    function hmDayLabel(isoKey) {
+      const d = new Date(isoKey + "T12:00:00");
+      const names = ["Su","Ma","Ti","Ke","To","Pe","La"];
+      return names[d.getDay()] + " " + hmPad(d.getDate()) + "." + hmPad(d.getMonth()+1) + ".";
+    }
 
-  function hmShowMsg(id, msg) { var el = document.getElementById(id); if (!el) return; el.textContent = msg; el.classList.add("show"); }
-  function hmHideMsg(id) { var el = document.getElementById(id); if (el) el.classList.remove("show"); }
+    // ── AUTH ──────────────────────────────────────────────────────────────────
+    function hmUpdateNavAuth() {
+      const user = JSON.parse(localStorage.getItem("hm_user") || "null");
+      const authArea = document.getElementById("navAuthArea");
+      const userArea = document.getElementById("navUserArea");
+      const nameEl   = document.getElementById("navUsername");
+      if (!authArea || !userArea) return;
+      if (user && (user.username || user.email)) {
+        authArea.style.display = "none";
+        userArea.style.display = "flex";
+        if (nameEl) nameEl.innerHTML = "👤 " + (user.username || user.email);
+      } else {
+        authArea.style.display = "flex";
+        userArea.style.display = "none";
+      }
+    }
 
-  async function hmDoLogin() {
-    hmHideMsg("loginError"); hmHideMsg("loginSuccess");
-    var email = (document.getElementById("loginEmail").value || "").trim();
-    var pwd   = (document.getElementById("loginPassword").value || "");
-    if (!email || !pwd) { hmShowMsg("loginError", "Täytä kaikki kentät"); return; }
-    try {
-      var res  = await fetch("/api/auth/login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email:email,password:pwd}) });
-      var data = await res.json();
-      if (!res.ok) { hmShowMsg("loginError", data.error || "Kirjautuminen epäonnistui"); return; }
-      localStorage.setItem("hm_token", data.access_token);
-      localStorage.setItem("hm_user",  JSON.stringify(data.user));
-      hmShowMsg("loginSuccess", "Kirjautuminen onnistui!");
-      setTimeout(function() { hmCloseModal("login"); hmUpdateNavAuth(); hmLoadTeam(); }, 800);
-    } catch(e) { hmShowMsg("loginError", "Verkkovirhe — yritä uudelleen"); }
-  }
+    function hmOpenModal(type) {
+      const el = document.getElementById(type + "Modal");
+      if (el) el.classList.add("open");
+    }
+    function hmCloseModal(type) {
+      const el = document.getElementById(type + "Modal");
+      if (el) el.classList.remove("open");
+    }
+    function hmSwitchModal(from, to) { hmCloseModal(from); hmOpenModal(to); }
 
-  async function hmDoRegister() {
-    hmHideMsg("registerError"); hmHideMsg("registerSuccess");
-    var uname = (document.getElementById("registerUsername").value || "").trim();
-    var email = (document.getElementById("registerEmail").value || "").trim();
-    var pwd   = (document.getElementById("registerPassword").value || "");
-    if (!uname || !email || !pwd) { hmShowMsg("registerError", "Täytä kaikki kentät"); return; }
-    if (pwd.length < 6) { hmShowMsg("registerError", "Salasana liian lyhyt (min 6 merkkiä)"); return; }
-    try {
-      var res  = await fetch("/api/auth/register", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({username:uname,email:email,password:pwd}) });
-      var data = await res.json();
-      if (!res.ok) { hmShowMsg("registerError", data.error || "Rekisteröityminen epäonnistui"); return; }
-      hmShowMsg("registerSuccess", data.message || "Tili luotu!");
-      setTimeout(function() { hmSwitchModal("register","login"); }, 1800);
-    } catch(e) { hmShowMsg("registerError", "Verkkovirhe — yritä uudelleen"); }
-  }
+    function hmShowMsg(id, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      el.style.display = "block";
+    }
+    function hmHideMsg(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    }
 
-  async function hmLogout() {
-    localStorage.removeItem("hm_token");
-    localStorage.removeItem("hm_user");
+    async function hmDoLogin() {
+      hmHideMsg("loginError"); hmHideMsg("loginSuccess");
+      const email = document.getElementById("loginEmail").value.trim();
+      const pwd   = document.getElementById("loginPassword").value;
+      if (!email || !pwd) { hmShowMsg("loginError","Täytä kaikki kentät"); return; }
+      try {
+        const res  = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({email, password: pwd})
+        });
+        const data = await res.json();
+        if (!res.ok) { hmShowMsg("loginError", data.error || "Kirjautuminen epäonnistui"); return; }
+        localStorage.setItem("hm_token", data.access_token);
+        localStorage.setItem("hm_user",  JSON.stringify(data.user));
+        hmShowMsg("loginSuccess", "Kirjautuminen onnistui!");
+        setTimeout(() => { hmCloseModal("login"); hmUpdateNavAuth(); if (typeof onLoginSuccess === "function") onLoginSuccess(); }, 800);
+      } catch(e) { hmShowMsg("loginError","Verkkovirhe – yritä uudelleen"); }
+    }
+
+    async function hmDoRegister() {
+      hmHideMsg("registerError"); hmHideMsg("registerSuccess");
+      const uname = document.getElementById("registerUsername").value.trim();
+      const email = document.getElementById("registerEmail").value.trim();
+      const pwd   = document.getElementById("registerPassword").value;
+      if (!uname || !email || !pwd) { hmShowMsg("registerError","Täytä kaikki kentät"); return; }
+      if (pwd.length < 6) { hmShowMsg("registerError","Salasana liian lyhyt (min 6 merkkiä)"); return; }
+      try {
+        const res  = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({username: uname, email, password: pwd})
+        });
+        const data = await res.json();
+        if (!res.ok) { hmShowMsg("registerError", data.error || "Rekisteröityminen epäonnistui"); return; }
+        hmShowMsg("registerSuccess", "Tili luotu! Voit nyt kirjautua sisään.");
+        setTimeout(() => hmSwitchModal("register","login"), 1500);
+      } catch(e) { hmShowMsg("registerError","Verkkovirhe – yritä uudelleen"); }
+    }
+
+    async function hmLogout() {
+      const token = localStorage.getItem("hm_token");
+      if (token) {
+        try { await fetch("/api/auth/logout",{method:"POST",headers:{"Authorization":"Bearer "+token}}); } catch(e){}
+      }
+      localStorage.removeItem("hm_token");
+      localStorage.removeItem("hm_user");
+      hmUpdateNavAuth();
+    }
+
+    // Aseta aktiivinen nav-linkki
+    (function() {
+      const page = (location.pathname.split("/").pop() || "etusivu.html").split("?")[0];
+      const el = document.getElementById("nav-" + page.replace(".html",""));
+      if (el) el.classList.add("active");
+    })();
+
+    // Sulje modal klikkaamalla taustan ulkopuolelta
+    document.querySelectorAll(".hm-overlay").forEach(function(el){
+      el.addEventListener("click", function(e){ if (e.target === el) el.classList.remove("open"); });
+    });
+
+    hmUpdateCountdown();
+    setInterval(hmUpdateCountdown, 1000);
     hmUpdateNavAuth();
-    var pc = document.getElementById("pageContent");
-    if (pc) {
-      pc.style.visibility = "visible";
-      pc.innerHTML = '<div class="login-notice"><p>Kirjaudu sisään nähdäksesi oman joukkueesi.</p>' +
-        '<button class="confirm-btn" style="width:auto;padding:10px 28px;margin:0;" onclick="hmOpenModal(\'login\')">Kirjaudu sisään</button></div>';
-    }
-  }
+    hmApplyLang();
 
-  // ── Joukkueen lataus ─────────────────────────────────────────────────────
-  async function hmLoadTeam() {
-    var token = hmGetToken();
-    var pc    = document.getElementById("pageContent");
-    if (!token) {
-      if (pc) pc.style.visibility = "visible";
-      return;
-    }
-    try {
-      var res = await fetch("/api/team", { headers: {"Authorization":"Bearer "+token} });
-      if (res.status === 401) {
-        localStorage.removeItem("hm_token");
-        localStorage.removeItem("hm_user");
-        hmUpdateNavAuth();
+
+    
+    // ── Team loading ─────────────────────────────────────────────────────
+    async function hmLoadTeam() {
+      const token = localStorage.getItem("hm_token");
+      const pc    = document.getElementById("pageContent");
+      if (!token) {
         if (pc) pc.style.visibility = "visible";
         return;
       }
-      if (!res.ok) { if (pc) pc.style.visibility = "visible"; return; }
-      var data = await res.json();
-      hmRenderTeam(data);
-    } catch(e) {
-      if (pc) pc.style.visibility = "visible";
-      console.error("hmLoadTeam:", e);
-    }
-  }
-
-  // ── Joukkueen renderöinti ────────────────────────────────────────────────
-  function hmRenderTeam(data) {
-    var players      = data.players      || [];
-    var budgetLeft   = data.budget_left  !== undefined ? data.budget_left : 1000;
-    var totalPts     = data.total_points || 0;
-    var teamName     = data.team_name    || "";
-    var transfersLeft = data.transfers_left !== undefined ? data.transfers_left : 17;
-    var byPos = {};
-    players.forEach(function(p) {
-      if (!byPos[p.pos]) byPos[p.pos] = [];
-      byPos[p.pos].push(p);
-    });
-    var slots = []
-      .concat((byPos["H"]  || []).map(function(p){ return Object.assign({},p,{label:"Hyökkääjä",filled:true}); }))
-      .concat(Array.from({length: Math.max(0,3-(byPos["H"] ||[]).length)}, function(_,i){ return {pos:"H", label:"Hyökkääjä", empty:true}; }))
-      .concat((byPos["P"]  || []).map(function(p){ return Object.assign({},p,{label:"Puolustaja",filled:true}); }))
-      .concat(Array.from({length: Math.max(0,2-(byPos["P"] ||[]).length)}, function(_,i){ return {pos:"P", label:"Puolustaja", empty:true}; }))
-      .concat((byPos["MV"] || []).map(function(p){ return Object.assign({},p,{label:"Maalivahti",filled:true}); }))
-      .concat((byPos["MV"]||[]).length===0 ? [{pos:"MV",label:"Maalivahti",empty:true}] : []);
-
-    var pc = document.getElementById("pageContent");
-    pc.style.visibility = "visible";
-
-    var html = "";
-
-    // Joukkueen nimi
-    html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">';
-    html += '<span style="font-size:13px;color:var(--muted);font-weight:600;">JOUKKUEEN NIMI:</span>';
-    html += '<span id="teamNameDisplay" style="font-weight:700;font-size:16px;">' + (teamName || '<em style="color:var(--muted);font-weight:400;font-size:14px;">Ei nimeä</em>') + '</span>';
-    html += '<button id="editTeamNameBtn" style="background:none;border:1px solid var(--primary);color:var(--primary);border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;">✏️ Muokkaa</button>';
-    html += '<div id="teamNameForm" style="display:none;align-items:center;gap:6px;">';
-    html += '<input id="teamNameInput" type="text" maxlength="40" placeholder="Joukkueen nimi..." value="' + teamName + '" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:160px;background:var(--bg);color:var(--text);"/>';
-    html += '<button id="saveTeamNameBtn" style="padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Tallenna</button>';
-    html += '</div></div>';
-
-    // Budjetti + vaihdot
-    html += '<div class="budget-bar">';
-    html += '<div class="budget-item">Budjetti jäljellä: <strong>' + budgetLeft + ' M€</strong></div>';
-    html += '<div class="budget-item">Käytetty: <strong>' + (1000-budgetLeft) + ' / 1000 M€</strong></div>';
-    html += '<div class="budget-item">Vaihdot jäljellä: <strong>' + transfersLeft + ' / 17</strong></div>';
-    html += '<div class="budget-item">Pisteet: <strong>' + totalPts + '</strong></div>';
-    html += '</div>';
-
-    // Pelaajapaikat
-    html += '<div class="team-grid">';
-    slots.forEach(function(s) {
-      if (s.empty) {
-        html += '<div class="slot-card">';
-        html += '<div class="slot-pos">' + s.pos + '</div>';
-        html += '<div style="color:var(--muted);font-size:13px;margin-top:4px;">' + s.label + ' – Tyhjä</div>';
-        html += '<button class="add-player-btn" data-pos="' + s.pos + '" style="margin-top:8px;padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">+ Lisää pelaaja</button>';
-        html += '</div>';
-      } else {
-        html += '<div class="slot-card filled">';
-        html += '<div class="slot-pos">' + s.pos + '</div>';
-        html += '<div class="slot-name">' + s.name.trim() + '</div>';
-        html += '<div style="font-size:11px;color:var(--muted);">' + s.country + '</div>';
-        html += '<div class="slot-pts">' + s.points + ' pistettä</div>';
-        html += '<div class="slot-price">' + s.price + ' M€</div>';
-        html += '<button class="remove-btn" data-id="' + s.id + '">✕ Poista</button>';
-        html += '</div>';
+      try {
+        const res = await fetch("/api/team", {
+          headers: {"Authorization":"Bearer "+token}
+        });
+        if (res.status === 401) {
+          localStorage.removeItem("hm_token");
+          localStorage.removeItem("hm_user");
+          hmUpdateNavAuth();
+          if (pc) pc.style.visibility = "visible";
+          return;
+        }
+        if (!res.ok) { if (pc) pc.style.visibility = "visible"; return; }
+        const data = await res.json();
+        hmRenderTeam(data);
+      } catch(e) {
+        if (pc) pc.style.visibility = "visible";
       }
-    });
-    html += '</div>';
-
-    // Vahvista-nappi jos 6 pelaajaa
-    if (players.length === 6) {
-      html += '<button class="confirm-btn" id="confirmTeamBtn">✓ Vahvista joukkue</button>';
     }
 
-    pc.innerHTML = html;
+    // ── Team rendering ────────────────────────────────────────────────────
+    function hmRenderTeam(data) {
+      const players    = data.players     || [];
+      const budgetLeft = data.budget_left !== undefined ? data.budget_left : 1000;
+      const totalPts   = data.total_points || 0;
+      const teamName   = data.team_name   || "";
+      const byPos = {};
+      players.forEach(p => { (byPos[p.pos] = byPos[p.pos] || []).push(p); });
+      const slots = [
+        ...(byPos["H"]  ||[]).map(p=>({...p,label:"Hyökkääjä",filled:true})),
+        ...[...Array(Math.max(0,3-(byPos["H"] ||[]).length))].map((_,i)=>({pos:"H",  label:"Hyökkääjä",  empty:true,idx:i})),
+        ...(byPos["P"]  ||[]).map(p=>({...p,label:"Puolustaja",filled:true})),
+        ...[...Array(Math.max(0,2-(byPos["P"] ||[]).length))].map((_,i)=>({pos:"P",  label:"Puolustaja", empty:true,idx:i})),
+        ...(byPos["MV"] ||[]).map(p=>({...p,label:"Maalivahti",filled:true})),
+        ...((byPos["MV"]||[]).length===0?[{pos:"MV",label:"Maalivahti",empty:true,idx:0}]:[])
+      ];
+      const el = document.getElementById("pageContent");
+      el.style.visibility = "visible";
+      el.innerHTML =
+        // Joukkueen nimi
+        '<div style="background:#fff;border-radius:10px;padding:14px 18px;margin-bottom:14px;'
+        +'box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">'
+        +'<span style="font-size:13px;color:#666;font-weight:600;">JOUKKUEEN NIMI:</span>'
+        +'<span id="teamNameDisplay" style="font-weight:700;font-size:16px;color:#0a3d4a;">'
+        +(teamName||'<em style="color:#bbb;font-weight:400;font-size:14px;">Ei nimeä</em>')+'</span>'
+        +'<button id="editTeamNameBtn" style="margin-left:4px;background:none;border:1px solid #1a7f8e;'
+        +'color:#1a7f8e;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;">✏️ Muokkaa</button>'
+        +'<div id="teamNameForm" style="display:none;align-items:center;gap:6px;">'
+        +'<input id="teamNameInput" type="text" maxlength="40" placeholder="Joukkueen nimi..." value="'+teamName+'"'
+        +' style="padding:6px 10px;border:1px solid #cde;border-radius:6px;font-size:13px;width:160px;"/>'
+        +'<button id="saveTeamNameBtn" style="padding:6px 12px;background:#1a7f8e;color:#fff;border:none;'
+        +'border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Tallenna</button>'
+        +'</div></div>'
+        // Budjetti
+        +'<div class="budget-bar">'
+        +'<div class="budget-item">Budjetti jäljellä: <strong>'+budgetLeft+'</strong></div>'
+        +'<div class="budget-item">Käytetty: <strong>'+(1000-budgetLeft)+'</strong> / 1000</div>'
+        +'<div class="budget-item">Pisteet: <strong>'+totalPts+'</strong></div>'
+        +'</div>'
+        // Slotit
+        +'<div class="team-grid">'
+        +slots.map(s => s.empty
+          ?'<div class="slot-card">'
+            +'<div class="slot-pos">'+s.pos+'</div>'
+            +'<div style="color:var(--muted);font-size:13px;margin-top:4px;">'+s.label+' \u2013 Tyhjä</div>'
+            +'<button class="add-player-btn" data-pos="'+s.pos+'"'
+            +' style="margin-top:8px;padding:6px 14px;background:#1a7f8e;color:#fff;border:none;'
+            +'border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">+ Lisää pelaaja</button>'
+            +'</div>'
+          :'<div class="slot-card filled">'
+            +'<div class="slot-pos">'+s.pos+'</div>'
+            +'<div class="slot-name">'+s.name.trim()+'</div>'
+            +'<div class="slot-pts">'+s.points+' pistettä</div>'
+            +'<div class="slot-price">'+s.price+' M\u20ac</div>'
+            +'<button class="remove-btn" data-id="'+s.id+'">✕ Poista</button>'
+            +'</div>'
+        ).join("")
+        +'</div>'
+        +(players.length===6?'<button class="confirm-btn" id="confirmTeamBtn">\u2713 Vahvista joukkue</button>':'');
 
-    // Event delegaatio
-    pc.onclick = function(e) {
-      var t = e.target;
-      if (t.classList.contains("add-player-btn")) {
-        _ppPos = t.getAttribute("data-pos") || null;
-        hmOpenPlayerPanel(); return;
-      }
-      if (t.classList.contains("remove-btn")) {
-        hmRemovePlayer(parseInt(t.getAttribute("data-id"), 10)); return;
-      }
-      if (t.id === "confirmTeamBtn")  { hmConfirmTeam(); return; }
-      if (t.id === "editTeamNameBtn") {
-        var form = document.getElementById("teamNameForm");
-        form.style.display = form.style.display === "none" ? "flex" : "none";
-        if (form.style.display === "flex") document.getElementById("teamNameInput").focus();
-        return;
-      }
-      if (t.id === "saveTeamNameBtn") { hmSaveTeamName(); return; }
-    };
-  }
-
-  // ── Pelaajapaneeli ───────────────────────────────────────────────────────
-  var _ppPos = null;
-
-  function hmOpenPlayerPanel() {
-    document.getElementById("playerPanel").style.display        = "block";
-    document.getElementById("playerPanelOverlay").style.display = "block";
-    var sel = document.getElementById("ppPos");
-    if (sel && _ppPos) sel.value = _ppPos;
-    hmLoadPanelPlayers();
-  }
-
-  async function hmLoadPanelPlayers() {
-    var country = (document.getElementById("ppCountry") || {value:""}).value;
-    var pos     = (document.getElementById("ppPos")     || {value:""}).value;
-    var q       = (document.getElementById("ppSearch")  || {value:""}).value.trim();
-    var list    = document.getElementById("ppList");
-    if (!list) return;
-    list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;">Ladataan...</p>';
-    try {
-      var url = "/api/players";
-      var params = [];
-      if (country) params.push("country=" + encodeURIComponent(country));
-      if (pos)     params.push("pos="     + encodeURIComponent(pos));
-      if (q)       params.push("q="       + encodeURIComponent(q));
-      if (params.length) url += "?" + params.join("&");
-      var res  = await fetch(url);
-      if (!res.ok) throw new Error("API " + res.status);
-      var data = await res.json();
-      if (!Array.isArray(data) || !data.length) {
-        list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;">Ei pelaajia</p>';
-        return;
-      }
-      list.innerHTML = data.map(function(p) {
-        return '<div class="pp-row" data-id="' + p.id + '" style="display:flex;justify-content:space-between;align-items:center;padding:10px 8px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:6px;transition:background .12s;">' +
-          '<div><div style="font-weight:600;font-size:13px;">' + p.name.trim() + '</div>' +
-          '<div style="font-size:11px;color:var(--muted);">' + p.country + ' · ' + p.pos + '</div></div>' +
-          '<div style="font-weight:700;color:var(--primary);font-size:13px;">' + p.price + ' M€</div>' +
-          '</div>';
-      }).join("");
-      list.onclick = function(e) {
-        var row = e.target.closest(".pp-row");
-        if (!row) return;
-        hmAddPlayerFromPanel(parseInt(row.getAttribute("data-id"), 10));
+      // Event delegaatio — EI enää inline onclick, toimii 100% luotettavasti
+      el.onclick = function(e) {
+        const t = e.target;
+        // Lisää pelaaja
+        if (t.classList.contains("add-player-btn")) {
+          _ppPos = t.getAttribute("data-pos") || null;
+          hmOpenPlayerPanel(); return;
+        }
+        // Poista pelaaja
+        if (t.classList.contains("remove-btn")) {
+          hmRemovePlayer(parseInt(t.getAttribute("data-id"),10)); return;
+        }
+        // Vahvista joukkue
+        if (t.id === "confirmTeamBtn") { hmConfirmTeam(); return; }
+        // Avaa nimen muokkaus
+        if (t.id === "editTeamNameBtn") {
+          const form = document.getElementById("teamNameForm");
+          form.style.display = form.style.display==="none"?"flex":"none";
+          if (form.style.display==="flex") document.getElementById("teamNameInput").focus();
+          return;
+        }
+        // Tallenna nimi
+        if (t.id === "saveTeamNameBtn") { hmSaveTeamName(); return; }
       };
-    } catch(e) {
-      list.innerHTML = '<p style="color:var(--error);padding:12px;font-size:13px;">Virhe: ' + e.message + '</p>';
     }
-  }
 
-  async function hmAddPlayerFromPanel(playerId) {
-    var token = hmGetToken();
-    if (!token) { alert("Kirjaudu ensin sisään"); return; }
-    var list = document.getElementById("ppList");
-    if (list) list.style.opacity = "0.5";
-    try {
-      var res  = await fetch("/api/team/add", {
-        method: "POST",
-        headers: {"Authorization":"Bearer "+token, "Content-Type":"application/json"},
-        body: JSON.stringify({player_id: playerId})
-      });
-      var data = await res.json();
-      if (list) list.style.opacity = "1";
-      if (!res.ok) { alert(data.error || "Virhe lisätessä pelaajaa"); return; }
-      document.getElementById("playerPanel").style.display        = "none";
-      document.getElementById("playerPanelOverlay").style.display = "none";
-      _ppPos = null;
-      hmLoadTeam();
-    } catch(e) {
-      if (list) list.style.opacity = "1";
-      alert("Verkkovirhe – yritä uudelleen");
+    // ── Pelaajapaneeli ───────────────────────────────────────────────────
+    let _ppPos = null;
+
+    function hmOpenPlayerPanel() {
+      document.getElementById("playerPanel").style.display        = "block";
+      document.getElementById("playerPanelOverlay").style.display = "block";
+      const sel = document.getElementById("ppPos");
+      if (sel && _ppPos) sel.value = _ppPos;
+      hmLoadPanelPlayers();
     }
-  }
 
-  async function hmRemovePlayer(id) {
-    var token = hmGetToken();
-    if (!token) return;
-    try {
-      await fetch("/api/team/remove", {
-        method: "POST",
-        headers: {"Content-Type":"application/json","Authorization":"Bearer "+token},
-        body: JSON.stringify({player_id: id})
+    async function hmLoadPanelPlayers() {
+      const country = (document.getElementById("ppCountry")||{value:""}).value;
+      const pos     = (document.getElementById("ppPos")    ||{value:""}).value;
+      const q       = (document.getElementById("ppSearch") ||{value:""}).value.trim();
+      const list    = document.getElementById("ppList");
+      if (!list) return;
+      list.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">Ladataan...</p>';
+      try {
+        let url = "/api/players?sort=price";
+        if (country) url += "&country="+encodeURIComponent(country);
+        if (pos)     url += "&pos="+encodeURIComponent(pos);
+        if (q)       url += "&q="+encodeURIComponent(q);
+        const res  = await fetch(url);
+        if (!res.ok) throw new Error("API "+res.status);
+        const data = await res.json();
+        if (!Array.isArray(data)||!data.length) {
+          list.innerHTML='<p style="text-align:center;color:#888;padding:20px;">Ei pelaajia</p>';
+          return;
+        }
+        list.innerHTML = data.map(p =>
+          '<div class="pp-row" data-id="'+p.id+'"'
+          +' style="display:flex;justify-content:space-between;align-items:center;'
+          +'padding:10px 8px;border-bottom:1px solid #f0f4f5;cursor:pointer;border-radius:6px;'
+          +'transition:background .12s;" onmouseover="this.style.background=\'#f0fafc\'"'
+          +' onmouseout="this.style.background=\'\'">'
+          +'<div><div style="font-weight:600;font-size:13px;color:#0a3d4a;">'+p.name.trim()+'</div>'
+          +'<div style="font-size:11px;color:#888;">'+p.country+' \u00b7 '+p.pos+'</div></div>'
+          +'<div style="font-weight:700;color:#1a7f8e;font-size:13px;">'+p.price+' M\u20ac</div>'
+          +'</div>'
+        ).join("");
+        list.onclick = function(e){
+          const row = e.target.closest(".pp-row");
+          if (!row) return;
+          hmAddPlayerFromPanel(parseInt(row.getAttribute("data-id"),10));
+        };
+      } catch(e) {
+        list.innerHTML='<p style="color:#c0392b;padding:12px;font-size:13px;">Virhe: '+e.message+'</p>';
+      }
+    }
+
+    async function hmAddPlayerFromPanel(playerId) {
+      const token = localStorage.getItem("hm_token");
+      if (!token) { alert("Kirjaudu ensin sisään"); return; }
+      const list = document.getElementById("ppList");
+      if (list) list.style.opacity = "0.5";
+      try {
+        const res  = await fetch("/api/team/add",{
+          method:"POST",
+          headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+          body: JSON.stringify({player_id: playerId})
+        });
+        const data = await res.json();
+        if (list) list.style.opacity = "1";
+        if (!res.ok) { alert(data.error||"Virhe lisätessä pelaajaa"); return; }
+        document.getElementById("playerPanel").style.display        = "none";
+        document.getElementById("playerPanelOverlay").style.display = "none";
+        _ppPos = null;
+        hmLoadTeam();
+      } catch(e) {
+        if (list) list.style.opacity = "1";
+        alert("Verkkovirhe – yritä uudelleen");
+      }
+    }
+
+    async function hmRemovePlayer(id) {
+      const token = localStorage.getItem("hm_token");
+      if (!token) return;
+      await fetch("/api/team/remove",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},
+        body: JSON.stringify({player_id:id})
       });
       hmLoadTeam();
-    } catch(e) { alert("Verkkovirhe"); }
-  }
+    }
 
-  async function hmConfirmTeam() {
-    var token = hmGetToken();
-    if (!token) return;
-    try {
-      var res  = await fetch("/api/team/confirm", {
-        method: "POST",
-        headers: {"Authorization":"Bearer "+token}
+    async function hmConfirmTeam() {
+      const token = localStorage.getItem("hm_token");
+      const res   = await fetch("/api/team/confirm",{
+        method:"POST",
+        headers:{"Authorization":"Bearer "+token}
       });
-      var data = await res.json();
+      const data  = await res.json();
       alert(data.message || data.error || "Valmis!");
-      hmLoadTeam();
-    } catch(e) { alert("Verkkovirhe"); }
-  }
-
-  async function hmSaveTeamName() {
-    var token = hmGetToken();
-    if (!token) return;
-    var name = (document.getElementById("teamNameInput").value || "").trim();
-    if (!name) { alert("Anna joukkueelle nimi"); return; }
-    try {
-      var res  = await fetch("/api/team/name", {
-        method: "POST",
-        headers: {"Authorization":"Bearer "+token, "Content-Type":"application/json"},
-        body: JSON.stringify({team_name: name})
-      });
-      var data = await res.json();
-      if (!res.ok) { alert(data.error || "Virhe"); return; }
-      var form = document.getElementById("teamNameForm");
-      if (form) form.style.display = "none";
-      hmLoadTeam();
-    } catch(e) { alert("Verkkovirhe"); }
-  }
-
-  // ── Init ─────────────────────────────────────────────────────────────────
-  document.addEventListener("DOMContentLoaded", function() {
-    hmApplyLang();
-    hmUpdateNavAuth();
-    hmUpdateCountdown();
-    document.querySelectorAll(".hm-overlay").forEach(function(el) {
-      el.addEventListener("click", function(e) { if (e.target === el) el.classList.remove("open"); });
-    });
-    if (hmGetToken()) { hmLoadTeam(); }
-    else {
-      var pc = document.getElementById("pageContent");
-      if (pc) pc.style.visibility = "visible";
     }
-  });
-</script>
+
+    async function hmSaveTeamName() {
+      const token = localStorage.getItem("hm_token");
+      if (!token) return;
+      const name = (document.getElementById("teamNameInput").value||"").trim();
+      if (!name) { alert("Anna joukkueelle nimi"); return; }
+      try {
+        const res  = await fetch("/api/team/name",{
+          method:"POST",
+          headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+          body: JSON.stringify({name})
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error||"Virhe"); return; }
+        const form = document.getElementById("teamNameForm");
+        if (form) form.style.display = "none";
+        hmLoadTeam();
+      } catch(e) { alert("Verkkovirhe"); }
+    }
+
+    function onLoginSuccess() { hmLoadTeam(); }
+
+    if (localStorage.getItem("hm_user")) hmLoadTeam();
+
+  </script>
+
+  <!-- Pelaajapaneeli -->
+  <div id="playerPanel" style="display:none;position:fixed;top:0;right:0;width:320px;height:100vh;
+    background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,0.15);z-index:9999;overflow-y:auto;
+    font-family:'Inter',sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;
+      border-bottom:1px solid #e8f0f2;position:sticky;top:0;background:#fff;z-index:1;">
+      <strong style="font-size:15px;color:#0a3d4a;">Valitse pelaaja</strong>
+      <button onclick="document.getElementById('playerPanel').style.display='none'"
+        style="background:none;border:none;font-size:20px;cursor:pointer;color:#666;">✕</button>
+    </div>
+    <div style="padding:10px 12px;border-bottom:1px solid #e8f0f2;display:flex;gap:6px;flex-wrap:wrap;">
+      <input id="ppSearch" type="text" placeholder="Hae nimellä..." oninput="hmLoadPanelPlayers()"
+        style="width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid #cde;
+        border-radius:6px;font-size:13px;margin-bottom:6px;"/>
+      <select id="ppCountry" onchange="hmLoadPanelPlayers()"
+        style="flex:1;padding:6px;border:1px solid #cde;border-radius:6px;font-size:13px;">
+        <option value="">Kaikki maat</option>
+        <option value="AUT">Itävalta</option>
+        <option value="CAN">Kanada</option>
+        <option value="CZE">Tsekki</option>
+        <option value="DEN">Tanska</option>
+        <option value="FIN">Suomi</option>
+        <option value="GBR">Iso-Britannia</option>
+        <option value="GER">Saksa</option>
+        <option value="HUN">Unkari</option>
+        <option value="ITA">Italia</option>
+        <option value="LAT">Latvia</option>
+        <option value="NOR">Norja</option>
+        <option value="SVK">Slovakia</option>
+        <option value="SVN">Slovenia</option>
+        <option value="SWE">Ruotsi</option>
+        <option value="SUI">Sveitsi</option>
+        <option value="USA">USA</option>
+      </select>
+      <select id="ppPos" onchange="hmLoadPanelPlayers()"
+        style="flex:1;padding:6px;border:1px solid #cde;border-radius:6px;font-size:13px;">
+        <option value="">Kaikki pos.</option>
+        <option value="H">Hyökkääjä</option>
+        <option value="P">Puolustaja</option>
+        <option value="MV">Maalivahti</option>
+      </select>
+    </div>
+    <div id="ppList" style="padding:8px;"></div>
+  </div>
+  <div id="playerPanelOverlay" onclick="document.getElementById('playerPanel').style.display='none';this.style.display='none';"
+    style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:9998;"></div>
+
 </body>
 </html>
